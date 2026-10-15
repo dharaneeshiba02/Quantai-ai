@@ -33,6 +33,10 @@ class Settings(BaseSettings):
     ollama_base_url: str = "http://127.0.0.1:11434"
     llm_model: str = "qwen2.5-coder:7b"
     llm_fallback_model: str = "qwen2.5-coder:3b"
+    llm_provider: str = "auto"
+    groq_base_url: str = "https://api.groq.com/openai/v1"
+    groq_api_key: str = ""
+    groq_model: str = "openai/gpt-oss-120b"
     llm_embed_model: str = "nomic-embed-text"
     llm_num_ctx: int = 4096
     llm_temperature_sql: float = 0.0

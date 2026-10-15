@@ -12,6 +12,7 @@ export function useQuery() {
   const {
     sessionId, setSessionId,
     selectedSourceId,
+    messages,
     addMessage, updateMessage,
     setActiveStream, activeStream,
     demoMode, documentMode,
@@ -25,6 +26,9 @@ export function useQuery() {
 
     const msgId = uuidv4();
     const currentSession = sessionId || uuidv4();
+    const priorRunId = previousRunId || [...messages]
+      .reverse()
+      .find((message) => message.role === 'assistant' && message.run_id)?.run_id;
     if (!sessionId) setSessionId(currentSession);
 
     // Add user message
@@ -149,7 +153,7 @@ export function useQuery() {
         question,
         selectedSourceId,
         currentSession,
-        previousRunId || null,
+        priorRunId || null,
         handleEvent,
         handleDone,
         handleError,
@@ -162,7 +166,7 @@ export function useQuery() {
       completed_steps: [],
       cancel,
     });
-  }, [activeStream, sessionId, selectedSourceId, demoMode, documentMode, setActiveStream, setSessionId, addMessage, updateMessage]);
+  }, [activeStream, sessionId, selectedSourceId, messages, demoMode, documentMode, setActiveStream, setSessionId, addMessage, updateMessage]);
 
   const cancelQuery = useCallback(() => {
     if (activeStream) {

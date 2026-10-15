@@ -1,5 +1,5 @@
 """
-app/llm/client.py — ChatOllama client with health check and fallback logic.
+app/llm/client.py — API chat client with health check and fallback logic.
 
 Rules:
   - Only one LLM call runs at a time (enforced by caller via async)
@@ -18,7 +18,7 @@ from typing import AsyncIterator, Optional
 
 import httpx
 from langchain_core.messages import BaseMessage, HumanMessage, SystemMessage
-from langchain_ollama import ChatOllama
+from langchain_openai import ChatOpenAI
 
 from app.config import get_settings
 
@@ -28,23 +28,22 @@ log = logging.getLogger(__name__)
 _LLM_SEMAPHORE = asyncio.Semaphore(1)
 
 
-class OllamaHealthError(RuntimeError):
-    """Raised when Ollama is not reachable or model is missing."""
+class LLMHealthError(RuntimeError):
+    """Raised when the configured language model is unavailable."""
     pass
 
 
 async def health_check() -> dict:
     """
-    Verify Ollama is running and the configured model is available.
+    Verify the configured language model endpoint and model availability.
     Returns a dict with status, available models, and any error message.
     Prints a clear fix message if something is wrong.
     """
     cfg = get_settings()
     result = {
-        "ollama_reachable": False,
+        "provider_reachable": False,
         "model_available": False,
-        "embed_model_available": False,
-        "model": cfg.llm_model,
+        "model": cfg.groq_model,
         "embed_model": cfg.llm_embed_model,
         "error": None,
         "available_models": [],
@@ -53,60 +52,49 @@ async def health_check() -> dict:
 
     try:
         async with httpx.AsyncClient(timeout=5.0) as client:
-            resp = await client.get(f"{cfg.ollama_base_url}/api/tags")
+            resp = await client.get(
+                f"{cfg.groq_base_url.rstrip('/')}/models",
+                headers={"Authorization": f"Bearer {cfg.groq_api_key}"},
+            )
             resp.raise_for_status()
             data = resp.json()
-            models = [m["name"] for m in data.get("models", [])]
-            result["ollama_reachable"] = True
+            models = [m["id"] for m in data.get("data", [])]
+            result["provider_reachable"] = True
             result["available_models"] = models
 
-            result["model_available"] = any(
-                cfg.llm_model in m or m.startswith(cfg.llm_model.split(":")[0])
-                for m in models
-            )
-            result["embed_model_available"] = any(
-                cfg.llm_embed_model in m for m in models
-            )
+            result["model_available"] = cfg.groq_model in models
 
             if not result["model_available"]:
-                result["error"] = f"Model '{cfg.llm_model}' not found in Ollama."
-                result["fix"] = (
-                    f"Run:  ollama pull {cfg.llm_model}\n"
-                    f"Or set LLM_MODEL to one of: {models[:5]}"
-                )
-                log.warning("LLM model '%s' not available. Available: %s", cfg.llm_model, models)
+                result["error"] = f"Model '{cfg.groq_model}' is not available."
+                result["fix"] = "Check the configured model name and provider access."
 
-            if not result["embed_model_available"]:
-                result.setdefault("fix", "")
-                result["fix"] = (result["fix"] or "") + (
-                    f"\nEmbedding model '{cfg.llm_embed_model}' not found.\n"
-                    f"Run:  ollama pull {cfg.llm_embed_model}"
-                )
-
-    except httpx.ConnectError:
-        result["error"] = "Ollama is not running."
-        result["fix"] = (
-            "Start Ollama with:  ollama serve\n"
-            "Then ensure your model is pulled:\n"
-            f"  ollama pull {cfg.llm_model}\n"
-            f"  ollama pull {cfg.llm_embed_model}"
-        )
-        log.error("Cannot connect to Ollama at %s", cfg.ollama_base_url)
+    except httpx.HTTPStatusError as exc:
+        result["error"] = f"LLM provider returned HTTP {exc.response.status_code}."
+        result["fix"] = "Check the provider configuration and network connection."
+    except (httpx.ConnectError, httpx.TimeoutException):
+        result["error"] = "LLM provider is unreachable."
+        result["fix"] = "Check the provider configuration and network connection."
+        log.error("Cannot connect to configured LLM provider")
     except Exception as exc:
-        result["error"] = str(exc)
-        log.exception("Unexpected error checking Ollama health")
+        result["error"] = "LLM provider health check failed."
+        log.error("Unexpected LLM provider health-check failure: %s", type(exc).__name__)
 
     return result
 
 
-def _build_client(model: str, temperature: float) -> ChatOllama:
+def _build_client(
+    model: str,
+    temperature: float,
+    model_kwargs: dict | None = None,
+) -> ChatOpenAI:
     cfg = get_settings()
-    return ChatOllama(
+    return ChatOpenAI(
         model=model,
-        base_url=cfg.ollama_base_url,
+        api_key=cfg.groq_api_key,
+        base_url=cfg.groq_base_url,
         temperature=temperature,
-        num_ctx=cfg.llm_num_ctx,
-        client_kwargs={"timeout": cfg.llm_timeout_sec},
+        timeout=cfg.llm_timeout_sec,
+        model_kwargs=model_kwargs or {},
     )
 
 
@@ -133,7 +121,8 @@ async def call_llm(
     """
     cfg = get_settings()
     temp = temperature if temperature is not None else cfg.llm_temperature_sql
-    model_name = model or cfg.llm_model
+    model_name = model or cfg.groq_model
+    fallback_model = cfg.groq_model
 
     async with _LLM_SEMAPHORE:
         try:
@@ -145,14 +134,14 @@ async def call_llm(
                 marker in err_str for marker in ("timeout", "timed out")
             )
 
-            if cfg.llm_auto_fallback and (is_oom or is_timeout) and model_name != cfg.llm_fallback_model:
+            if cfg.llm_auto_fallback and (is_oom or is_timeout) and model_name != fallback_model:
                 log.warning(
                     "LLM call failed (%s), falling back to %s",
                     "OOM" if is_oom else "timeout",
-                    cfg.llm_fallback_model,
+                    fallback_model,
                 )
                 return await _do_call(
-                    system_prompt, user_message, temp, cfg.llm_fallback_model, format
+                    system_prompt, user_message, temp, fallback_model, format
                 )
             raise
 
@@ -165,17 +154,13 @@ async def _do_call(
     format: Optional[dict],
 ) -> str:
     cfg = get_settings()
-    client_kwargs: dict = dict(
-        model=model_name,
-        base_url=cfg.ollama_base_url,
-        temperature=temperature,
-        num_ctx=cfg.llm_num_ctx,
-        client_kwargs={"timeout": cfg.llm_timeout_sec},
-    )
+    client_kwargs: dict = {}
     if format:
-        client_kwargs["format"] = format
+        client_kwargs["model_kwargs"] = {
+            "response_format": {"type": "json_object"},
+        }
 
-    client = ChatOllama(**client_kwargs)
+    client = _build_client(model_name, temperature, **client_kwargs)
     messages: list[BaseMessage] = [
         SystemMessage(content=system_prompt),
         HumanMessage(content=user_message),
@@ -203,15 +188,12 @@ async def stream_llm(
     """
     cfg = get_settings()
     temp = temperature if temperature is not None else cfg.llm_temperature_insight
-    model_name = model or cfg.llm_model
+    model_name = model or cfg.groq_model
 
     async with _LLM_SEMAPHORE:
-        client = ChatOllama(
+        client = _build_client(
             model=model_name,
-            base_url=cfg.ollama_base_url,
             temperature=temp,
-            num_ctx=cfg.llm_num_ctx,
-            client_kwargs={"timeout": cfg.llm_timeout_sec},
         )
         messages: list[BaseMessage] = [
             SystemMessage(content=system_prompt),

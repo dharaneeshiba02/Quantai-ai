@@ -174,6 +174,15 @@ def compile_plan(
 
     full_where = ("WHERE " + " AND ".join(where_parts)) if where_parts else ""
 
+    ranking_factors = plan.get("ranking_factors", [])
+    if len([factor for factor in ranking_factors if factor.get("kind") != "label"]) >= 1:
+        return _compile_ranked_list(
+            table=tbl,
+            factors=ranking_factors,
+            where=full_where,
+            limit=limit,
+        )
+
     # ── Growth / trend intent ────────────────────────────────────────────────
     if intent == "trend" and time_range and not group_by:
         # Auto-group by month
@@ -258,6 +267,63 @@ def compile_plan(
     return "\n".join(parts)
 
 
+def _compile_ranked_list(
+    table: str,
+    factors: list[dict[str, str]],
+    where: str,
+    limit: int | None,
+) -> str:
+    """Compile a schema-aware ranked-list query with normalized factor scores."""
+    label = next(f["column"] for f in factors if f["kind"] == "label")
+    score_parts = []
+    factor_columns = [f["column"] for f in factors if f["kind"] != "label"]
+    weights = {"benefit": 0.45, "rating": 0.45, "popularity": 0.25, "cost": 0.20, "availability": 0.10}
+    total_weight = sum(weights.get(f["kind"], 0) for f in factors if f["kind"] != "label") or 1
+
+    for factor in factors:
+        kind = factor["kind"]
+        if kind == "label":
+            continue
+        column = factor["column"]
+        quoted = _quote(column)
+        weight = weights.get(kind, 0) / total_weight
+        if kind == "availability":
+            normalized = f"CASE WHEN LOWER(CAST({quoted} AS CHAR)) IN ('yes', 'true', '1', 'online', 'available', 'active', 'open') THEN 1 ELSE 0 END"
+        elif kind == "cost":
+            normalized = f"(1 - COALESCE({quoted}, 0) / NULLIF(MAX({quoted}) OVER (), 0))"
+        else:
+            normalized = f"COALESCE({quoted}, 0) / NULLIF(MAX({quoted}) OVER (), 0)"
+        score_parts.append(f"({normalized}) * {weight:.4f}")
+
+    base_columns = [f"{_quote(label)} AS `{label}`"]
+    for factor in factors:
+        if factor["kind"] == "label":
+            continue
+        column = factor["column"]
+        quoted = _quote(column)
+        if factor["kind"] == "availability":
+            aggregate = f"MAX(CASE WHEN LOWER(CAST({quoted} AS CHAR)) IN ('yes', 'true', '1', 'online', 'available', 'active', 'open') THEN 1 ELSE 0 END)"
+        elif factor["kind"] == "cost":
+            aggregate = f"MIN({quoted})"
+        else:
+            aggregate = f"MAX({quoted})"
+        base_columns.append(f"{aggregate} AS `{column}`")
+
+    select_columns = [f"`{label}`"] + [_quote(column) for column in factor_columns]
+    score = " + ".join(score_parts)
+    limit_clause = f"\nLIMIT {limit}" if limit else ""
+    return (
+        f"WITH ranked_base AS (\n"
+        f"SELECT {', '.join(base_columns)}\n"
+        f"FROM {table}\n{where}\n"
+        f"GROUP BY {_quote(label)}\n"
+        f")\n"
+        f"SELECT {', '.join(select_columns)}, ({score}) AS `recommendation_score`\n"
+        f"FROM ranked_base\n"
+        f"ORDER BY `recommendation_score` DESC{limit_clause}"
+    )
+
+
 def _compile_with_median(
     table: str,
     median_metrics: list[dict],
@@ -321,11 +387,17 @@ def plan_to_interpretation(
     time_range = plan.get("time_range")
     order_by = plan.get("order_by", [])
     limit = plan.get("limit")
+    ranking_factors = plan.get("ranking_factors", [])
+    has_ranking_score = len([factor for factor in ranking_factors if factor.get("kind") != "label"]) >= 1
 
     parts = []
 
+    if has_ranking_score:
+        factor_names = [factor["kind"] for factor in ranking_factors if factor["kind"] != "label"]
+        parts.append(f"ranked by combined {', '.join(factor_names)}")
+
     # Metrics
-    if metrics:
+    if metrics and not has_ranking_score:
         metric_strs = []
         for m in metrics:
             agg = m.get("agg", "sum").replace("_", " ")

@@ -2,7 +2,7 @@
  * components/data/UploadDialog.tsx — Drag-and-drop CSV/Excel upload with progress.
  */
 import React, { useCallback, useState } from 'react';
-import { Upload, X, FileSpreadsheet, FileText, CheckCircle2, AlertTriangle, Loader2 } from 'lucide-react';
+import { Upload, X, FileSpreadsheet, CheckCircle2, AlertTriangle, Loader2 } from 'lucide-react';
 import { api } from '../../api/client';
 import { useAppStore } from '../../store/useAppStore';
 
@@ -19,18 +19,18 @@ export const UploadDialog: React.FC<Props> = ({ onClose }) => {
   const [error, setError] = useState<string | null>(null);
 
   const {
-    addSource, addDocument, clearMessages, setDocumentMode,
+    addSource, clearMessages, setDocumentMode,
     setSelectedSourceId, setUploadDialogOpen,
   } = useAppStore();
 
   const handleFile = useCallback((f: File) => {
-    const allowed = ['.csv', '.xlsx', '.xls', '.txt', '.pdf', '.docx'];
+    const allowed = ['.csv', '.xlsx', '.xls'];
     const ext = '.' + f.name.split('.').pop()?.toLowerCase();
     if (!allowed.includes(ext)) {
-      setError('Upload a CSV/Excel dataset or a PDF, DOCX, or TXT document.');
+      setError('Upload a CSV or Excel dataset.');
       return;
     }
-    const maxSize = ['.txt', '.pdf', '.docx'].includes(ext) ? 50 : 200;
+    const maxSize = 200;
     if (f.size > maxSize * 1024 * 1024) {
       setError(`File too large. Maximum size is ${maxSize} MB for this file type.`);
       return;
@@ -56,27 +56,20 @@ export const UploadDialog: React.FC<Props> = ({ onClose }) => {
 
     try {
       const ext = '.' + file.name.split('.').pop()?.toLowerCase();
-      if (['.txt', '.pdf', '.docx'].includes(ext)) {
-        const res = await api.uploadDocument(file, setProgress);
-        setResult({ kind: 'document', ...res });
-        addDocument(file.name);
-        clearMessages();
-      } else {
-        const res = await api.upload(file, setProgress);
-        setResult({ kind: 'dataset', ...res });
-        setDocumentMode(false);
-        clearMessages();
-        addSource({
-          id: res.source_id,
-          name: file.name,
-          source_type: ext === '.csv' ? 'csv' : 'excel',
-          table_name: res.table_name,
-          row_count: res.row_count,
-          col_count: res.col_count,
-          created_at: new Date().toISOString(),
-        });
-        setSelectedSourceId(res.source_id);
-      }
+      const res = await api.upload(file, setProgress);
+      setResult({ kind: 'dataset', ...res });
+      setDocumentMode(false);
+      clearMessages();
+      addSource({
+        id: res.source_id,
+        name: file.name,
+        source_type: ext === '.csv' ? 'csv' : 'excel',
+        table_name: res.table_name,
+        row_count: res.row_count,
+        col_count: res.col_count,
+        created_at: new Date().toISOString(),
+      });
+      setSelectedSourceId(res.source_id);
       setStatus('done');
 
       // Auto-close after 2s
@@ -112,7 +105,7 @@ export const UploadDialog: React.FC<Props> = ({ onClose }) => {
 
         <h2 className="text-xl font-bold text-white mb-1">Upload Data</h2>
         <p className="text-sm text-slate-400 mb-6">
-          CSV/Excel datasets (200 MB) or PDF/DOCX/TXT documents (50 MB). Files stay on your machine.
+          CSV and Excel datasets up to 200 MB. Files stay on your machine.
         </p>
 
         {status === 'done' ? (
@@ -121,14 +114,8 @@ export const UploadDialog: React.FC<Props> = ({ onClose }) => {
               <CheckCircle2 className="w-8 h-8 text-emerald-400" />
             </div>
             <div>
-                <p className="text-white font-semibold text-lg">
-                  {result?.kind === 'document' ? 'Document ready for chat' : 'Dataset imported'}
-                </p>
-              <p className="text-slate-400 text-sm mt-1">
-                {result?.kind === 'document'
-                  ? `${result.chunk_count} sections indexed from ${result.filename}`
-                  : `${result?.row_count?.toLocaleString()} rows × ${result?.col_count} columns imported in ${result?.elapsed_sec?.toFixed(1)}s`}
-              </p>
+              <p className="text-white font-semibold text-lg">Dataset imported</p>
+              <p className="text-slate-400 text-sm mt-1">{result?.row_count?.toLocaleString()} rows × {result?.col_count} columns imported in {result?.elapsed_sec?.toFixed(1)}s</p>
             </div>
           </div>
         ) : (
@@ -151,7 +138,7 @@ export const UploadDialog: React.FC<Props> = ({ onClose }) => {
               <input
                 id="file-input"
                 type="file"
-                accept=".csv,.xlsx,.xls,.txt,.pdf,.docx"
+                accept=".csv,.xlsx,.xls"
                 className="hidden"
                 onChange={(e) => e.target.files?.[0] && handleFile(e.target.files[0])}
               />
@@ -159,9 +146,7 @@ export const UploadDialog: React.FC<Props> = ({ onClose }) => {
               {file ? (
                 <>
                   <div className="w-14 h-14 rounded-2xl bg-emerald-500/15 flex items-center justify-center">
-                    {['.txt', '.pdf', '.docx'].includes('.' + file.name.split('.').pop()?.toLowerCase())
-                      ? <FileText className="w-7 h-7 text-emerald-400" />
-                      : <FileSpreadsheet className="w-7 h-7 text-emerald-400" />}
+                    <FileSpreadsheet className="w-7 h-7 text-emerald-400" />
                   </div>
                   <div className="text-center">
                     <p className="text-white font-medium">{file.name}</p>
@@ -175,7 +160,7 @@ export const UploadDialog: React.FC<Props> = ({ onClose }) => {
                   </div>
                   <div className="text-center">
                     <p className="text-white font-medium">Drop file here or click to browse</p>
-                    <p className="text-slate-500 text-sm">.csv, .xlsx, .xls, .pdf, .docx, .txt</p>
+                    <p className="text-slate-500 text-sm">.csv, .xlsx, .xls</p>
                   </div>
                 </>
               )}
@@ -187,9 +172,7 @@ export const UploadDialog: React.FC<Props> = ({ onClose }) => {
                 <div className="flex items-center justify-between text-xs text-slate-400 mb-1.5">
                   <span className="flex items-center gap-1.5">
                     <Loader2 className="w-3.5 h-3.5 animate-spin text-indigo-400" />
-                    {file && ['.txt', '.pdf', '.docx'].includes('.' + file.name.split('.').pop()?.toLowerCase())
-                      ? 'Uploading & indexing document…'
-                      : 'Uploading & importing dataset…'}
+                    Uploading & importing dataset…
                   </span>
                   <span>{progress}%</span>
                 </div>

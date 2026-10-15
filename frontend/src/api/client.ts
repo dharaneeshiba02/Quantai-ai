@@ -96,7 +96,7 @@ export interface DocumentUploadResult {
 }
 
 export interface HealthStatus {
-  ollama_reachable: boolean;
+  provider_reachable: boolean;
   model_available: boolean;
   embed_model_available: boolean;
   model: string;

@@ -285,7 +285,15 @@ def build_dataset_profile(source_id: str) -> dict[str, Any]:
     file_size = _file_size(source_meta["file_path"])
     if row_count >= 5000 or cell_count >= 100_000 or col_count >= 30 or file_size >= 5 * 1024 * 1024:
         scale = "large"
-        suggested_pages = min(8, max(5, 5 + int(len(charts) >= 3)) + int(cell_count >= 5_000_000 or col_count >= 60))
+        content_sections = (
+            3
+            + math.ceil(max(len(catalog), 1) / 24)
+            + math.ceil(max(len(measures), 1) / 5)
+            + math.ceil(max(len(categories), 1) / 3)
+            + len(charts)
+            + int(len(charts) >= 2)
+        )
+        suggested_pages = min(13, max(5, content_sections))
     elif row_count >= 1000 or cell_count >= 20_000 or col_count >= 12 or file_size >= 1024 * 1024:
         scale = "medium"
         suggested_pages = 3 if len(charts) <= 1 else 4
@@ -332,6 +340,8 @@ def build_dataset_profile(source_id: str) -> dict[str, Any]:
     if high_missing:
         highlights.append(f"Review {len(high_missing)} field(s) with at least 20% missing values before drawing conclusions.")
     unique_highlights = list(dict.fromkeys(highlights))
+    for chart in charts:
+        chart["interpretation"] = _chart_interpretation(chart)
     summary = _build_executive_summary(
         row_count, col_count, measures, distribution_summary, charts, quality_notes, categories,
     )
@@ -348,7 +358,15 @@ def build_dataset_profile(source_id: str) -> dict[str, Any]:
         key_findings.append(finding)
     if not key_findings:
         key_findings = unique_highlights[:3]
-    chart_summaries = [{"title": chart["title"], "caption": chart["caption"], "kind": chart["kind"]} for chart in charts]
+    chart_summaries = [
+        {
+            "title": chart["title"],
+            "caption": chart["caption"],
+            "interpretation": chart.get("interpretation", ""),
+            "kind": chart["kind"],
+        }
+        for chart in charts
+    ]
     profile = {
         "source_id": source_meta["id"],
         "name": source_meta["name"],
@@ -430,6 +448,48 @@ def _build_executive_summary(row_count, col_count, measures, distribution, chart
         elif "No missing values" in note:
             sentences.append("No missing values were reported in the imported dataset profile.")
     return " ".join(sentences)
+
+
+def _chart_interpretation(chart: dict[str, Any]) -> str:
+    """Describe the observed pattern in a chart using only its computed values."""
+    labels = chart.get("labels", [])
+    values = [value for value in chart.get("values", []) if _is_number(value)]
+    if not labels or not values:
+        return "The plot does not contain enough numeric observations for a data-specific finding."
+
+    if chart.get("kind") == "histogram":
+        peak_index = max(range(len(values)), key=lambda index: values[index])
+        total = max(sum(values), 1)
+        return (
+            f"The most populated range is {labels[peak_index]}, containing {int(values[peak_index]):,} records "
+            f"({values[peak_index] / total * 100:.1f}% of the plotted sample)."
+        )
+
+    if chart.get("kind") == "line":
+        peak_index = max(range(len(values)), key=lambda index: values[index])
+        low_index = min(range(len(values)), key=lambda index: values[index])
+        direction = "increased" if values[-1] > values[0] else "decreased" if values[-1] < values[0] else "was broadly unchanged"
+        return (
+            f"The plotted measure {direction} from {_display(values[0])} in {labels[0]} to "
+            f"{_display(values[-1])} in {labels[-1]}; its high point was {labels[peak_index]} "
+            f"({_display(values[peak_index])}) and its low point was {labels[low_index]} ({_display(values[low_index])})."
+        )
+
+    if chart.get("group_counts"):
+        peak_index = max(range(len(values)), key=lambda index: values[index])
+        low_index = min(range(len(values)), key=lambda index: values[index])
+        return (
+            f"{labels[peak_index]} has the highest plotted average at {_display(values[peak_index])}, while "
+            f"{labels[low_index]} is lowest at {_display(values[low_index])}; the difference is "
+            f"{_display(abs(values[peak_index] - values[low_index]))}."
+        )
+
+    peak_index = max(range(len(values)), key=lambda index: values[index])
+    total = max(sum(values), 1)
+    return (
+        f"{labels[peak_index]} is the most frequent plotted category with {int(values[peak_index]):,} records "
+        f"({values[peak_index] / total * 100:.1f}% of the displayed total)."
+    )
 
 
 def write_dataset_report_pdf(profile: dict[str, Any], title: str, path: Path) -> Path:
@@ -568,6 +628,18 @@ def write_dataset_report_pdf(profile: dict[str, Any], title: str, path: Path) ->
         # support. Avoid repeating those rows in a separate section that
         # forced a mostly empty page on otherwise compact reports.
         _append_large_visual_pages(story, profile, section_style, chart_heading_style, plot_title_style, body_style, regular_font, small_style)
+        if len(profile.get("charts", [])) >= 2 or len(profile.get("measures", [])) >= 3:
+            story.extend((PageBreak(), _section("Analytical interpretation", section_style)))
+            story.append(Paragraph(
+                "This section translates the visuals into observations and decision questions. "
+                "The findings describe patterns in the data; they do not establish causation.", body_style,
+            ))
+            for chart in profile.get("charts", []):
+                story.append(Paragraph(_xml(chart.get("title", "Dataset plot")), subhead_style))
+                purpose, use = _chart_context(chart)
+                story.append(Paragraph(f"<b>Purpose:</b> {_xml(purpose)}", body_style))
+                story.append(Paragraph(f"<b>Useful for:</b> {_xml(use)}", body_style))
+                story.append(Paragraph(f"<b>Observed finding:</b> {_xml(chart.get('interpretation', 'No data-specific finding was available.'))}", body_style))
         if profile.get("col_count", 0) * profile.get("row_count", 0) >= 5_000_000 or profile.get("col_count", 0) >= 60:
             story.extend((PageBreak(), _section("Reading this report", section_style)))
             story.append(Paragraph(
@@ -646,6 +718,11 @@ def _plot_report_flowables(
     ]
     if chart.get("caption"):
         items.append(Paragraph(_xml(chart["caption"]), small_style))
+    purpose, use = _chart_context(chart)
+    items.append(Paragraph(f"<b>Purpose:</b> {_xml(purpose)}", small_style))
+    items.append(Paragraph(f"<b>Useful for:</b> {_xml(use)}", small_style))
+    if chart.get("interpretation"):
+        items.append(Paragraph(f"<b>What the data shows:</b> {_xml(chart['interpretation'])}", body_style))
 
     image_data = _draw_chart(chart)
     if image_data:
@@ -692,6 +769,32 @@ def _plot_report_flowables(
         )
     items.append(Paragraph(f"<b>How to read this plot:</b> {_xml(explanation)}", small_style))
     return [KeepTogether(items)]
+
+
+def _chart_context(chart: dict[str, Any]) -> tuple[str, str]:
+    """Return a plain-language purpose and practical use for a chart."""
+    kind = chart.get("kind")
+    if kind == "line":
+        metric = chart.get("metric") or chart.get("title", "the measure")
+        return (
+            f"Show how {metric} changes across the available time buckets.",
+            "Spot direction, peaks, troughs, seasonality, and periods that deserve operational review.",
+        )
+    if kind == "histogram":
+        metric = chart.get("metric") or chart.get("title", "the measure")
+        return (
+            f"Show how {metric} is distributed across value ranges in the plotted sample.",
+            "Assess concentration, spread, unusual ranges, and whether an average represents a typical record.",
+        )
+    if chart.get("group_counts"):
+        return (
+            f"Compare the average {chart.get('metric', 'measure')} across {chart.get('dimension', 'groups')}.",
+            "Find stronger or weaker segments while checking whether each comparison has enough records.",
+        )
+    return (
+        f"Show the composition of the dataset across the displayed {chart.get('dimension', 'categories')}.",
+        "Identify dominant segments, concentration, and categories that may need separate investigation.",
+    )
 
 
 def _chart_detail_table(chart, regular_font: str, body_style):

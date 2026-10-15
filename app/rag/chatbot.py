@@ -1,5 +1,6 @@
 from langchain_chroma import Chroma
 from langchain_ollama import OllamaEmbeddings, OllamaLLM
+from langchain_openai import ChatOpenAI
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from app.config import get_settings
 
@@ -8,11 +9,12 @@ embeddings = OllamaEmbeddings(
     model=settings.llm_embed_model,
     base_url=settings.ollama_base_url,
 )
-llm = OllamaLLM(
-    model=settings.llm_model,
-    base_url=settings.ollama_base_url,
+llm = ChatOpenAI(
+    model=settings.groq_model,
+    api_key=settings.groq_api_key,
+    base_url=settings.groq_base_url,
     temperature=settings.llm_temperature_insight,
-    client_kwargs={"timeout": settings.llm_timeout_sec},
+    timeout=settings.llm_timeout_sec,
 )
 
 vectorstore = Chroma(
@@ -56,7 +58,8 @@ Question: {question}
 
 Answer:"""
         
-        answer = llm.invoke(prompt)
+        response = llm.invoke(prompt)
+        answer = str(response.content)
         
         # Update history
         chat_history.append({"role": "User", "content": question})

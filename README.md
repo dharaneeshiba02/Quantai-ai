@@ -11,7 +11,7 @@
 - 🤖 **LangGraph Multi-Agent Architecture**: Robust query planning, deterministic SQL compilation, and execution verification.
 - 🛡️ **SQL Guard & Sandboxing**: AST-level SQL validation with `sqlglot` and dedicated read-only database execution.
 - 📊 **Pandas Verification & Statistics**: Automated cross-checking of SQL aggregate metrics against source data with automatic Plotly chart generation.
-- 📄 **Multi-Format Document RAG**: PDF (with OCR), DOCX, TXT, CSV, and Excel analysis powered by Chroma DB vector store.
+- 📄 **Dataset Analysis**: CSV and Excel analysis with schema-aware planning, charts, and reports.
 - 📑 **Automated Report Generation**: One-click professional exports to CSV, DOCX, and PDF.
 
 ---

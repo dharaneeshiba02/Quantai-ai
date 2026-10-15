@@ -90,6 +90,21 @@ async def supervisor_node(state: AgentState) -> dict[str, Any]:
             }],
         }
 
+    if re.search(r"\b(?:top|best|worst|lowest|highest)\s+\d+\b", q_lower):
+        elapsed = int((time.perf_counter() - t0) * 1000)
+        return {
+            "intent": "data_query",
+            "requires_sql": True,
+            "clarification_question": None,
+            "current_step": step,
+            "trace": state.get("trace", []) + [{
+                "step": step,
+                "status": "completed",
+                "duration_ms": elapsed,
+                "note": "Detected explicit ranked-list request",
+            }],
+        }
+
     # Check for follow-up patterns
     followup_keywords = ["and for", "only the top", "break that down", "filter by",
                          "now show", "same but", "also show", "what about"]

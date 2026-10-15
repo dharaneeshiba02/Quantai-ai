@@ -6,6 +6,7 @@ Imports into MySQL quantai_data schema using the import user.
 from __future__ import annotations
 
 import logging
+import hashlib
 import re
 import time
 import uuid
@@ -23,6 +24,13 @@ log = logging.getLogger(__name__)
 
 MYSQL_MAX_COL_LEN = 64
 BATCH_SIZE = 500  # rows per executemany batch
+
+
+def _safe_index_name(column_name: str) -> str:
+    """Build a unique MySQL index name within MySQL's 64-character limit."""
+    digest = hashlib.sha1(column_name.encode("utf-8")).hexdigest()[:8]
+    prefix = "idx_"
+    return f"{prefix}{column_name[:64 - len(prefix) - len(digest) - 1]}_{digest}"
 
 
 def _safe_col_name(name: str, existing: set[str]) -> str:
@@ -153,7 +161,7 @@ async def import_file(
         col_defs.append(f"  `{col}` {mysql_type}")
 
     create_sql = (
-        f"CREATE TABLE IF NOT EXISTS `quantai_data`.`{table_name}` (\n"
+        f"CREATE TABLE IF NOT EXISTS `{cfg.mysql_data_schema}`.`{table_name}` (\n"
         f"  `_row_id` BIGINT AUTO_INCREMENT PRIMARY KEY,\n"
         + ",\n".join(col_defs)
         + "\n) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;"
@@ -163,19 +171,19 @@ async def import_file(
     rows_total = len(df)
     try:
         with import_connection() as conn:
-            conn.execute(text(f"DROP TABLE IF EXISTS `quantai_data`.`{table_name}`"))
+            conn.execute(text(f"DROP TABLE IF EXISTS `{cfg.mysql_data_schema}`.`{table_name}`"))
             conn.execute(text(create_sql))
             conn.commit()
 
             cols_quoted = ", ".join(f"`{c}`" for c in df.columns)
             placeholders = ", ".join([f":{c}" for c in df.columns])
             insert_sql = text(
-                f"INSERT INTO `quantai_data`.`{table_name}` ({cols_quoted}) VALUES ({placeholders})"
+                f"INSERT INTO `{cfg.mysql_data_schema}`.`{table_name}` ({cols_quoted}) VALUES ({placeholders})"
             )
 
             for i in range(0, rows_total, BATCH_SIZE):
                 batch = df.iloc[i : i + BATCH_SIZE]
-                records = batch.where(pd.notna(batch), None).to_dict("records")
+                records = batch.astype(object).where(pd.notna(batch), None).to_dict("records")
                 conn.execute(insert_sql, records)
                 if i % (BATCH_SIZE * 10) == 0:
                     conn.commit()
@@ -188,19 +196,20 @@ async def import_file(
                 is_key = any(kw in col.lower() for kw in ["id", "key", "code", "num"])
                 if (is_date or is_key) and "TEXT" not in mysql_type:
                     try:
+                        index_name = _safe_index_name(col)
                         conn.execute(text(
-                            f"CREATE INDEX `idx_{col}` ON `quantai_data`.`{table_name}` (`{col}`)"
+                            f"CREATE INDEX `{index_name}` ON `{cfg.mysql_data_schema}`.`{table_name}` (`{col}`)"
                         ))
                         conn.commit()
                     except Exception:
                         pass
 
-            conn.execute(text(f"ANALYZE TABLE `quantai_data`.`{table_name}`"))
+            conn.execute(text(f"ANALYZE TABLE `{cfg.mysql_data_schema}`.`{table_name}`"))
             conn.commit()
     except Exception:
         try:
             with import_connection() as conn:
-                conn.execute(text(f"DROP TABLE IF EXISTS `quantai_data`.`{table_name}`"))
+                conn.execute(text(f"DROP TABLE IF EXISTS `{cfg.mysql_data_schema}`.`{table_name}`"))
                 conn.commit()
         except Exception:
             pass

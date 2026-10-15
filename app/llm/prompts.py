@@ -30,6 +30,7 @@ Intent rules:
 - data_overview: user asks about schema, columns, row count, data quality
 - data_summary: user asks for a broad summary or what the dataset reveals; provide a compact analytical snapshot, not a column list
 - follow_up: user refines previous question ("and for 2025?", "top 5 only")
+- data_query: explicit ranked requests such as "best 5", "top 10", or "lowest 3" should be planned from the available schema; do not ask for a metric before inspecting the data
 - unanswerable: needed column clearly does not exist
 - clarification_needed: multiple plausible interpretations with similar likelihood"""
 
@@ -49,13 +50,17 @@ Return ONLY valid JSON matching this exact schema:
   "limit": 10,
   "compare_to": null,
   "confidence": "high|medium|low",
-  "ambiguous_columns": []
+    "ambiguous_columns": [],
+    "ranking_factors": [{"kind": "label|benefit|cost|availability|popularity", "column": "col_name"}]
 }
 
 Rules:
 - Use ONLY column names from the provided schema. Never invent columns.
 - If unsure between similar columns (e.g. sales_amt vs net_sales_amt), list them in ambiguous_columns.
 - For time phrases, use the resolved dates provided, not literal phrases.
+- For top/best/worst ranked-list requests, include the requested entity column as ranking_factors kind=label and choose relevant factor columns from the schema.
+- A ranking_factors list is valid only when it includes the label and at least one non-label factor; otherwise leave it empty and use the ordinary metrics/group_by plan.
+- Use ranking_factors only for ranking or recommendation questions. Select factors based on the question and schema; never assume a business domain or invent columns.
 - Set confidence=low if any column match is uncertain.
 - limit: null means no limit (for exports); default 1000 for display."""
 

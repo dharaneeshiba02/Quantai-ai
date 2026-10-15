@@ -225,7 +225,7 @@ export const ChatPage: React.FC<Props> = ({ onNavigate }) => {
                           ? `Ask questions about ${documents.slice(-2).join(' and ')}.`
                           : selectedSource
                           ? `Ask a question about ${selectedSource.name} and get a clear, evidence-based answer with charts when they help.`
-                          : 'Upload a CSV or Excel dataset, or add a PDF, DOCX, or TXT document.'}
+                          : 'Upload a CSV or Excel dataset to begin.'}
                       </p>
                     </div>
 

@@ -73,11 +73,8 @@ def create_app() -> FastAPI:
     app = FastAPI(
         title="QuantAI AI",
         description="MCP-powered local AI data analyst — your data never leaves this machine",
-        version="1.0.0",
+        version="1.2",
     )
-    
-    from app.api.docs_router import router as docs_router
-    app.include_router(docs_router)
 
     # CORS: localhost only
     app.add_middleware(
@@ -99,13 +96,13 @@ def create_app() -> FastAPI:
         log.info("QuantAI AI starting up...")
         await _init_database()
         health = await _check_ollama_health()
-        if not health["ollama_reachable"]:
-            log.warning("⚠️  Ollama not reachable — LLM features will not work")
+        if not health["provider_reachable"]:
+            log.warning("⚠️  LLM provider not reachable — LLM features will not work")
             log.warning("   Fix: %s", health.get("fix", ""))
         elif not health["model_available"]:
-            log.warning("⚠️  Model %s not found — %s", cfg.llm_model, health.get("fix", ""))
+            log.warning("⚠️  Model %s not found — %s", health["model"], health.get("fix", ""))
         else:
-            log.info("✅ Ollama ready: %s", cfg.llm_model)
+            log.info("✅ LLM provider ready: %s", health["model"])
 
     # ── Health ───────────────────────────────────────────────────────────────
     @app.get("/api/health")
@@ -115,7 +112,7 @@ def create_app() -> FastAPI:
         return {
             **health,
             "database": db_ok,
-            "privacy_mode": "local-only",
+            "privacy_mode": "provider-backed",
             "schema_only_mode": cfg.schema_only_mode,
             "pii_masking": cfg.pii_masking_enabled,
         }
@@ -378,10 +375,16 @@ def create_app() -> FastAPI:
                         conn.commit()
                 except Exception:
                     pass
-            log.error("Upload/import failed for %s (%s)", filename, type(exc).__name__)
+            database_error = getattr(exc, "orig", exc)
+            log.error(
+                "Upload/import failed for %s (%s): %s",
+                filename,
+                type(exc).__name__,
+                database_error,
+            )
             raise HTTPException(
                 status_code=422,
-                detail="Could not import this spreadsheet. Check that it contains a header row and consistent cell values, then try again.",
+                detail=f"Could not import this spreadsheet: {database_error}",
             ) from exc
 
     # ── Sources ───────────────────────────────────────────────────────────────

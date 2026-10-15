@@ -53,6 +53,7 @@ class QueryPlan(BaseModel):
     compare_to: Optional[dict] = None
     confidence: Literal["high", "medium", "low"] = "medium"
     ambiguous_columns: list[str] = Field(default_factory=list)
+    ranking_factors: list[dict[str, str]] = Field(default_factory=list)
 
     @field_validator("metrics")
     @classmethod
@@ -123,7 +124,18 @@ PLAN_JSON_SCHEMA = {
         },
         "limit": {"oneOf": [{"type": "integer"}, {"type": "null"}]},
         "confidence": {"type": "string", "enum": ["high", "medium", "low"]},
-        "ambiguous_columns": {"type": "array", "items": {"type": "string"}}
+        "ambiguous_columns": {"type": "array", "items": {"type": "string"}},
+        "ranking_factors": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "kind": {"type": "string", "enum": ["label", "benefit", "cost", "availability", "popularity"]},
+                    "column": {"type": "string"}
+                },
+                "required": ["kind", "column"]
+            }
+        }
     },
     "required": ["intent", "metrics", "confidence"]
 }

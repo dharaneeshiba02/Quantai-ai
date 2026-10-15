@@ -62,8 +62,8 @@ export const SettingsPanel: React.FC = () => {
         <div className="space-y-3">
           {[
             { label: 'Backend API', ok: backendReachable },
-            { label: 'Ollama LLM', ok: health?.ollama_reachable ?? demoMode },
-            { label: 'LLM Model', ok: health?.model_available ?? demoMode, detail: s.llm_model },
+            { label: 'LLM Provider', ok: health?.provider_reachable ?? demoMode },
+            { label: 'LLM Model', ok: health?.model_available ?? demoMode, detail: health?.model },
             { label: 'Database', ok: health?.database?.status === 'ok' || demoMode },
           ].map(({ label, ok, detail }) => (
             <div key={label} className="flex items-center justify-between">
