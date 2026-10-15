@@ -90,7 +90,7 @@ async def supervisor_node(state: AgentState) -> dict[str, Any]:
             }],
         }
 
-    if re.search(r"\b(?:top|best|worst|lowest|highest)\s+\d+\b", q_lower):
+    if re.search(r"\b(?:top|best|worst|lowest|highest)(?:\s+\d+)?\b", q_lower):
         elapsed = int((time.perf_counter() - t0) * 1000)
         return {
             "intent": "data_query",

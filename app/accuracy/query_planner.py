@@ -54,6 +54,7 @@ class QueryPlan(BaseModel):
     confidence: Literal["high", "medium", "low"] = "medium"
     ambiguous_columns: list[str] = Field(default_factory=list)
     ranking_factors: list[dict[str, str]] = Field(default_factory=list)
+    include_all_columns: bool = False
 
     @field_validator("metrics")
     @classmethod
@@ -135,7 +136,8 @@ PLAN_JSON_SCHEMA = {
                 },
                 "required": ["kind", "column"]
             }
-        }
+        },
+        "include_all_columns": {"type": "boolean"}
     },
     "required": ["intent", "metrics", "confidence"]
 }

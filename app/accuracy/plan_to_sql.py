@@ -133,6 +133,7 @@ def compile_plan(
     plan: dict[str, Any],
     table_name: str,
     schema_name: str | None = None,
+    all_columns: bool = False,
 ) -> str:
     """
     Compile a query plan JSON into MySQL 8.0 SQL.
@@ -181,7 +182,11 @@ def compile_plan(
             factors=ranking_factors,
             where=full_where,
             limit=limit,
+            all_columns=all_columns,
         )
+
+    if all_columns:
+        return f"SELECT *\nFROM {tbl}\n{full_where}\nLIMIT {limit or 1000}"
 
     # ── Growth / trend intent ────────────────────────────────────────────────
     if intent == "trend" and time_range and not group_by:
@@ -272,6 +277,7 @@ def _compile_ranked_list(
     factors: list[dict[str, str]],
     where: str,
     limit: int | None,
+    all_columns: bool = False,
 ) -> str:
     """Compile a schema-aware ranked-list query with normalized factor scores."""
     label = next(f["column"] for f in factors if f["kind"] == "label")
@@ -312,6 +318,13 @@ def _compile_ranked_list(
     select_columns = [f"`{label}`"] + [_quote(column) for column in factor_columns]
     score = " + ".join(score_parts)
     limit_clause = f"\nLIMIT {limit}" if limit else ""
+    if all_columns:
+        return (
+            f"SELECT *, ({score}) AS `recommendation_score`\n"
+            f"FROM {table}\n{where}\n"
+            f"ORDER BY `recommendation_score` DESC{limit_clause}"
+        )
+
     return (
         f"WITH ranked_base AS (\n"
         f"SELECT {', '.join(base_columns)}\n"

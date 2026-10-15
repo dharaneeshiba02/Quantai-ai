@@ -69,6 +69,7 @@ def route_after_cross_check(state: AgentState) -> Literal["cleaner", "retry_sql"
 async def data_overview_node(state: AgentState) -> dict[str, Any]:
     """Answer dataset structure questions directly from the catalog."""
     from app.graph.state import cache_get
+    import re
 
     catalog = state.get("full_catalog", [])
     source = state.get("selected_source") or {}
@@ -86,12 +87,14 @@ async def data_overview_node(state: AgentState) -> dict[str, Any]:
         f"- **Columns with over 20% missing:** {', '.join(f'`{name}`' for name in null_cols) or 'none'}\n\n"
         "### Fields\n"
     )
+    wants_all_columns = bool(re.search(r"\b(all|every)\s+(the\s+)?columns\b", state.get("question", "").lower()))
+    displayed_catalog = catalog if wants_all_columns else catalog[:24]
     fields = [
         f"`{col['safe_name']}` ({col['col_type']})"
-        for col in catalog[:24]
+        for col in displayed_catalog
     ]
     overview_text += " · ".join(fields)
-    if len(catalog) > len(fields):
+    if not wants_all_columns and len(catalog) > len(fields):
         overview_text += f"\n\n_And {len(catalog) - len(fields)} more fields._"
 
     return {

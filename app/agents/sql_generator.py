@@ -117,6 +117,10 @@ async def query_planner_node(state: AgentState) -> dict[str, Any]:
         elapsed = int((time.perf_counter() - t0) * 1000)
 
         if plan:
+            if plan.intent == "top_n" and not re.search(r"\b(?:top|best|worst|lowest|highest)\s+\d+\b", question.lower()):
+                plan.limit = 1
+            if re.search(r"\b(all|every)\s+(the\s+)?columns\b", question.lower()):
+                plan.include_all_columns = True
             # Generate interpretation text
             from app.accuracy.plan_to_sql import plan_to_interpretation
             interp = plan_to_interpretation(
@@ -246,7 +250,12 @@ async def sql_compile_node(state: AgentState) -> dict[str, Any]:
             if resolved_tr:
                 grounded_plan["time_range"] = resolved_tr
 
-            sql = compile_plan(grounded_plan, table_name, schema_name)
+            sql = compile_plan(
+                grounded_plan,
+                table_name,
+                schema_name,
+                all_columns=bool(grounded_plan.get("include_all_columns")),
+            )
             is_fallback = False
 
             elapsed = int((time.perf_counter() - t0) * 1000)

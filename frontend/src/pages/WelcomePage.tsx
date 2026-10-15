@@ -76,7 +76,7 @@ export const WelcomePage: React.FC<Props> = ({ onLaunch, onDemo }) => {
               <Database className="w-4 h-4 text-white" />
             </div>
             <span className="text-lg font-bold tracking-tight">Quantai AI</span>
-            <span className="text-xs text-slate-500 font-mono ml-1 hidden sm:block">v1.0</span>
+            <span className="text-xs text-slate-500 font-mono ml-1 hidden sm:block">v1.2</span>
           </div>
 
           <div className="flex items-center gap-4">
