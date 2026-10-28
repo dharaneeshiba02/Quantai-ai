@@ -59,6 +59,18 @@ async def stats_analyzer_node(state: AgentState) -> dict[str, Any]:
         }
 
 
+def _is_analytical_measure_col(col_name: str) -> bool:
+    """Return True if column represents an analytical measurement (not year or ID)."""
+    name = str(col_name).strip().lower()
+    if name in ("year", "yr", "period_year", "financial_year"):
+        return False
+    if name in ("id", "_row_id", "row_id", "index", "_id"):
+        return False
+    if name.endswith("_id") or name.endswith("_code"):
+        return False
+    return True
+
+
 def _compute_stats(df: pd.DataFrame, state: AgentState) -> dict[str, Any]:
     """Compute relevant statistics on the result DataFrame."""
     stats: dict[str, Any] = {
@@ -68,6 +80,8 @@ def _compute_stats(df: pd.DataFrame, state: AgentState) -> dict[str, Any]:
     }
 
     numeric_cols = df.select_dtypes(include=[np.number]).columns.tolist()
+    measure_cols = [c for c in numeric_cols if _is_analytical_measure_col(c)]
+    active_metrics = measure_cols if measure_cols else numeric_cols
     cat_cols = df.select_dtypes(include=["object", "category"]).columns.tolist()
 
     # Per-numeric-column summary
@@ -87,21 +101,25 @@ def _compute_stats(df: pd.DataFrame, state: AgentState) -> dict[str, Any]:
         }
     stats["numeric"] = col_stats
 
-    # Top-N rows (first numeric + first categorical)
-    if numeric_cols:
-        top_col = numeric_cols[-1]  # last numeric is usually the metric
+    # Top-N rows (prioritizing analytical measures)
+    if active_metrics:
+        top_col = active_metrics[-1]  # last measure is usually the requested metric
         if len(df) > 1:
             top_n = df.nlargest(min(5, len(df)), top_col)
             stats["top_n"] = top_n.to_dict("records")
             stats["top_col"] = top_col
 
     # Growth rate (if result has 2+ rows with a consistent numeric metric)
-    if len(df) >= 2 and numeric_cols:
-        metric_col = numeric_cols[-1]
-        values = df[metric_col].dropna().tolist()
-        if len(values) >= 2 and values[0] != 0:
-            stats["growth_rate_pct"] = round((values[-1] - values[0]) / abs(values[0]) * 100, 2)
-            stats["trend_direction"] = "up" if values[-1] > values[0] else "down"
+    if len(df) >= 2 and active_metrics:
+        metric_col = active_metrics[-1]
+        temporal_cols = [c for c in numeric_cols if not _is_analytical_measure_col(c) and "year" in c.lower()]
+        if temporal_cols:
+            sorted_series = df.sort_values(by=temporal_cols[0])[metric_col].dropna().tolist()
+        else:
+            sorted_series = df[metric_col].dropna().tolist()
+        if len(sorted_series) >= 2 and sorted_series[0] != 0:
+            stats["growth_rate_pct"] = round((sorted_series[-1] - sorted_series[0]) / abs(sorted_series[0]) * 100, 2)
+            stats["trend_direction"] = "up" if sorted_series[-1] > sorted_series[0] else "down"
 
     # Correlations: only if question asks about it AND we have multiple numeric cols
     question = state.get("question", "").lower()
@@ -109,7 +127,7 @@ def _compute_stats(df: pd.DataFrame, state: AgentState) -> dict[str, Any]:
         if len(numeric_cols) >= 2:
             df_num = pd.DataFrame(df[numeric_cols])
             corr = df_num.corr()
-            target = numeric_cols[-1]
+            target = active_metrics[-1] if active_metrics else numeric_cols[-1]
             if target in corr.columns:
                 target_series = pd.Series(corr[target])
                 top_corr = (
@@ -133,8 +151,9 @@ def _extract_facts(df: pd.DataFrame, stats: dict, state: AgentState) -> dict[str
 
     numeric = stats.get("numeric", {})
     if numeric:
-        # Headline: first metric's sum and max
-        first_col = list(numeric.keys())[0]
+        # Headline: prefer genuine analytical measure over year/id
+        measure_keys = [k for k in numeric.keys() if _is_analytical_measure_col(k)]
+        first_col = measure_keys[0] if measure_keys else list(numeric.keys())[0]
         facts["headline_column"] = first_col
         facts["headline_value"] = numeric[first_col].get("sum", numeric[first_col].get("max"))
         facts["headline_mean"] = numeric[first_col].get("mean")

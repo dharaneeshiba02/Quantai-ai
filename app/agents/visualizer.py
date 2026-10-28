@@ -1,6 +1,15 @@
 """
 app/agents/visualizer.py — Visualization agent (deterministic chart type selection).
-Generates Plotly figure JSON based on result shape — no LLM involved.
+Generates Plotly figure JSON based on result shape and question semantics — no LLM involved.
+
+Supported chart types:
+  - bar (vertical & horizontal)
+  - grouped_bar / stacked_bar
+  - line & area
+  - scatter & bubble
+  - histogram & box plot
+  - pie / donut
+  - correlation heatmap
 """
 from __future__ import annotations
 
@@ -18,24 +27,16 @@ from app.graph.state import AgentState, cache_get
 log = logging.getLogger(__name__)
 
 
-def _select_chart_type(df: pd.DataFrame, stats: dict) -> str:
+def _select_chart_type(df: pd.DataFrame, stats: dict, question: str = "") -> str:
     """
-    Deterministically select the best chart type from result shape.
-
-    Rules:
-      - 1 categorical + 1 numeric + time-like col name → line
-      - 1 categorical + 1 numeric, <=8 categories → bar
-      - 1 categorical + 1 numeric, share question → pie (max 8 cats)
-      - 2 numeric cols → scatter
-      - 1 col → histogram
-      - Multiple numeric cols over categories → grouped_bar
-      - Default → bar
+    Deterministically select the best chart type from result shape and intent.
     """
+    q = question.lower()
     cols = list(df.columns)
     numeric = df.select_dtypes(include=[np.number]).columns.tolist()
     text_cols = df.select_dtypes(include=["object", "category"]).columns.tolist()
     date_cols = [c for c in cols if any(
-        kw in c.lower() for kw in ["date", "month", "year", "quarter", "week", "period", "time"]
+        kw in c.lower() for kw in ["date", "month", "year", "quarter", "week", "period", "time", "day"]
     )]
 
     n_num = len(numeric)
@@ -45,21 +46,46 @@ def _select_chart_type(df: pd.DataFrame, stats: dict) -> str:
     if n_num == 0:
         return "table"
 
+    # Specific question intent overrides
+    if any(kw in q for kw in ["box", "boxplot", "spread", "quartile", "iqr"]):
+        return "box"
+
+    if any(kw in q for kw in ["heatmap", "correlat"]) and n_num >= 2:
+        return "heatmap"
+
+    if any(kw in q for kw in ["area", "cumulative", "stack"]) and (date_cols or n_cat >= 1):
+        return "area"
+
+    if any(kw in q for kw in ["share", "proportion", "breakdown", "distribution", "percent", "pie"]):
+        if text_cols and n_num and df[text_cols[0]].nunique() <= 8:
+            return "pie"
+
+    # Date / Time-series -> Line or Area
     if n_num == 1 and (date_cols or (n_cat == 1 and n_rows >= 6)):
+        if "area" in q or "volume" in q:
+            return "area"
         return "line"
 
-    if n_num == 1 and n_cat == 1:
-        n_unique = df[text_cols[0]].nunique()
-        if n_unique <= 8:
-            return "bar"
+    # Single categorical + single numeric
+    if n_num == 1 and n_cat >= 1:
+        # Check label length: long labels look much better in horizontal bars
+        first_cat = text_cols[0]
+        max_label_len = df[first_cat].astype(str).str.len().max() if len(df) > 0 else 0
+        if max_label_len > 16 or any(kw in q for kw in ["top", "rank", "lowest", "bottom"]):
+            return "horizontal_bar"
         return "bar"
 
+    # Multiple numeric columns without category -> correlation or scatter
     if n_num >= 2 and n_cat == 0:
+        if n_num > 2 or "heatmap" in q or "matrix" in q:
+            return "heatmap"
         return "scatter"
 
+    # Multiple numeric columns with categories -> grouped bar
     if n_num >= 2 and n_cat >= 1:
         return "grouped_bar"
 
+    # Single numeric column -> histogram or box
     if n_num == 1 and n_cat == 0:
         return "histogram"
 
@@ -84,18 +110,9 @@ async def visualizer_node(state: AgentState) -> dict[str, Any]:
             }
 
         stats = state.get("stats") or {}
-        question = state.get("question", "").lower()
+        question = state.get("question", "")
 
-        chart_type = _select_chart_type(df, stats)
-
-        # Override for pie if question mentions "share" / "proportion" / "breakdown"
-        share_keywords = ["share", "proportion", "breakdown", "distribution", "percent", "pie"]
-        if any(kw in question for kw in share_keywords):
-            cols = list(df.columns)
-            numeric = df.select_dtypes(include=[np.number]).columns.tolist()
-            text_cols = df.select_dtypes(include=["object"]).columns.tolist()
-            if text_cols and numeric and df[text_cols[0]].nunique() <= 8:
-                chart_type = "pie"
+        chart_type = _select_chart_type(df, stats, question)
 
         fig = _build_chart(df, chart_type, state)
 
@@ -130,57 +147,91 @@ async def visualizer_node(state: AgentState) -> dict[str, Any]:
 def _build_chart(df: pd.DataFrame, chart_type: str, state: AgentState) -> go.Figure:
     """Build a Plotly figure for the given chart type."""
     question = state.get("question", "")
-    table_name = state.get("table_name", "Result")
 
     cols = list(df.columns)
     numeric = df.select_dtypes(include=[np.number]).columns.tolist()
     text_cols = df.select_dtypes(include=["object", "category"]).columns.tolist()
 
-    # Preview limited rows for chart (chart itself handles display)
-    chart_df = df.head(100)  # chart shows top 100 for readability
+    # Preview limited rows for chart performance
+    chart_df = df.head(100)
+
+    title_text = question[:80] if question else "Analysis Result"
 
     if chart_type == "bar":
         x_col = text_cols[0] if text_cols else cols[0]
         y_col = numeric[-1] if numeric else cols[-1]
-        fig = px.bar(chart_df, x=x_col, y=y_col, title=question[:80])
+        fig = px.bar(chart_df, x=x_col, y=y_col, title=title_text)
+
+    elif chart_type == "horizontal_bar":
+        cat_col = text_cols[0] if text_cols else cols[0]
+        num_col = numeric[-1] if numeric else cols[-1]
+        # Sort ascending so top rank is at the top of horizontal chart
+        sorted_df = chart_df.sort_values(num_col, ascending=True)
+        fig = px.bar(sorted_df, x=num_col, y=cat_col, orientation="h", title=title_text)
 
     elif chart_type == "line":
-        # Sort by x-axis for time series
         date_cols = [c for c in cols if any(
-            kw in c.lower() for kw in ["date", "month", "year", "quarter", "week", "period", "time"]
+            kw in c.lower() for kw in ["date", "month", "year", "quarter", "week", "period", "time", "day"]
         )]
         x_col = date_cols[0] if date_cols else (text_cols[0] if text_cols else cols[0])
         y_col = numeric[-1] if numeric else cols[-1]
         sorted_df = chart_df.sort_values(x_col)
-        fig = px.line(sorted_df, x=x_col, y=y_col, title=question[:80], markers=True)
+        fig = px.line(sorted_df, x=x_col, y=y_col, title=title_text, markers=True)
+
+    elif chart_type == "area":
+        date_cols = [c for c in cols if any(
+            kw in c.lower() for kw in ["date", "month", "year", "quarter", "week", "period", "time", "day"]
+        )]
+        x_col = date_cols[0] if date_cols else (text_cols[0] if text_cols else cols[0])
+        y_col = numeric[-1] if numeric else cols[-1]
+        sorted_df = chart_df.sort_values(x_col)
+        fig = px.area(sorted_df, x=x_col, y=y_col, title=title_text)
 
     elif chart_type == "pie":
         name_col = text_cols[0] if text_cols else cols[0]
         val_col = numeric[-1] if numeric else cols[-1]
-        fig = px.pie(chart_df, names=name_col, values=val_col, title=question[:80])
+        fig = px.pie(chart_df, names=name_col, values=val_col, title=title_text, hole=0.35)
 
     elif chart_type == "scatter":
         x_col = numeric[0] if len(numeric) >= 2 else cols[0]
         y_col = numeric[1] if len(numeric) >= 2 else cols[1]
         color_col = text_cols[0] if text_cols else None
-        fig = px.scatter(chart_df, x=x_col, y=y_col, color=color_col, title=question[:80])
+        fig = px.scatter(chart_df, x=x_col, y=y_col, color=color_col, title=title_text)
+
+    elif chart_type == "box":
+        y_col = numeric[0] if numeric else cols[0]
+        x_col = text_cols[0] if text_cols else None
+        fig = px.box(chart_df, x=x_col, y=y_col, title=title_text, points="outliers")
 
     elif chart_type == "histogram":
         col = numeric[0] if numeric else cols[0]
-        fig = px.histogram(chart_df, x=col, title=question[:80])
+        fig = px.histogram(chart_df, x=col, title=title_text, marginal="box")
+
+    elif chart_type == "heatmap":
+        if len(numeric) >= 2:
+            corr = chart_df[numeric].corr().round(2)
+            fig = px.imshow(
+                corr,
+                text_auto=True,
+                aspect="auto",
+                color_continuous_scale="Viridis",
+                title=f"Correlation Heatmap — {title_text}",
+            )
+        else:
+            fig = px.bar(chart_df, x=cols[0], y=cols[-1], title=title_text)
 
     elif chart_type == "grouped_bar":
         x_col = text_cols[0] if text_cols else cols[0]
         fig = go.Figure()
-        for num_col in numeric[:5]:  # max 5 series
+        for num_col in numeric[:5]:
             fig.add_trace(go.Bar(name=num_col, x=chart_df[x_col], y=chart_df[num_col]))
-        fig.update_layout(barmode="group", title=question[:80])
+        fig.update_layout(barmode="group", title=title_text)
 
     else:
-        # Fallback: simple bar
+        # Fallback
         x_col = cols[0]
         y_col = numeric[0] if numeric else cols[min(1, len(cols) - 1)]
-        fig = px.bar(chart_df, x=x_col, y=y_col, title=question[:80])
+        fig = px.bar(chart_df, x=x_col, y=y_col, title=title_text)
 
     return fig
 

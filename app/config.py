@@ -32,16 +32,16 @@ class Settings(BaseSettings):
     # ── LLM ─────────────────────────────────────────────────────────────────
     ollama_base_url: str = "http://127.0.0.1:11434"
     llm_model: str = "qwen2.5-coder:7b"
-    llm_fallback_model: str = "qwen2.5-coder:3b"
+    llm_fallback_model: str = "openai/gpt-oss-20b"      # Groq fallback if primary unavailable
     llm_provider: str = "auto"
     groq_base_url: str = "https://api.groq.com/openai/v1"
     groq_api_key: str = ""
-    groq_model: str = "openai/gpt-oss-120b"
+    groq_model: str = "openai/gpt-oss-120b"              # Primary Groq reasoning model
     llm_embed_model: str = "nomic-embed-text"
-    llm_num_ctx: int = 4096
+    llm_num_ctx: int = 8192
     llm_temperature_sql: float = 0.0
-    llm_temperature_insight: float = 0.2
-    llm_timeout_sec: int = 120
+    llm_temperature_insight: float = 0.15   # Lower = more factual, fewer hallucinations
+    llm_timeout_sec: int = 180
     llm_auto_fallback: bool = True
 
     # ── MySQL ────────────────────────────────────────────────────────────────

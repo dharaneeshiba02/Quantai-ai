@@ -270,7 +270,7 @@ export const api = {
         'GET',
         `/api/sources/${id}/preview?page=${page}&page_size=100`,
       ),
-    delete: (id: string) => request<{ status: string }>('DELETE', `/api/uploads/${id}`),
+    delete: (id: string) => request<{ status: string }>('DELETE', `/api/sources/${encodeURIComponent(id)}`),
   },
 
   upload: (file: File, onProgress?: (pct: number) => void) =>

@@ -14,9 +14,14 @@ from app.graph.state import AgentState
 log = logging.getLogger(__name__)
 
 _IDENTIFIER = re.compile(r"^[A-Za-z0-9_]+$")
-_METRIC_HINTS = ("rating", "score", "revenue", "sales", "cost", "price", "amount", "votes", "quantity", "count")
-_DIMENSION_HINTS = ("city", "country", "region", "category", "cuisine", "type", "status", "segment", "currency", "booking", "delivery")
-_EXCLUDED_HINTS = ("address", "email", "phone", "latitude", "longitude", "postcode", "postal", "description", "verbose", "url")
+_METRIC_HINTS = ("revenue", "sales", "cost", "price", "amount", "quantity", "count", "total",
+                 "score", "rating", "profit", "salary", "income", "weight", "volume", "votes",
+                 "value", "val", "measure", "metric", "expenditure", "surplus", "assets")
+_DIMENSION_HINTS = ("category", "type", "status", "segment", "group", "class", "level", "tier",
+                    "department", "region", "city", "country", "state", "channel", "source",
+                    "gender", "grade", "brand", "currency")
+_EXCLUDED_HINTS = ("address", "email", "phone", "latitude", "longitude", "postcode", "postal",
+                   "description", "verbose", "url", "year", "yr", "period", "row_id", "_row_id")
 
 
 def _quote(identifier: str) -> str:
@@ -63,6 +68,8 @@ async def data_summary_node(state: AgentState) -> dict[str, Any]:
             if c.get("col_type") in ("int", "float")
             and not c.get("is_key_col")
             and not c.get("is_pii")
+            and not c.get("is_date_col")
+            and c.get("unit") != "year"
             and not any(hint in c["safe_name"].lower() for hint in _EXCLUDED_HINTS)
         ]
         metrics.sort(

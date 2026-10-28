@@ -1,0 +1,601 @@
+patient_id,department,primary_diagnosis,age,systolic_bp,cholesterol_mg_dl,length_of_stay_days,readmitted_30_days
+PAT-00001,Neurology,Migraine,60,140,226,8,No
+PAT-00002,Neurology,Migraine,43,136,181,14,No
+PAT-00003,Orthopedics,Arrhythmia,55,150,196,11,No
+PAT-00004,Orthopedics,Arrhythmia,59,114,259,10,No
+PAT-00005,Pediatrics,Hypertension,22,107,269,12,No
+PAT-00006,Cardiology,Hypertension,28,137,159,12,No
+PAT-00007,Neurology,Asthma,82,155,246,3,No
+PAT-00008,Cardiology,Asthma,51,146,154,10,No
+PAT-00009,Oncology,Migraine,18,109,226,7,No
+PAT-00010,Neurology,Migraine,19,177,150,12,No
+PAT-00011,Cardiology,Type 2 Diabetes,37,148,216,4,No
+PAT-00012,Pediatrics,Type 2 Diabetes,78,140,164,5,No
+PAT-00013,Pediatrics,Hypertension,38,129,242,9,Yes
+PAT-00014,Neurology,Asthma,85,104,179,7,No
+PAT-00015,Oncology,Hypertension,29,170,252,4,No
+PAT-00016,Pediatrics,Hypertension,39,130,231,6,No
+PAT-00017,Pediatrics,Asthma,37,151,224,10,No
+PAT-00018,Oncology,Type 2 Diabetes,18,122,209,14,No
+PAT-00019,Cardiology,Asthma,47,147,189,11,No
+PAT-00020,Pediatrics,Arrhythmia,41,139,223,7,No
+PAT-00021,Orthopedics,Arrhythmia,31,105,270,13,No
+PAT-00022,Pediatrics,Arrhythmia,53,137,152,10,No
+PAT-00023,Cardiology,Migraine,86,140,185,13,No
+PAT-00024,Cardiology,Type 2 Diabetes,41,126,192,9,No
+PAT-00025,Neurology,Type 2 Diabetes,77,174,264,4,No
+PAT-00026,Orthopedics,Migraine,72,168,258,10,No
+PAT-00027,Cardiology,Hypertension,41,156,239,3,No
+PAT-00028,Oncology,Arrhythmia,41,116,233,8,No
+PAT-00029,Orthopedics,Arrhythmia,71,170,226,1,No
+PAT-00030,Orthopedics,Hypertension,43,146,154,9,No
+PAT-00031,Oncology,Asthma,83,178,227,13,No
+PAT-00032,Pediatrics,Asthma,55,112,240,1,No
+PAT-00033,Oncology,Type 2 Diabetes,82,110,236,2,No
+PAT-00034,Oncology,Migraine,68,123,163,13,No
+PAT-00035,Pediatrics,Type 2 Diabetes,52,172,253,8,No
+PAT-00036,Pediatrics,Asthma,60,103,232,9,No
+PAT-00037,Pediatrics,Hypertension,46,145,203,7,No
+PAT-00038,Pediatrics,Type 2 Diabetes,54,117,244,3,No
+PAT-00039,Pediatrics,Arrhythmia,75,142,158,7,No
+PAT-00040,Oncology,Arrhythmia,71,179,202,6,No
+PAT-00041,Neurology,Hypertension,56,132,226,2,No
+PAT-00042,Neurology,Asthma,59,109,209,3,No
+PAT-00043,Cardiology,Arrhythmia,45,172,195,11,No
+PAT-00044,Neurology,Arrhythmia,46,158,203,13,No
+PAT-00045,Neurology,Migraine,60,130,223,12,No
+PAT-00046,Oncology,Type 2 Diabetes,20,127,261,13,No
+PAT-00047,Pediatrics,Asthma,27,159,244,10,Yes
+PAT-00048,Pediatrics,Type 2 Diabetes,76,102,172,10,No
+PAT-00049,Oncology,Asthma,31,154,176,13,No
+PAT-00050,Neurology,Arrhythmia,64,113,219,12,No
+PAT-00051,Oncology,Migraine,59,157,258,5,No
+PAT-00052,Cardiology,Type 2 Diabetes,49,114,226,10,No
+PAT-00053,Pediatrics,Arrhythmia,49,101,199,4,No
+PAT-00054,Orthopedics,Asthma,59,123,273,2,No
+PAT-00055,Cardiology,Type 2 Diabetes,49,177,168,4,Yes
+PAT-00056,Cardiology,Type 2 Diabetes,43,163,150,12,No
+PAT-00057,Oncology,Arrhythmia,18,170,189,8,No
+PAT-00058,Neurology,Type 2 Diabetes,73,123,171,5,No
+PAT-00059,Pediatrics,Migraine,19,126,261,5,Yes
+PAT-00060,Orthopedics,Migraine,47,136,189,13,No
+PAT-00061,Cardiology,Arrhythmia,69,138,187,12,No
+PAT-00062,Orthopedics,Asthma,26,162,197,12,Yes
+PAT-00063,Neurology,Arrhythmia,39,178,224,10,Yes
+PAT-00064,Neurology,Migraine,51,125,256,3,No
+PAT-00065,Orthopedics,Hypertension,66,164,157,13,No
+PAT-00066,Pediatrics,Hypertension,18,103,235,8,No
+PAT-00067,Neurology,Type 2 Diabetes,70,128,217,6,Yes
+PAT-00068,Orthopedics,Type 2 Diabetes,57,100,224,2,No
+PAT-00069,Cardiology,Hypertension,62,149,239,2,No
+PAT-00070,Orthopedics,Migraine,85,110,279,9,No
+PAT-00071,Orthopedics,Type 2 Diabetes,26,173,229,13,No
+PAT-00072,Oncology,Arrhythmia,39,158,244,7,No
+PAT-00073,Neurology,Arrhythmia,35,161,219,10,No
+PAT-00074,Pediatrics,Migraine,60,135,239,9,No
+PAT-00075,Pediatrics,Type 2 Diabetes,56,155,208,14,No
+PAT-00076,Oncology,Arrhythmia,23,120,177,6,No
+PAT-00077,Pediatrics,Type 2 Diabetes,65,112,221,5,No
+PAT-00078,Orthopedics,Type 2 Diabetes,24,108,163,12,No
+PAT-00079,Oncology,Arrhythmia,86,110,173,1,No
+PAT-00080,Cardiology,Hypertension,33,174,261,12,No
+PAT-00081,Neurology,Arrhythmia,18,169,193,6,No
+PAT-00082,Neurology,Migraine,54,100,205,6,No
+PAT-00083,Neurology,Asthma,54,169,269,3,No
+PAT-00084,Orthopedics,Arrhythmia,81,176,181,3,Yes
+PAT-00085,Cardiology,Type 2 Diabetes,79,155,174,3,No
+PAT-00086,Oncology,Type 2 Diabetes,78,130,265,3,Yes
+PAT-00087,Oncology,Arrhythmia,50,136,215,7,No
+PAT-00088,Neurology,Asthma,83,146,191,10,Yes
+PAT-00089,Cardiology,Arrhythmia,47,177,225,11,No
+PAT-00090,Cardiology,Asthma,37,146,187,2,Yes
+PAT-00091,Cardiology,Asthma,77,168,210,10,No
+PAT-00092,Pediatrics,Migraine,41,157,238,13,No
+PAT-00093,Pediatrics,Type 2 Diabetes,21,135,167,10,No
+PAT-00094,Neurology,Type 2 Diabetes,54,131,219,2,No
+PAT-00095,Cardiology,Asthma,21,163,231,3,No
+PAT-00096,Cardiology,Type 2 Diabetes,35,170,265,10,No
+PAT-00097,Oncology,Hypertension,83,141,229,12,No
+PAT-00098,Oncology,Asthma,65,147,164,7,No
+PAT-00099,Neurology,Type 2 Diabetes,50,173,162,3,No
+PAT-00100,Cardiology,Hypertension,75,129,268,7,No
+PAT-00101,Neurology,Migraine,45,120,192,9,No
+PAT-00102,Oncology,Type 2 Diabetes,52,159,206,11,No
+PAT-00103,Oncology,Hypertension,27,112,166,10,No
+PAT-00104,Pediatrics,Arrhythmia,82,100,181,12,No
+PAT-00105,Neurology,Arrhythmia,59,164,204,11,No
+PAT-00106,Neurology,Hypertension,26,132,162,4,No
+PAT-00107,Cardiology,Asthma,77,137,196,7,No
+PAT-00108,Cardiology,Asthma,32,124,236,9,No
+PAT-00109,Pediatrics,Type 2 Diabetes,74,125,211,14,Yes
+PAT-00110,Orthopedics,Arrhythmia,86,176,178,8,Yes
+PAT-00111,Orthopedics,Asthma,39,158,171,8,No
+PAT-00112,Orthopedics,Asthma,81,132,214,9,No
+PAT-00113,Neurology,Arrhythmia,58,140,178,14,No
+PAT-00114,Neurology,Migraine,73,129,197,5,No
+PAT-00115,Oncology,Asthma,40,156,154,14,No
+PAT-00116,Neurology,Hypertension,42,148,250,5,No
+PAT-00117,Neurology,Type 2 Diabetes,23,147,220,3,No
+PAT-00118,Neurology,Asthma,51,171,215,5,No
+PAT-00119,Pediatrics,Asthma,80,148,221,8,No
+PAT-00120,Neurology,Migraine,26,146,174,12,No
+PAT-00121,Cardiology,Hypertension,77,155,209,5,No
+PAT-00122,Cardiology,Type 2 Diabetes,66,164,189,4,No
+PAT-00123,Oncology,Asthma,68,111,156,8,No
+PAT-00124,Pediatrics,Type 2 Diabetes,77,168,195,7,No
+PAT-00125,Cardiology,Arrhythmia,87,105,235,14,No
+PAT-00126,Pediatrics,Asthma,54,164,170,14,No
+PAT-00127,Pediatrics,Asthma,48,124,150,6,No
+PAT-00128,Oncology,Arrhythmia,58,100,272,5,No
+PAT-00129,Pediatrics,Migraine,79,131,274,14,No
+PAT-00130,Neurology,Asthma,75,102,182,5,No
+PAT-00131,Pediatrics,Type 2 Diabetes,31,148,153,13,Yes
+PAT-00132,Oncology,Hypertension,53,118,152,10,No
+PAT-00133,Oncology,Type 2 Diabetes,53,159,240,2,No
+PAT-00134,Oncology,Migraine,25,128,201,13,No
+PAT-00135,Cardiology,Hypertension,43,149,177,4,No
+PAT-00136,Neurology,Type 2 Diabetes,53,101,219,8,No
+PAT-00137,Cardiology,Type 2 Diabetes,65,172,206,8,No
+PAT-00138,Orthopedics,Arrhythmia,45,155,257,11,Yes
+PAT-00139,Neurology,Migraine,85,116,173,1,No
+PAT-00140,Pediatrics,Arrhythmia,79,159,226,2,No
+PAT-00141,Oncology,Hypertension,68,135,225,5,No
+PAT-00142,Orthopedics,Arrhythmia,59,160,218,9,No
+PAT-00143,Neurology,Migraine,46,116,250,10,No
+PAT-00144,Cardiology,Asthma,27,148,241,11,No
+PAT-00145,Oncology,Asthma,56,175,241,12,No
+PAT-00146,Cardiology,Hypertension,18,159,179,13,No
+PAT-00147,Neurology,Asthma,56,119,167,11,No
+PAT-00148,Neurology,Arrhythmia,38,149,193,7,No
+PAT-00149,Orthopedics,Hypertension,82,102,248,10,No
+PAT-00150,Pediatrics,Migraine,32,142,270,5,No
+PAT-00151,Cardiology,Hypertension,21,156,264,1,No
+PAT-00152,Orthopedics,Hypertension,77,149,209,6,No
+PAT-00153,Oncology,Type 2 Diabetes,78,167,205,12,No
+PAT-00154,Pediatrics,Type 2 Diabetes,37,149,180,8,Yes
+PAT-00155,Orthopedics,Hypertension,27,136,250,7,No
+PAT-00156,Cardiology,Asthma,51,145,208,2,No
+PAT-00157,Neurology,Type 2 Diabetes,65,141,273,12,No
+PAT-00158,Oncology,Migraine,50,114,279,5,No
+PAT-00159,Cardiology,Arrhythmia,78,132,246,14,Yes
+PAT-00160,Pediatrics,Type 2 Diabetes,27,179,256,11,Yes
+PAT-00161,Pediatrics,Hypertension,71,110,167,4,No
+PAT-00162,Neurology,Asthma,82,119,220,9,No
+PAT-00163,Neurology,Arrhythmia,18,123,255,10,No
+PAT-00164,Oncology,Type 2 Diabetes,22,163,203,1,No
+PAT-00165,Oncology,Asthma,32,179,243,12,No
+PAT-00166,Neurology,Asthma,45,164,225,6,Yes
+PAT-00167,Neurology,Asthma,40,172,184,3,No
+PAT-00168,Pediatrics,Hypertension,34,175,160,11,No
+PAT-00169,Neurology,Migraine,30,116,210,9,No
+PAT-00170,Orthopedics,Asthma,31,160,193,5,Yes
+PAT-00171,Cardiology,Arrhythmia,28,114,270,13,No
+PAT-00172,Neurology,Type 2 Diabetes,45,150,217,6,No
+PAT-00173,Oncology,Arrhythmia,59,126,174,11,No
+PAT-00174,Orthopedics,Hypertension,78,173,233,9,No
+PAT-00175,Oncology,Hypertension,81,160,263,9,No
+PAT-00176,Orthopedics,Arrhythmia,48,157,150,8,No
+PAT-00177,Neurology,Migraine,27,130,235,9,No
+PAT-00178,Cardiology,Hypertension,25,111,211,4,No
+PAT-00179,Oncology,Hypertension,38,145,213,6,Yes
+PAT-00180,Orthopedics,Arrhythmia,76,130,275,5,Yes
+PAT-00181,Pediatrics,Hypertension,67,131,254,5,No
+PAT-00182,Neurology,Migraine,86,131,211,4,Yes
+PAT-00183,Cardiology,Migraine,87,152,184,2,No
+PAT-00184,Neurology,Migraine,47,160,162,12,No
+PAT-00185,Pediatrics,Type 2 Diabetes,34,145,192,6,No
+PAT-00186,Cardiology,Migraine,37,173,279,9,No
+PAT-00187,Pediatrics,Migraine,65,179,260,12,No
+PAT-00188,Neurology,Type 2 Diabetes,19,106,277,1,No
+PAT-00189,Orthopedics,Asthma,54,103,200,14,Yes
+PAT-00190,Neurology,Hypertension,18,151,194,7,No
+PAT-00191,Neurology,Migraine,21,130,191,6,No
+PAT-00192,Neurology,Hypertension,71,174,164,3,No
+PAT-00193,Oncology,Arrhythmia,42,135,209,1,No
+PAT-00194,Pediatrics,Hypertension,20,153,189,13,No
+PAT-00195,Pediatrics,Type 2 Diabetes,26,153,261,4,No
+PAT-00196,Pediatrics,Hypertension,51,116,226,14,No
+PAT-00197,Oncology,Hypertension,60,174,254,9,No
+PAT-00198,Orthopedics,Hypertension,39,129,256,2,No
+PAT-00199,Neurology,Asthma,87,121,271,3,No
+PAT-00200,Orthopedics,Asthma,19,142,229,2,No
+PAT-00201,Oncology,Arrhythmia,83,126,274,14,No
+PAT-00202,Pediatrics,Type 2 Diabetes,49,136,181,2,No
+PAT-00203,Neurology,Hypertension,33,145,257,10,No
+PAT-00204,Cardiology,Hypertension,18,134,263,11,No
+PAT-00205,Cardiology,Hypertension,65,103,217,11,Yes
+PAT-00206,Orthopedics,Hypertension,67,179,276,8,Yes
+PAT-00207,Pediatrics,Asthma,30,179,263,3,No
+PAT-00208,Cardiology,Arrhythmia,32,125,157,7,No
+PAT-00209,Orthopedics,Migraine,70,118,213,8,Yes
+PAT-00210,Oncology,Type 2 Diabetes,61,144,190,3,No
+PAT-00211,Orthopedics,Hypertension,25,125,189,2,No
+PAT-00212,Orthopedics,Arrhythmia,63,121,152,13,No
+PAT-00213,Orthopedics,Migraine,86,157,259,13,No
+PAT-00214,Neurology,Arrhythmia,36,162,263,8,No
+PAT-00215,Orthopedics,Asthma,55,127,261,3,No
+PAT-00216,Orthopedics,Migraine,28,164,153,7,No
+PAT-00217,Neurology,Arrhythmia,60,143,175,12,No
+PAT-00218,Neurology,Asthma,37,142,166,1,Yes
+PAT-00219,Oncology,Arrhythmia,37,136,241,14,No
+PAT-00220,Pediatrics,Arrhythmia,38,165,180,12,No
+PAT-00221,Cardiology,Migraine,74,116,256,6,No
+PAT-00222,Cardiology,Asthma,67,139,260,12,No
+PAT-00223,Orthopedics,Hypertension,43,137,250,12,No
+PAT-00224,Oncology,Type 2 Diabetes,47,160,261,13,Yes
+PAT-00225,Orthopedics,Migraine,48,108,211,9,No
+PAT-00226,Cardiology,Asthma,59,176,261,12,Yes
+PAT-00227,Neurology,Arrhythmia,85,174,265,3,No
+PAT-00228,Pediatrics,Asthma,78,160,184,14,No
+PAT-00229,Oncology,Type 2 Diabetes,78,179,177,7,No
+PAT-00230,Neurology,Type 2 Diabetes,87,115,252,13,No
+PAT-00231,Pediatrics,Hypertension,85,101,274,6,No
+PAT-00232,Oncology,Hypertension,34,171,251,8,No
+PAT-00233,Oncology,Type 2 Diabetes,36,142,170,3,No
+PAT-00234,Cardiology,Migraine,68,141,201,3,No
+PAT-00235,Neurology,Migraine,87,176,246,4,No
+PAT-00236,Oncology,Arrhythmia,80,156,200,3,Yes
+PAT-00237,Oncology,Hypertension,47,166,232,9,Yes
+PAT-00238,Pediatrics,Arrhythmia,42,129,204,11,Yes
+PAT-00239,Cardiology,Hypertension,43,112,226,4,No
+PAT-00240,Orthopedics,Type 2 Diabetes,73,118,276,6,No
+PAT-00241,Cardiology,Migraine,39,106,242,8,No
+PAT-00242,Orthopedics,Migraine,36,108,237,11,No
+PAT-00243,Neurology,Type 2 Diabetes,48,153,229,13,Yes
+PAT-00244,Neurology,Arrhythmia,43,160,241,8,No
+PAT-00245,Oncology,Arrhythmia,59,101,196,5,No
+PAT-00246,Neurology,Asthma,58,149,187,5,No
+PAT-00247,Oncology,Hypertension,40,174,164,6,No
+PAT-00248,Cardiology,Arrhythmia,64,130,150,10,No
+PAT-00249,Neurology,Type 2 Diabetes,30,132,150,7,No
+PAT-00250,Cardiology,Arrhythmia,83,177,198,13,No
+PAT-00251,Cardiology,Migraine,83,179,245,13,No
+PAT-00252,Neurology,Hypertension,33,110,175,10,Yes
+PAT-00253,Cardiology,Asthma,45,132,236,14,No
+PAT-00254,Neurology,Hypertension,52,106,242,7,No
+PAT-00255,Neurology,Migraine,58,130,251,13,No
+PAT-00256,Neurology,Migraine,48,147,220,4,No
+PAT-00257,Orthopedics,Migraine,49,146,244,6,No
+PAT-00258,Cardiology,Migraine,71,177,267,7,No
+PAT-00259,Pediatrics,Type 2 Diabetes,76,152,268,5,No
+PAT-00260,Neurology,Asthma,58,179,200,5,No
+PAT-00261,Cardiology,Migraine,83,118,230,2,No
+PAT-00262,Oncology,Migraine,71,105,185,7,No
+PAT-00263,Neurology,Arrhythmia,57,148,216,12,No
+PAT-00264,Neurology,Asthma,45,172,278,6,No
+PAT-00265,Pediatrics,Hypertension,54,149,263,11,No
+PAT-00266,Orthopedics,Asthma,82,111,260,1,Yes
+PAT-00267,Orthopedics,Asthma,72,122,249,4,No
+PAT-00268,Neurology,Asthma,21,153,258,3,No
+PAT-00269,Cardiology,Migraine,27,168,269,12,No
+PAT-00270,Oncology,Migraine,64,158,228,3,No
+PAT-00271,Oncology,Type 2 Diabetes,31,135,168,7,No
+PAT-00272,Cardiology,Hypertension,55,102,276,11,No
+PAT-00273,Neurology,Arrhythmia,29,157,178,12,No
+PAT-00274,Oncology,Asthma,62,154,173,10,No
+PAT-00275,Orthopedics,Hypertension,34,156,159,4,No
+PAT-00276,Cardiology,Hypertension,52,116,254,12,No
+PAT-00277,Pediatrics,Type 2 Diabetes,83,138,204,8,No
+PAT-00278,Neurology,Arrhythmia,58,167,151,11,No
+PAT-00279,Cardiology,Asthma,84,154,260,9,Yes
+PAT-00280,Oncology,Arrhythmia,46,144,187,3,Yes
+PAT-00281,Neurology,Type 2 Diabetes,35,175,251,5,No
+PAT-00282,Orthopedics,Migraine,37,100,244,4,No
+PAT-00283,Neurology,Hypertension,31,120,241,14,No
+PAT-00284,Neurology,Asthma,51,120,220,12,No
+PAT-00285,Orthopedics,Migraine,66,151,173,10,No
+PAT-00286,Orthopedics,Type 2 Diabetes,71,142,217,6,No
+PAT-00287,Neurology,Arrhythmia,48,151,277,11,No
+PAT-00288,Orthopedics,Hypertension,75,166,242,10,No
+PAT-00289,Cardiology,Asthma,59,143,193,4,No
+PAT-00290,Orthopedics,Migraine,75,131,204,8,Yes
+PAT-00291,Orthopedics,Migraine,47,109,178,3,No
+PAT-00292,Neurology,Hypertension,42,163,186,11,No
+PAT-00293,Cardiology,Arrhythmia,80,178,264,5,No
+PAT-00294,Pediatrics,Type 2 Diabetes,36,168,152,13,No
+PAT-00295,Pediatrics,Arrhythmia,25,167,271,1,No
+PAT-00296,Oncology,Arrhythmia,20,127,192,13,Yes
+PAT-00297,Orthopedics,Arrhythmia,84,152,156,6,No
+PAT-00298,Orthopedics,Hypertension,34,150,274,11,No
+PAT-00299,Cardiology,Hypertension,31,152,198,5,No
+PAT-00300,Pediatrics,Type 2 Diabetes,26,103,270,8,No
+PAT-00301,Oncology,Arrhythmia,79,178,222,9,Yes
+PAT-00302,Cardiology,Hypertension,38,116,190,8,No
+PAT-00303,Orthopedics,Type 2 Diabetes,54,166,255,8,No
+PAT-00304,Pediatrics,Type 2 Diabetes,28,173,226,12,No
+PAT-00305,Oncology,Arrhythmia,37,146,276,14,Yes
+PAT-00306,Neurology,Asthma,52,155,240,13,No
+PAT-00307,Pediatrics,Arrhythmia,70,122,157,3,Yes
+PAT-00308,Oncology,Asthma,64,117,181,4,No
+PAT-00309,Cardiology,Type 2 Diabetes,69,100,213,11,No
+PAT-00310,Neurology,Hypertension,25,134,162,4,No
+PAT-00311,Oncology,Migraine,21,163,242,14,No
+PAT-00312,Oncology,Type 2 Diabetes,44,157,210,11,No
+PAT-00313,Orthopedics,Hypertension,61,158,157,5,Yes
+PAT-00314,Pediatrics,Type 2 Diabetes,57,100,178,13,No
+PAT-00315,Orthopedics,Arrhythmia,64,102,244,9,No
+PAT-00316,Neurology,Asthma,61,166,190,12,No
+PAT-00317,Oncology,Type 2 Diabetes,65,136,160,9,No
+PAT-00318,Orthopedics,Hypertension,69,128,151,10,No
+PAT-00319,Pediatrics,Arrhythmia,85,132,229,13,Yes
+PAT-00320,Neurology,Migraine,28,160,236,12,No
+PAT-00321,Cardiology,Arrhythmia,21,103,255,14,No
+PAT-00322,Orthopedics,Asthma,65,113,166,1,No
+PAT-00323,Neurology,Arrhythmia,43,132,172,14,Yes
+PAT-00324,Cardiology,Migraine,56,121,197,14,No
+PAT-00325,Orthopedics,Hypertension,75,147,169,8,No
+PAT-00326,Neurology,Type 2 Diabetes,36,102,151,14,Yes
+PAT-00327,Neurology,Asthma,75,122,237,1,No
+PAT-00328,Orthopedics,Migraine,45,167,180,2,No
+PAT-00329,Neurology,Asthma,83,120,279,7,No
+PAT-00330,Oncology,Arrhythmia,27,142,227,8,Yes
+PAT-00331,Orthopedics,Asthma,75,125,153,1,No
+PAT-00332,Neurology,Migraine,31,140,277,3,No
+PAT-00333,Cardiology,Type 2 Diabetes,32,137,180,7,No
+PAT-00334,Cardiology,Type 2 Diabetes,50,110,170,13,No
+PAT-00335,Oncology,Asthma,34,128,172,9,Yes
+PAT-00336,Orthopedics,Hypertension,41,159,178,8,No
+PAT-00337,Neurology,Asthma,47,166,254,8,No
+PAT-00338,Neurology,Arrhythmia,79,164,201,9,No
+PAT-00339,Cardiology,Type 2 Diabetes,30,160,264,10,No
+PAT-00340,Oncology,Type 2 Diabetes,79,118,250,3,No
+PAT-00341,Cardiology,Type 2 Diabetes,64,145,233,8,No
+PAT-00342,Cardiology,Hypertension,33,148,210,1,No
+PAT-00343,Oncology,Hypertension,83,121,274,8,No
+PAT-00344,Orthopedics,Migraine,60,177,220,13,No
+PAT-00345,Neurology,Asthma,25,156,219,7,No
+PAT-00346,Orthopedics,Asthma,20,113,257,13,No
+PAT-00347,Pediatrics,Arrhythmia,29,143,170,8,No
+PAT-00348,Pediatrics,Type 2 Diabetes,33,115,231,1,No
+PAT-00349,Pediatrics,Hypertension,76,176,237,6,Yes
+PAT-00350,Oncology,Arrhythmia,66,111,260,7,No
+PAT-00351,Cardiology,Arrhythmia,80,154,159,14,No
+PAT-00352,Orthopedics,Hypertension,79,150,161,11,No
+PAT-00353,Neurology,Asthma,66,138,156,5,No
+PAT-00354,Pediatrics,Type 2 Diabetes,68,132,263,14,No
+PAT-00355,Orthopedics,Asthma,50,132,175,5,No
+PAT-00356,Pediatrics,Arrhythmia,47,128,164,7,No
+PAT-00357,Pediatrics,Type 2 Diabetes,76,168,182,11,No
+PAT-00358,Neurology,Migraine,32,169,211,3,No
+PAT-00359,Oncology,Arrhythmia,40,130,196,6,No
+PAT-00360,Cardiology,Asthma,62,179,244,7,No
+PAT-00361,Oncology,Asthma,79,130,184,1,No
+PAT-00362,Orthopedics,Asthma,32,145,225,12,No
+PAT-00363,Oncology,Hypertension,63,176,272,2,No
+PAT-00364,Orthopedics,Arrhythmia,81,151,232,12,No
+PAT-00365,Orthopedics,Type 2 Diabetes,63,109,174,4,No
+PAT-00366,Cardiology,Asthma,73,173,206,13,No
+PAT-00367,Neurology,Asthma,61,140,181,8,No
+PAT-00368,Cardiology,Hypertension,46,176,212,11,No
+PAT-00369,Oncology,Type 2 Diabetes,79,102,161,13,No
+PAT-00370,Orthopedics,Arrhythmia,69,158,212,14,No
+PAT-00371,Pediatrics,Migraine,71,151,226,10,No
+PAT-00372,Pediatrics,Hypertension,74,133,241,6,No
+PAT-00373,Orthopedics,Arrhythmia,83,148,150,1,No
+PAT-00374,Cardiology,Migraine,39,127,219,10,No
+PAT-00375,Neurology,Asthma,37,112,235,5,No
+PAT-00376,Cardiology,Asthma,50,168,188,7,No
+PAT-00377,Orthopedics,Type 2 Diabetes,42,166,172,13,No
+PAT-00378,Orthopedics,Migraine,63,160,217,6,No
+PAT-00379,Neurology,Asthma,74,159,153,13,No
+PAT-00380,Oncology,Asthma,22,170,275,13,No
+PAT-00381,Oncology,Type 2 Diabetes,72,123,170,12,No
+PAT-00382,Neurology,Arrhythmia,78,162,254,9,No
+PAT-00383,Oncology,Asthma,25,160,215,8,No
+PAT-00384,Pediatrics,Hypertension,33,122,156,4,No
+PAT-00385,Oncology,Hypertension,65,129,198,13,No
+PAT-00386,Oncology,Arrhythmia,78,159,165,11,No
+PAT-00387,Oncology,Migraine,32,117,233,12,No
+PAT-00388,Pediatrics,Type 2 Diabetes,82,155,236,5,Yes
+PAT-00389,Oncology,Hypertension,39,152,247,7,No
+PAT-00390,Pediatrics,Hypertension,20,106,224,8,No
+PAT-00391,Neurology,Arrhythmia,71,168,183,5,No
+PAT-00392,Cardiology,Migraine,31,171,175,9,No
+PAT-00393,Neurology,Migraine,53,178,215,14,Yes
+PAT-00394,Cardiology,Arrhythmia,84,151,274,10,Yes
+PAT-00395,Neurology,Hypertension,27,103,212,12,No
+PAT-00396,Cardiology,Type 2 Diabetes,66,133,236,4,No
+PAT-00397,Cardiology,Hypertension,82,168,190,4,No
+PAT-00398,Orthopedics,Migraine,74,132,247,13,No
+PAT-00399,Cardiology,Hypertension,44,168,273,8,No
+PAT-00400,Cardiology,Type 2 Diabetes,22,137,228,1,No
+PAT-00401,Orthopedics,Asthma,74,125,159,8,No
+PAT-00402,Oncology,Hypertension,32,100,164,5,Yes
+PAT-00403,Oncology,Arrhythmia,47,103,191,13,No
+PAT-00404,Orthopedics,Asthma,37,138,242,14,No
+PAT-00405,Pediatrics,Arrhythmia,54,153,166,11,No
+PAT-00406,Cardiology,Arrhythmia,20,132,158,1,No
+PAT-00407,Cardiology,Arrhythmia,58,132,263,4,No
+PAT-00408,Orthopedics,Hypertension,56,171,185,2,Yes
+PAT-00409,Orthopedics,Migraine,43,119,185,4,No
+PAT-00410,Pediatrics,Asthma,19,115,197,8,No
+PAT-00411,Oncology,Type 2 Diabetes,40,120,200,5,No
+PAT-00412,Neurology,Migraine,40,144,246,1,No
+PAT-00413,Oncology,Hypertension,33,161,268,7,No
+PAT-00414,Cardiology,Arrhythmia,26,130,244,1,No
+PAT-00415,Orthopedics,Type 2 Diabetes,30,141,219,9,Yes
+PAT-00416,Pediatrics,Asthma,45,111,223,3,No
+PAT-00417,Oncology,Migraine,44,164,229,12,Yes
+PAT-00418,Pediatrics,Migraine,68,172,217,3,No
+PAT-00419,Oncology,Type 2 Diabetes,81,102,226,6,No
+PAT-00420,Cardiology,Hypertension,69,108,265,10,No
+PAT-00421,Neurology,Asthma,55,150,155,6,No
+PAT-00422,Pediatrics,Type 2 Diabetes,82,115,224,13,Yes
+PAT-00423,Pediatrics,Arrhythmia,35,177,237,11,Yes
+PAT-00424,Neurology,Asthma,80,102,152,11,No
+PAT-00425,Pediatrics,Migraine,68,123,201,6,No
+PAT-00426,Pediatrics,Type 2 Diabetes,26,172,223,13,No
+PAT-00427,Oncology,Migraine,30,112,274,1,Yes
+PAT-00428,Oncology,Migraine,57,101,214,5,No
+PAT-00429,Neurology,Migraine,72,170,201,12,No
+PAT-00430,Cardiology,Hypertension,60,120,225,6,No
+PAT-00431,Pediatrics,Migraine,61,118,238,8,No
+PAT-00432,Cardiology,Arrhythmia,85,146,221,13,No
+PAT-00433,Neurology,Arrhythmia,50,121,217,1,No
+PAT-00434,Neurology,Asthma,41,174,264,5,Yes
+PAT-00435,Oncology,Migraine,53,132,206,3,No
+PAT-00436,Pediatrics,Migraine,27,131,215,2,No
+PAT-00437,Orthopedics,Type 2 Diabetes,37,163,239,11,No
+PAT-00438,Neurology,Hypertension,29,138,199,8,No
+PAT-00439,Pediatrics,Asthma,79,171,163,7,No
+PAT-00440,Cardiology,Migraine,35,141,165,10,No
+PAT-00441,Oncology,Type 2 Diabetes,80,108,191,7,No
+PAT-00442,Cardiology,Hypertension,42,124,259,5,No
+PAT-00443,Neurology,Asthma,29,101,171,12,No
+PAT-00444,Neurology,Asthma,38,118,217,13,No
+PAT-00445,Cardiology,Migraine,42,119,168,9,Yes
+PAT-00446,Neurology,Asthma,28,169,215,5,No
+PAT-00447,Pediatrics,Type 2 Diabetes,81,116,222,2,No
+PAT-00448,Neurology,Asthma,67,167,203,3,No
+PAT-00449,Oncology,Arrhythmia,79,102,261,4,No
+PAT-00450,Pediatrics,Type 2 Diabetes,66,150,167,5,No
+PAT-00451,Orthopedics,Hypertension,31,125,266,13,No
+PAT-00452,Neurology,Hypertension,18,155,234,3,No
+PAT-00453,Neurology,Migraine,42,163,188,12,No
+PAT-00454,Oncology,Migraine,76,107,254,14,No
+PAT-00455,Oncology,Arrhythmia,86,136,217,7,No
+PAT-00456,Cardiology,Hypertension,22,126,174,5,No
+PAT-00457,Cardiology,Hypertension,36,144,272,5,No
+PAT-00458,Cardiology,Hypertension,40,103,270,6,No
+PAT-00459,Oncology,Hypertension,26,136,210,7,No
+PAT-00460,Cardiology,Asthma,67,170,249,10,No
+PAT-00461,Cardiology,Type 2 Diabetes,33,132,200,10,No
+PAT-00462,Orthopedics,Type 2 Diabetes,50,130,247,8,No
+PAT-00463,Cardiology,Arrhythmia,19,154,151,9,No
+PAT-00464,Neurology,Asthma,31,111,154,11,No
+PAT-00465,Oncology,Hypertension,18,110,235,4,No
+PAT-00466,Pediatrics,Hypertension,75,171,217,5,Yes
+PAT-00467,Orthopedics,Migraine,33,131,158,5,No
+PAT-00468,Oncology,Migraine,64,156,242,8,No
+PAT-00469,Oncology,Arrhythmia,61,137,274,9,No
+PAT-00470,Neurology,Hypertension,31,159,210,7,No
+PAT-00471,Cardiology,Arrhythmia,41,118,200,5,Yes
+PAT-00472,Neurology,Asthma,72,155,159,3,No
+PAT-00473,Cardiology,Type 2 Diabetes,32,113,211,1,No
+PAT-00474,Cardiology,Hypertension,51,132,262,11,No
+PAT-00475,Oncology,Asthma,19,109,271,9,No
+PAT-00476,Cardiology,Hypertension,44,179,272,5,No
+PAT-00477,Orthopedics,Migraine,40,163,212,9,No
+PAT-00478,Orthopedics,Arrhythmia,85,163,260,10,No
+PAT-00479,Orthopedics,Migraine,31,161,238,12,No
+PAT-00480,Oncology,Type 2 Diabetes,80,167,200,13,No
+PAT-00481,Neurology,Migraine,82,142,253,14,No
+PAT-00482,Pediatrics,Hypertension,85,179,272,4,Yes
+PAT-00483,Cardiology,Migraine,80,158,197,5,No
+PAT-00484,Pediatrics,Hypertension,81,151,181,4,Yes
+PAT-00485,Neurology,Type 2 Diabetes,49,118,269,2,Yes
+PAT-00486,Neurology,Migraine,30,120,248,12,No
+PAT-00487,Oncology,Arrhythmia,83,121,223,1,No
+PAT-00488,Orthopedics,Arrhythmia,36,108,183,8,Yes
+PAT-00489,Orthopedics,Arrhythmia,41,108,219,4,No
+PAT-00490,Neurology,Migraine,28,172,259,5,No
+PAT-00491,Oncology,Migraine,76,126,165,6,No
+PAT-00492,Oncology,Migraine,32,116,208,14,No
+PAT-00493,Cardiology,Hypertension,27,143,168,8,No
+PAT-00494,Orthopedics,Type 2 Diabetes,58,144,244,11,No
+PAT-00495,Neurology,Arrhythmia,44,107,262,8,No
+PAT-00496,Pediatrics,Hypertension,77,179,190,7,Yes
+PAT-00497,Orthopedics,Arrhythmia,69,117,230,4,No
+PAT-00498,Cardiology,Hypertension,45,132,252,6,No
+PAT-00499,Oncology,Migraine,82,100,203,4,No
+PAT-00500,Neurology,Arrhythmia,34,175,244,14,No
+PAT-00501,Orthopedics,Migraine,61,105,211,7,No
+PAT-00502,Pediatrics,Arrhythmia,27,140,248,12,No
+PAT-00503,Cardiology,Asthma,80,154,242,13,No
+PAT-00504,Cardiology,Hypertension,64,104,214,12,No
+PAT-00505,Orthopedics,Asthma,55,158,217,13,No
+PAT-00506,Pediatrics,Hypertension,87,179,177,13,No
+PAT-00507,Cardiology,Type 2 Diabetes,70,117,167,11,Yes
+PAT-00508,Neurology,Arrhythmia,61,148,175,14,No
+PAT-00509,Cardiology,Type 2 Diabetes,71,164,253,1,No
+PAT-00510,Pediatrics,Type 2 Diabetes,37,153,204,5,No
+PAT-00511,Oncology,Hypertension,48,160,268,14,No
+PAT-00512,Oncology,Asthma,24,107,273,10,No
+PAT-00513,Orthopedics,Migraine,75,102,278,12,No
+PAT-00514,Pediatrics,Hypertension,27,124,157,10,No
+PAT-00515,Cardiology,Migraine,27,168,200,4,No
+PAT-00516,Cardiology,Type 2 Diabetes,56,154,234,11,No
+PAT-00517,Oncology,Migraine,45,139,174,7,No
+PAT-00518,Oncology,Asthma,47,149,232,13,No
+PAT-00519,Neurology,Hypertension,54,132,242,9,No
+PAT-00520,Oncology,Asthma,84,117,266,5,No
+PAT-00521,Neurology,Asthma,60,156,205,4,No
+PAT-00522,Cardiology,Hypertension,69,115,161,9,No
+PAT-00523,Neurology,Asthma,73,179,269,5,No
+PAT-00524,Neurology,Arrhythmia,85,137,220,9,No
+PAT-00525,Orthopedics,Arrhythmia,26,140,166,8,No
+PAT-00526,Oncology,Arrhythmia,40,106,271,4,No
+PAT-00527,Neurology,Migraine,80,177,273,11,No
+PAT-00528,Cardiology,Asthma,78,152,159,11,No
+PAT-00529,Pediatrics,Hypertension,57,162,180,7,No
+PAT-00530,Neurology,Hypertension,61,131,209,5,No
+PAT-00531,Oncology,Migraine,41,137,219,10,No
+PAT-00532,Orthopedics,Hypertension,68,121,166,4,No
+PAT-00533,Cardiology,Arrhythmia,75,115,199,5,No
+PAT-00534,Orthopedics,Asthma,50,151,186,5,No
+PAT-00535,Pediatrics,Hypertension,33,128,267,11,No
+PAT-00536,Neurology,Hypertension,39,115,229,9,Yes
+PAT-00537,Neurology,Type 2 Diabetes,74,175,160,12,No
+PAT-00538,Oncology,Type 2 Diabetes,79,116,272,9,No
+PAT-00539,Neurology,Type 2 Diabetes,87,163,184,6,No
+PAT-00540,Cardiology,Asthma,47,112,182,14,No
+PAT-00541,Pediatrics,Arrhythmia,40,171,167,4,Yes
+PAT-00542,Orthopedics,Arrhythmia,49,155,162,2,No
+PAT-00543,Pediatrics,Arrhythmia,74,104,239,14,No
+PAT-00544,Neurology,Asthma,26,111,259,3,No
+PAT-00545,Orthopedics,Asthma,48,140,150,2,No
+PAT-00546,Oncology,Type 2 Diabetes,26,102,212,5,No
+PAT-00547,Pediatrics,Hypertension,30,132,183,6,No
+PAT-00548,Orthopedics,Migraine,75,149,252,11,No
+PAT-00549,Orthopedics,Migraine,20,155,159,5,No
+PAT-00550,Orthopedics,Hypertension,52,108,277,2,No
+PAT-00551,Cardiology,Type 2 Diabetes,38,149,156,12,No
+PAT-00552,Pediatrics,Hypertension,81,128,205,5,No
+PAT-00553,Orthopedics,Hypertension,69,138,229,9,No
+PAT-00554,Pediatrics,Migraine,51,144,161,4,Yes
+PAT-00555,Orthopedics,Type 2 Diabetes,52,116,197,12,No
+PAT-00556,Oncology,Asthma,32,155,175,10,No
+PAT-00557,Oncology,Migraine,23,145,261,2,No
+PAT-00558,Oncology,Asthma,49,166,271,3,No
+PAT-00559,Neurology,Type 2 Diabetes,69,168,161,3,No
+PAT-00560,Orthopedics,Hypertension,45,113,191,9,No
+PAT-00561,Neurology,Arrhythmia,81,166,210,4,No
+PAT-00562,Pediatrics,Arrhythmia,36,122,207,1,Yes
+PAT-00563,Neurology,Type 2 Diabetes,32,160,183,1,No
+PAT-00564,Pediatrics,Arrhythmia,23,122,156,7,No
+PAT-00565,Pediatrics,Asthma,55,126,258,7,Yes
+PAT-00566,Pediatrics,Arrhythmia,43,153,184,2,No
+PAT-00567,Neurology,Type 2 Diabetes,68,109,164,9,No
+PAT-00568,Orthopedics,Type 2 Diabetes,70,176,174,9,No
+PAT-00569,Neurology,Asthma,73,115,208,5,No
+PAT-00570,Orthopedics,Arrhythmia,76,140,228,3,No
+PAT-00571,Orthopedics,Arrhythmia,87,154,235,3,No
+PAT-00572,Pediatrics,Hypertension,75,160,237,12,Yes
+PAT-00573,Neurology,Migraine,30,148,220,3,Yes
+PAT-00574,Orthopedics,Type 2 Diabetes,60,172,270,6,No
+PAT-00575,Oncology,Hypertension,68,151,242,4,No
+PAT-00576,Orthopedics,Type 2 Diabetes,36,101,245,8,No
+PAT-00577,Oncology,Hypertension,38,149,181,13,No
+PAT-00578,Neurology,Migraine,41,142,202,11,No
+PAT-00579,Neurology,Hypertension,43,176,208,13,No
+PAT-00580,Neurology,Type 2 Diabetes,62,107,218,11,No
+PAT-00581,Orthopedics,Arrhythmia,45,158,235,11,No
+PAT-00582,Cardiology,Type 2 Diabetes,46,164,167,5,No
+PAT-00583,Orthopedics,Asthma,34,111,230,1,No
+PAT-00584,Orthopedics,Asthma,85,103,263,9,No
+PAT-00585,Pediatrics,Asthma,61,176,173,1,No
+PAT-00586,Pediatrics,Asthma,78,140,215,6,No
+PAT-00587,Orthopedics,Migraine,85,106,211,1,No
+PAT-00588,Oncology,Arrhythmia,42,168,203,3,No
+PAT-00589,Pediatrics,Arrhythmia,84,168,186,10,No
+PAT-00590,Orthopedics,Type 2 Diabetes,19,129,186,5,No
+PAT-00591,Cardiology,Hypertension,66,172,184,10,No
+PAT-00592,Oncology,Type 2 Diabetes,87,105,273,7,No
+PAT-00593,Neurology,Type 2 Diabetes,43,118,167,14,No
+PAT-00594,Orthopedics,Type 2 Diabetes,44,179,271,10,No
+PAT-00595,Orthopedics,Type 2 Diabetes,35,165,197,8,Yes
+PAT-00596,Oncology,Arrhythmia,71,109,166,12,No
+PAT-00597,Pediatrics,Hypertension,18,115,206,9,No
+PAT-00598,Pediatrics,Type 2 Diabetes,78,136,157,6,No
+PAT-00599,Pediatrics,Arrhythmia,20,178,277,11,No
+PAT-00600,Neurology,Type 2 Diabetes,85,176,266,9,No

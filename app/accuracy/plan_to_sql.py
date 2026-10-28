@@ -283,7 +283,7 @@ def _compile_ranked_list(
     label = next(f["column"] for f in factors if f["kind"] == "label")
     score_parts = []
     factor_columns = [f["column"] for f in factors if f["kind"] != "label"]
-    weights = {"benefit": 0.45, "rating": 0.45, "popularity": 0.25, "cost": 0.20, "availability": 0.10}
+    weights = {"benefit": 0.45, "popularity": 0.25, "cost": 0.20, "availability": 0.10}
     total_weight = sum(weights.get(f["kind"], 0) for f in factors if f["kind"] != "label") or 1
 
     for factor in factors:

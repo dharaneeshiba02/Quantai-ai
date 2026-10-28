@@ -1,0 +1,801 @@
+order_id,category,item_price,quantity,discount_percent,customer_rating,order_status
+ECOM-000001,Apparel,658.78,5,30,1,Delivered
+ECOM-000002,Apparel,764.72,4,5,4,Delivered
+ECOM-000003,Electronics,291.65,2,20,5,Delivered
+ECOM-000004,Sports Equipment,843.33,7,10,3,Delivered
+ECOM-000005,Electronics,98.17,1,5,2,Delivered
+ECOM-000006,Home Goods,56.39,4,0,2,Delivered
+ECOM-000007,Home Goods,729.0,7,10,5,Delivered
+ECOM-000008,Apparel,789.05,3,15,1,Delivered
+ECOM-000009,Home Goods,87.91,4,5,1,Delivered
+ECOM-000010,Sports Equipment,107.05,1,30,2,Processing
+ECOM-000011,Beauty,39.8,6,20,5,Delivered
+ECOM-000012,Home Goods,99.58,5,5,2,Delivered
+ECOM-000013,Electronics,187.49,4,5,1,Delivered
+ECOM-000014,Sports Equipment,824.92,7,30,3,Delivered
+ECOM-000015,Home Goods,571.67,1,10,1,Cancelled
+ECOM-000016,Home Goods,664.43,7,15,3,Delivered
+ECOM-000017,Sports Equipment,662.4,1,30,4,Delivered
+ECOM-000018,Home Goods,460.39,2,15,5,Processing
+ECOM-000019,Beauty,680.3,6,30,4,Delivered
+ECOM-000020,Apparel,511.29,2,5,1,Delivered
+ECOM-000021,Sports Equipment,275.59,6,15,5,Cancelled
+ECOM-000022,Electronics,482.21,5,10,1,Delivered
+ECOM-000023,Home Goods,459.08,2,10,5,Delivered
+ECOM-000024,Apparel,702.05,5,20,5,Delivered
+ECOM-000025,Electronics,834.69,7,15,1,Delivered
+ECOM-000026,Electronics,356.45,3,20,1,Delivered
+ECOM-000027,Beauty,651.72,3,30,5,Delivered
+ECOM-000028,Apparel,95.6,6,0,5,Delivered
+ECOM-000029,Sports Equipment,662.98,6,10,1,Delivered
+ECOM-000030,Apparel,323.25,2,5,1,Delivered
+ECOM-000031,Apparel,45.01,3,10,2,Delivered
+ECOM-000032,Electronics,316.4,4,0,2,Processing
+ECOM-000033,Beauty,523.72,4,5,2,Delivered
+ECOM-000034,Beauty,111.93,7,15,4,Delivered
+ECOM-000035,Apparel,786.34,4,15,5,Delivered
+ECOM-000036,Apparel,77.09,7,10,3,Delivered
+ECOM-000037,Home Goods,791.35,3,5,4,Delivered
+ECOM-000038,Electronics,604.58,4,30,5,Delivered
+ECOM-000039,Sports Equipment,288.3,5,5,3,Delivered
+ECOM-000040,Sports Equipment,339.45,1,20,2,Delivered
+ECOM-000041,Beauty,632.8,6,0,3,Delivered
+ECOM-000042,Electronics,516.03,2,15,1,Delivered
+ECOM-000043,Beauty,574.84,7,10,1,Processing
+ECOM-000044,Sports Equipment,338.12,5,5,5,Delivered
+ECOM-000045,Apparel,420.79,4,15,4,In Transit
+ECOM-000046,Electronics,841.51,1,10,2,Processing
+ECOM-000047,Electronics,191.27,2,15,5,In Transit
+ECOM-000048,Home Goods,362.16,5,10,2,Processing
+ECOM-000049,Apparel,256.55,2,15,1,In Transit
+ECOM-000050,Apparel,653.16,7,30,4,Delivered
+ECOM-000051,Beauty,652.24,7,20,4,Delivered
+ECOM-000052,Electronics,257.07,6,0,1,Delivered
+ECOM-000053,Beauty,80.21,3,15,3,In Transit
+ECOM-000054,Apparel,21.58,7,0,4,Delivered
+ECOM-000055,Home Goods,370.2,4,15,3,Delivered
+ECOM-000056,Electronics,355.86,5,5,2,Delivered
+ECOM-000057,Apparel,840.27,5,20,4,In Transit
+ECOM-000058,Home Goods,405.69,1,30,1,Delivered
+ECOM-000059,Sports Equipment,226.88,1,20,3,Delivered
+ECOM-000060,Apparel,758.85,1,0,2,Delivered
+ECOM-000061,Sports Equipment,423.51,2,5,2,Delivered
+ECOM-000062,Beauty,514.11,4,10,4,Delivered
+ECOM-000063,Sports Equipment,92.17,2,20,4,Delivered
+ECOM-000064,Apparel,332.88,4,30,5,Delivered
+ECOM-000065,Sports Equipment,803.26,5,5,5,Cancelled
+ECOM-000066,Electronics,506.01,7,5,4,Delivered
+ECOM-000067,Apparel,300.69,7,0,5,Delivered
+ECOM-000068,Home Goods,536.31,2,30,1,Delivered
+ECOM-000069,Sports Equipment,774.92,2,5,1,Delivered
+ECOM-000070,Electronics,241.6,2,5,5,Delivered
+ECOM-000071,Beauty,435.29,3,10,4,Delivered
+ECOM-000072,Beauty,815.38,6,0,1,Processing
+ECOM-000073,Sports Equipment,156.47,4,0,2,Delivered
+ECOM-000074,Beauty,615.08,7,30,4,Delivered
+ECOM-000075,Home Goods,526.94,4,5,3,Cancelled
+ECOM-000076,Apparel,581.57,2,10,3,In Transit
+ECOM-000077,Electronics,306.32,3,15,4,Delivered
+ECOM-000078,Sports Equipment,275.03,2,20,5,Delivered
+ECOM-000079,Beauty,585.37,4,0,1,Processing
+ECOM-000080,Apparel,192.63,6,10,1,Processing
+ECOM-000081,Home Goods,363.67,7,30,4,Processing
+ECOM-000082,Beauty,169.69,6,10,2,Delivered
+ECOM-000083,Beauty,18.96,5,5,5,Delivered
+ECOM-000084,Electronics,824.91,3,20,2,Delivered
+ECOM-000085,Home Goods,373.77,6,0,4,Delivered
+ECOM-000086,Home Goods,824.31,3,15,4,Processing
+ECOM-000087,Sports Equipment,129.59,2,5,2,In Transit
+ECOM-000088,Electronics,504.21,5,0,3,Delivered
+ECOM-000089,Sports Equipment,180.42,4,30,4,Delivered
+ECOM-000090,Electronics,674.08,6,0,5,Delivered
+ECOM-000091,Home Goods,668.74,6,10,2,Delivered
+ECOM-000092,Electronics,106.36,1,20,3,Delivered
+ECOM-000093,Electronics,776.31,7,15,2,Delivered
+ECOM-000094,Electronics,175.1,4,20,3,Delivered
+ECOM-000095,Apparel,525.68,6,10,3,Delivered
+ECOM-000096,Apparel,837.96,6,15,5,Delivered
+ECOM-000097,Home Goods,751.45,4,15,4,Cancelled
+ECOM-000098,Electronics,813.6,5,5,3,Delivered
+ECOM-000099,Home Goods,299.1,3,15,4,In Transit
+ECOM-000100,Apparel,100.47,4,0,5,Delivered
+ECOM-000101,Electronics,169.83,3,20,4,Delivered
+ECOM-000102,Sports Equipment,431.41,5,30,1,Delivered
+ECOM-000103,Apparel,676.73,5,30,3,Delivered
+ECOM-000104,Apparel,137.83,2,20,5,Delivered
+ECOM-000105,Apparel,564.86,1,5,2,Delivered
+ECOM-000106,Electronics,283.16,5,15,5,Delivered
+ECOM-000107,Beauty,297.93,5,10,3,Delivered
+ECOM-000108,Sports Equipment,566.69,3,0,5,Delivered
+ECOM-000109,Sports Equipment,403.35,5,5,2,Delivered
+ECOM-000110,Home Goods,692.48,4,15,1,Delivered
+ECOM-000111,Electronics,142.66,2,30,3,Delivered
+ECOM-000112,Apparel,673.98,2,10,3,Delivered
+ECOM-000113,Beauty,65.83,4,15,5,Delivered
+ECOM-000114,Electronics,174.62,6,5,4,Cancelled
+ECOM-000115,Electronics,561.85,5,10,4,Delivered
+ECOM-000116,Beauty,728.43,7,10,2,In Transit
+ECOM-000117,Apparel,223.75,1,10,1,Delivered
+ECOM-000118,Electronics,286.19,5,10,1,Delivered
+ECOM-000119,Sports Equipment,462.11,2,15,5,Delivered
+ECOM-000120,Sports Equipment,189.3,1,10,5,Delivered
+ECOM-000121,Beauty,691.75,7,15,4,In Transit
+ECOM-000122,Apparel,660.31,6,10,1,Delivered
+ECOM-000123,Beauty,133.75,3,10,1,Delivered
+ECOM-000124,Electronics,400.69,3,5,1,In Transit
+ECOM-000125,Sports Equipment,661.31,7,15,2,Delivered
+ECOM-000126,Home Goods,294.68,5,30,2,Delivered
+ECOM-000127,Beauty,542.54,5,15,5,Delivered
+ECOM-000128,Home Goods,54.08,1,20,4,In Transit
+ECOM-000129,Home Goods,522.08,1,30,3,Delivered
+ECOM-000130,Sports Equipment,139.92,6,5,4,Processing
+ECOM-000131,Beauty,708.03,5,15,2,Delivered
+ECOM-000132,Home Goods,309.87,2,5,2,Delivered
+ECOM-000133,Electronics,247.94,3,30,5,Delivered
+ECOM-000134,Apparel,716.66,6,5,3,Delivered
+ECOM-000135,Apparel,54.02,1,5,1,Delivered
+ECOM-000136,Sports Equipment,344.36,2,0,3,Delivered
+ECOM-000137,Beauty,322.06,5,15,3,Processing
+ECOM-000138,Beauty,250.66,4,5,3,Delivered
+ECOM-000139,Apparel,776.05,1,0,5,Delivered
+ECOM-000140,Electronics,641.28,6,0,2,In Transit
+ECOM-000141,Apparel,65.57,4,10,1,Delivered
+ECOM-000142,Apparel,610.91,2,10,3,Delivered
+ECOM-000143,Beauty,453.88,7,30,1,Delivered
+ECOM-000144,Home Goods,766.93,3,15,3,Delivered
+ECOM-000145,Electronics,274.25,7,10,2,Delivered
+ECOM-000146,Beauty,493.15,7,30,1,In Transit
+ECOM-000147,Apparel,431.63,7,15,4,Delivered
+ECOM-000148,Home Goods,422.25,2,30,2,Delivered
+ECOM-000149,Electronics,394.22,3,0,1,Delivered
+ECOM-000150,Sports Equipment,184.32,2,0,3,Delivered
+ECOM-000151,Electronics,645.28,7,15,3,Delivered
+ECOM-000152,Electronics,390.22,1,30,2,Delivered
+ECOM-000153,Apparel,815.24,7,30,2,Delivered
+ECOM-000154,Apparel,230.56,1,10,3,In Transit
+ECOM-000155,Sports Equipment,584.14,6,10,1,Delivered
+ECOM-000156,Sports Equipment,800.32,7,15,4,Delivered
+ECOM-000157,Sports Equipment,567.98,4,20,5,Delivered
+ECOM-000158,Beauty,742.13,2,10,2,Delivered
+ECOM-000159,Beauty,705.43,7,5,3,In Transit
+ECOM-000160,Apparel,313.78,2,10,1,Delivered
+ECOM-000161,Apparel,514.9,7,20,2,Delivered
+ECOM-000162,Sports Equipment,142.95,4,30,1,Delivered
+ECOM-000163,Beauty,460.77,7,0,2,Delivered
+ECOM-000164,Home Goods,205.09,5,0,3,Delivered
+ECOM-000165,Beauty,635.25,6,30,1,Delivered
+ECOM-000166,Apparel,454.51,2,0,3,Processing
+ECOM-000167,Beauty,356.61,6,10,1,Delivered
+ECOM-000168,Apparel,237.25,2,0,2,Delivered
+ECOM-000169,Sports Equipment,848.91,2,20,5,Delivered
+ECOM-000170,Sports Equipment,72.09,5,20,5,Delivered
+ECOM-000171,Sports Equipment,48.5,7,10,4,Delivered
+ECOM-000172,Home Goods,194.06,1,30,4,Delivered
+ECOM-000173,Home Goods,825.76,6,5,3,Delivered
+ECOM-000174,Apparel,832.6,4,10,1,In Transit
+ECOM-000175,Electronics,560.83,6,0,4,Delivered
+ECOM-000176,Home Goods,749.53,7,10,2,In Transit
+ECOM-000177,Apparel,191.3,5,20,5,Delivered
+ECOM-000178,Beauty,826.57,3,10,1,Delivered
+ECOM-000179,Sports Equipment,131.65,3,10,5,Delivered
+ECOM-000180,Sports Equipment,96.74,5,5,1,Delivered
+ECOM-000181,Sports Equipment,106.03,7,20,4,Delivered
+ECOM-000182,Apparel,492.28,5,15,4,Delivered
+ECOM-000183,Sports Equipment,666.46,1,15,3,Delivered
+ECOM-000184,Home Goods,319.27,6,20,1,Processing
+ECOM-000185,Beauty,831.48,7,15,2,Delivered
+ECOM-000186,Sports Equipment,376.04,6,0,4,Delivered
+ECOM-000187,Apparel,138.08,3,15,3,In Transit
+ECOM-000188,Beauty,402.48,7,0,4,Delivered
+ECOM-000189,Sports Equipment,581.03,4,20,5,Delivered
+ECOM-000190,Electronics,709.41,6,15,4,Delivered
+ECOM-000191,Sports Equipment,396.45,2,15,1,Delivered
+ECOM-000192,Home Goods,509.44,2,30,3,Delivered
+ECOM-000193,Beauty,236.03,1,0,1,Delivered
+ECOM-000194,Home Goods,553.28,7,0,2,In Transit
+ECOM-000195,Electronics,838.24,1,10,2,Delivered
+ECOM-000196,Electronics,53.11,7,5,4,Delivered
+ECOM-000197,Home Goods,754.91,3,15,3,Delivered
+ECOM-000198,Beauty,483.19,4,30,3,Delivered
+ECOM-000199,Electronics,223.26,4,5,3,In Transit
+ECOM-000200,Electronics,812.2,5,30,3,Delivered
+ECOM-000201,Sports Equipment,417.05,1,5,4,Delivered
+ECOM-000202,Apparel,289.96,7,15,1,Delivered
+ECOM-000203,Electronics,164.1,6,30,4,Delivered
+ECOM-000204,Beauty,216.85,2,0,1,Delivered
+ECOM-000205,Beauty,709.93,6,10,5,Delivered
+ECOM-000206,Sports Equipment,526.88,2,30,5,Delivered
+ECOM-000207,Beauty,777.3,3,20,1,Delivered
+ECOM-000208,Sports Equipment,206.39,2,15,4,Delivered
+ECOM-000209,Electronics,113.51,6,15,2,Delivered
+ECOM-000210,Electronics,17.1,6,20,4,Delivered
+ECOM-000211,Electronics,437.59,4,5,2,Processing
+ECOM-000212,Electronics,848.58,7,10,4,Delivered
+ECOM-000213,Apparel,594.38,4,5,3,Processing
+ECOM-000214,Apparel,270.43,1,20,3,Delivered
+ECOM-000215,Electronics,746.81,6,20,5,Delivered
+ECOM-000216,Beauty,667.08,7,10,5,Delivered
+ECOM-000217,Sports Equipment,24.92,3,20,1,Delivered
+ECOM-000218,Home Goods,696.53,2,20,2,Delivered
+ECOM-000219,Sports Equipment,263.84,1,30,3,Delivered
+ECOM-000220,Home Goods,137.43,5,10,4,Delivered
+ECOM-000221,Home Goods,201.67,5,15,1,Delivered
+ECOM-000222,Electronics,404.67,7,5,4,Delivered
+ECOM-000223,Home Goods,368.04,2,15,3,Delivered
+ECOM-000224,Electronics,254.09,2,15,3,Delivered
+ECOM-000225,Apparel,156.32,7,30,3,Delivered
+ECOM-000226,Beauty,650.75,2,5,3,Delivered
+ECOM-000227,Home Goods,841.71,4,15,4,Delivered
+ECOM-000228,Beauty,663.79,2,10,1,Delivered
+ECOM-000229,Electronics,260.0,5,5,3,Delivered
+ECOM-000230,Home Goods,217.15,2,0,5,Delivered
+ECOM-000231,Sports Equipment,194.4,6,30,1,Delivered
+ECOM-000232,Apparel,126.55,7,15,5,In Transit
+ECOM-000233,Apparel,474.02,3,20,4,Delivered
+ECOM-000234,Home Goods,519.33,5,5,3,Processing
+ECOM-000235,Apparel,603.21,3,0,1,Delivered
+ECOM-000236,Sports Equipment,582.02,5,20,3,In Transit
+ECOM-000237,Beauty,256.98,1,0,3,In Transit
+ECOM-000238,Sports Equipment,288.8,6,15,1,Delivered
+ECOM-000239,Apparel,583.11,5,20,3,Delivered
+ECOM-000240,Beauty,304.84,6,15,3,Delivered
+ECOM-000241,Sports Equipment,190.18,5,20,2,Delivered
+ECOM-000242,Electronics,325.69,3,5,2,Processing
+ECOM-000243,Electronics,240.01,3,10,1,Processing
+ECOM-000244,Beauty,86.01,7,10,1,Delivered
+ECOM-000245,Beauty,707.66,5,0,3,In Transit
+ECOM-000246,Beauty,726.91,5,30,5,In Transit
+ECOM-000247,Electronics,196.15,4,20,1,Delivered
+ECOM-000248,Sports Equipment,66.28,6,15,3,Delivered
+ECOM-000249,Beauty,631.14,6,30,5,Delivered
+ECOM-000250,Electronics,189.26,6,5,2,Delivered
+ECOM-000251,Beauty,341.7,6,5,1,Delivered
+ECOM-000252,Beauty,65.75,1,5,3,Delivered
+ECOM-000253,Beauty,201.61,1,10,2,Delivered
+ECOM-000254,Electronics,676.45,2,15,4,Delivered
+ECOM-000255,Sports Equipment,686.08,5,5,2,In Transit
+ECOM-000256,Electronics,185.54,5,5,3,Delivered
+ECOM-000257,Electronics,293.5,5,0,5,Delivered
+ECOM-000258,Beauty,124.49,5,20,4,Delivered
+ECOM-000259,Home Goods,74.16,6,20,4,Delivered
+ECOM-000260,Home Goods,843.44,6,20,4,Delivered
+ECOM-000261,Home Goods,561.39,1,30,1,Delivered
+ECOM-000262,Electronics,466.28,3,0,3,Delivered
+ECOM-000263,Beauty,653.49,4,10,4,Processing
+ECOM-000264,Home Goods,715.98,6,30,2,Delivered
+ECOM-000265,Apparel,688.03,6,0,5,Delivered
+ECOM-000266,Apparel,25.86,7,5,3,Delivered
+ECOM-000267,Apparel,168.55,6,15,2,In Transit
+ECOM-000268,Sports Equipment,560.81,3,30,1,Delivered
+ECOM-000269,Beauty,326.89,3,30,4,In Transit
+ECOM-000270,Electronics,835.32,1,5,2,Delivered
+ECOM-000271,Electronics,569.61,6,5,3,In Transit
+ECOM-000272,Beauty,813.59,7,15,2,Delivered
+ECOM-000273,Sports Equipment,180.81,4,20,1,Delivered
+ECOM-000274,Beauty,736.0,5,30,5,Delivered
+ECOM-000275,Sports Equipment,281.29,6,0,4,In Transit
+ECOM-000276,Home Goods,841.26,1,10,3,Delivered
+ECOM-000277,Home Goods,144.14,1,5,4,In Transit
+ECOM-000278,Sports Equipment,444.69,4,5,4,Delivered
+ECOM-000279,Beauty,676.4,7,10,4,Delivered
+ECOM-000280,Home Goods,374.55,2,0,2,Delivered
+ECOM-000281,Beauty,404.25,1,5,2,Delivered
+ECOM-000282,Home Goods,838.57,3,10,5,Delivered
+ECOM-000283,Beauty,368.41,3,5,1,Delivered
+ECOM-000284,Beauty,518.21,5,20,3,Delivered
+ECOM-000285,Apparel,57.7,1,20,2,In Transit
+ECOM-000286,Sports Equipment,717.77,7,5,4,Delivered
+ECOM-000287,Electronics,555.16,5,5,1,Delivered
+ECOM-000288,Sports Equipment,350.57,1,20,3,In Transit
+ECOM-000289,Beauty,25.55,4,5,3,Delivered
+ECOM-000290,Beauty,507.82,6,0,3,Delivered
+ECOM-000291,Sports Equipment,22.61,7,0,3,Delivered
+ECOM-000292,Beauty,13.01,1,15,5,Delivered
+ECOM-000293,Home Goods,528.29,7,0,3,Delivered
+ECOM-000294,Beauty,170.4,2,30,1,Delivered
+ECOM-000295,Sports Equipment,172.8,7,30,2,Cancelled
+ECOM-000296,Sports Equipment,559.44,7,30,1,Delivered
+ECOM-000297,Sports Equipment,57.0,3,5,4,Delivered
+ECOM-000298,Apparel,274.63,4,5,5,Delivered
+ECOM-000299,Apparel,137.22,6,10,5,Delivered
+ECOM-000300,Apparel,498.19,6,30,4,Delivered
+ECOM-000301,Apparel,566.56,3,30,1,In Transit
+ECOM-000302,Apparel,616.31,7,0,1,Delivered
+ECOM-000303,Apparel,225.88,6,20,4,Processing
+ECOM-000304,Apparel,86.79,5,20,3,Delivered
+ECOM-000305,Sports Equipment,77.94,4,15,3,Delivered
+ECOM-000306,Electronics,369.11,2,10,2,Delivered
+ECOM-000307,Apparel,804.62,3,20,1,Delivered
+ECOM-000308,Sports Equipment,194.46,1,15,1,Delivered
+ECOM-000309,Electronics,227.15,1,0,4,Processing
+ECOM-000310,Apparel,96.54,1,10,4,Delivered
+ECOM-000311,Electronics,519.47,4,10,3,Delivered
+ECOM-000312,Electronics,581.73,2,30,1,Cancelled
+ECOM-000313,Home Goods,550.78,6,5,1,Delivered
+ECOM-000314,Beauty,733.63,2,30,5,Delivered
+ECOM-000315,Home Goods,419.62,2,0,2,Delivered
+ECOM-000316,Electronics,124.68,3,30,2,Delivered
+ECOM-000317,Sports Equipment,254.52,4,10,3,In Transit
+ECOM-000318,Apparel,567.12,1,30,1,Delivered
+ECOM-000319,Beauty,525.8,3,15,5,In Transit
+ECOM-000320,Apparel,456.98,6,30,1,Delivered
+ECOM-000321,Sports Equipment,584.32,2,20,4,Delivered
+ECOM-000322,Beauty,546.13,7,0,3,Delivered
+ECOM-000323,Home Goods,750.55,1,0,2,Processing
+ECOM-000324,Electronics,503.08,4,10,1,Delivered
+ECOM-000325,Sports Equipment,664.47,5,30,3,Delivered
+ECOM-000326,Electronics,220.42,2,10,2,Delivered
+ECOM-000327,Electronics,580.32,2,10,1,Delivered
+ECOM-000328,Apparel,768.04,2,15,5,Delivered
+ECOM-000329,Sports Equipment,335.24,2,5,3,Delivered
+ECOM-000330,Electronics,664.89,1,10,1,In Transit
+ECOM-000331,Home Goods,619.37,4,5,2,Delivered
+ECOM-000332,Beauty,61.88,3,5,2,Delivered
+ECOM-000333,Sports Equipment,499.3,1,0,5,Delivered
+ECOM-000334,Apparel,121.1,4,20,3,Delivered
+ECOM-000335,Sports Equipment,822.61,3,20,3,In Transit
+ECOM-000336,Apparel,691.96,2,30,1,Delivered
+ECOM-000337,Beauty,103.95,4,15,2,Delivered
+ECOM-000338,Home Goods,114.03,2,15,2,Delivered
+ECOM-000339,Electronics,510.17,7,20,5,In Transit
+ECOM-000340,Sports Equipment,301.02,4,30,5,Cancelled
+ECOM-000341,Apparel,41.25,6,20,3,Delivered
+ECOM-000342,Beauty,465.9,5,30,2,Delivered
+ECOM-000343,Electronics,337.01,2,30,1,Delivered
+ECOM-000344,Beauty,96.7,2,30,4,Delivered
+ECOM-000345,Home Goods,684.01,2,30,1,Delivered
+ECOM-000346,Electronics,778.83,6,0,5,Delivered
+ECOM-000347,Electronics,646.03,1,0,1,Delivered
+ECOM-000348,Electronics,701.19,3,20,2,Delivered
+ECOM-000349,Apparel,193.42,2,30,3,Delivered
+ECOM-000350,Electronics,232.87,2,10,4,Delivered
+ECOM-000351,Beauty,186.75,1,30,3,Delivered
+ECOM-000352,Apparel,653.12,1,10,4,Delivered
+ECOM-000353,Electronics,806.35,5,0,4,Delivered
+ECOM-000354,Beauty,612.71,4,30,2,Delivered
+ECOM-000355,Beauty,750.67,2,5,2,Delivered
+ECOM-000356,Sports Equipment,547.23,4,20,5,Delivered
+ECOM-000357,Beauty,336.86,7,30,5,Delivered
+ECOM-000358,Home Goods,368.79,1,15,4,In Transit
+ECOM-000359,Electronics,75.12,1,10,5,Delivered
+ECOM-000360,Electronics,38.36,5,30,2,Delivered
+ECOM-000361,Electronics,594.81,3,5,5,Delivered
+ECOM-000362,Beauty,379.4,6,10,4,Delivered
+ECOM-000363,Beauty,474.76,6,5,3,Delivered
+ECOM-000364,Electronics,479.32,6,20,1,Delivered
+ECOM-000365,Apparel,244.44,1,20,5,Delivered
+ECOM-000366,Apparel,410.8,2,20,2,Delivered
+ECOM-000367,Home Goods,406.5,5,0,3,Delivered
+ECOM-000368,Sports Equipment,337.5,3,5,2,Delivered
+ECOM-000369,Home Goods,699.73,7,30,5,Delivered
+ECOM-000370,Electronics,390.08,6,15,4,Delivered
+ECOM-000371,Electronics,517.85,5,15,1,Delivered
+ECOM-000372,Electronics,762.45,1,20,1,Delivered
+ECOM-000373,Sports Equipment,737.9,6,15,3,Delivered
+ECOM-000374,Beauty,758.17,3,10,1,Delivered
+ECOM-000375,Sports Equipment,238.26,7,5,4,Delivered
+ECOM-000376,Home Goods,41.32,4,5,2,Delivered
+ECOM-000377,Beauty,230.77,7,5,4,Delivered
+ECOM-000378,Beauty,245.56,3,10,3,In Transit
+ECOM-000379,Home Goods,774.04,7,30,3,Delivered
+ECOM-000380,Beauty,556.07,2,0,1,In Transit
+ECOM-000381,Apparel,80.47,6,10,4,Delivered
+ECOM-000382,Home Goods,125.45,6,5,2,In Transit
+ECOM-000383,Home Goods,142.46,4,5,4,Delivered
+ECOM-000384,Apparel,540.29,7,5,2,Processing
+ECOM-000385,Sports Equipment,628.28,4,30,2,Delivered
+ECOM-000386,Sports Equipment,732.38,7,15,4,Delivered
+ECOM-000387,Sports Equipment,800.25,6,0,5,Delivered
+ECOM-000388,Beauty,181.03,2,10,4,Delivered
+ECOM-000389,Apparel,271.59,7,5,2,Delivered
+ECOM-000390,Home Goods,213.39,4,20,3,Delivered
+ECOM-000391,Home Goods,312.64,1,0,3,Delivered
+ECOM-000392,Home Goods,778.49,6,20,1,Delivered
+ECOM-000393,Beauty,493.94,3,0,3,Delivered
+ECOM-000394,Beauty,630.6,3,5,5,Delivered
+ECOM-000395,Sports Equipment,422.72,2,0,2,Delivered
+ECOM-000396,Beauty,36.18,1,0,4,Processing
+ECOM-000397,Sports Equipment,65.8,4,5,4,Processing
+ECOM-000398,Sports Equipment,462.78,7,30,5,In Transit
+ECOM-000399,Home Goods,614.35,6,20,3,In Transit
+ECOM-000400,Beauty,192.45,3,30,2,Delivered
+ECOM-000401,Sports Equipment,616.96,3,20,3,Cancelled
+ECOM-000402,Apparel,691.34,3,15,1,Delivered
+ECOM-000403,Apparel,357.17,3,20,3,Delivered
+ECOM-000404,Beauty,637.5,5,20,1,Delivered
+ECOM-000405,Home Goods,350.58,2,0,4,Delivered
+ECOM-000406,Home Goods,580.46,4,15,2,Delivered
+ECOM-000407,Sports Equipment,652.23,6,5,1,Delivered
+ECOM-000408,Beauty,843.23,6,5,3,Delivered
+ECOM-000409,Apparel,301.44,6,10,3,Delivered
+ECOM-000410,Sports Equipment,356.45,4,15,4,Delivered
+ECOM-000411,Sports Equipment,150.79,2,0,5,Delivered
+ECOM-000412,Electronics,183.01,1,10,5,Delivered
+ECOM-000413,Beauty,593.07,7,10,3,Delivered
+ECOM-000414,Sports Equipment,780.48,7,5,5,Delivered
+ECOM-000415,Apparel,342.68,2,20,2,Processing
+ECOM-000416,Electronics,162.71,3,0,5,Delivered
+ECOM-000417,Apparel,250.91,7,15,2,In Transit
+ECOM-000418,Home Goods,393.33,3,10,3,Delivered
+ECOM-000419,Electronics,255.56,2,0,3,Delivered
+ECOM-000420,Electronics,207.74,2,5,3,Delivered
+ECOM-000421,Sports Equipment,628.76,4,10,4,Delivered
+ECOM-000422,Home Goods,18.57,4,10,5,Delivered
+ECOM-000423,Sports Equipment,463.88,5,30,1,Delivered
+ECOM-000424,Beauty,677.18,6,5,1,Delivered
+ECOM-000425,Apparel,235.1,5,30,3,Delivered
+ECOM-000426,Apparel,517.56,6,5,5,Delivered
+ECOM-000427,Sports Equipment,572.54,3,5,2,Processing
+ECOM-000428,Apparel,560.91,5,30,1,Delivered
+ECOM-000429,Apparel,385.62,5,0,3,Delivered
+ECOM-000430,Beauty,302.43,1,0,1,Delivered
+ECOM-000431,Home Goods,712.5,2,0,1,Delivered
+ECOM-000432,Electronics,647.58,4,20,1,In Transit
+ECOM-000433,Sports Equipment,281.21,5,10,3,Processing
+ECOM-000434,Sports Equipment,98.33,4,0,3,Delivered
+ECOM-000435,Beauty,72.17,6,20,4,Delivered
+ECOM-000436,Beauty,91.0,5,10,4,Delivered
+ECOM-000437,Electronics,500.44,6,0,4,Delivered
+ECOM-000438,Home Goods,55.29,5,5,1,Delivered
+ECOM-000439,Sports Equipment,294.34,7,15,5,Processing
+ECOM-000440,Beauty,643.18,3,0,3,Delivered
+ECOM-000441,Sports Equipment,258.66,1,15,4,Delivered
+ECOM-000442,Apparel,651.65,6,0,5,Delivered
+ECOM-000443,Sports Equipment,636.7,2,5,4,Processing
+ECOM-000444,Home Goods,218.0,2,15,4,Delivered
+ECOM-000445,Home Goods,622.75,3,20,5,Delivered
+ECOM-000446,Sports Equipment,638.64,3,5,4,Delivered
+ECOM-000447,Apparel,345.07,7,15,1,Delivered
+ECOM-000448,Home Goods,188.33,2,15,1,Delivered
+ECOM-000449,Beauty,448.82,6,30,1,Delivered
+ECOM-000450,Sports Equipment,784.13,2,30,2,Delivered
+ECOM-000451,Apparel,548.0,1,5,4,Delivered
+ECOM-000452,Beauty,156.91,5,5,2,Delivered
+ECOM-000453,Sports Equipment,584.15,1,5,3,Delivered
+ECOM-000454,Apparel,370.0,7,10,5,Delivered
+ECOM-000455,Beauty,507.7,7,20,3,Delivered
+ECOM-000456,Home Goods,627.15,2,0,2,Delivered
+ECOM-000457,Sports Equipment,443.53,5,30,1,Delivered
+ECOM-000458,Sports Equipment,694.12,2,15,4,Delivered
+ECOM-000459,Home Goods,617.17,1,30,4,Processing
+ECOM-000460,Electronics,527.43,1,0,1,Delivered
+ECOM-000461,Beauty,138.36,6,5,4,Delivered
+ECOM-000462,Home Goods,712.53,6,30,5,Delivered
+ECOM-000463,Sports Equipment,796.29,1,20,5,Delivered
+ECOM-000464,Beauty,126.78,5,20,5,Delivered
+ECOM-000465,Beauty,421.15,7,10,3,Delivered
+ECOM-000466,Electronics,228.95,6,30,1,Delivered
+ECOM-000467,Sports Equipment,644.29,6,5,5,Delivered
+ECOM-000468,Apparel,616.73,4,15,2,In Transit
+ECOM-000469,Electronics,130.06,4,10,5,Delivered
+ECOM-000470,Electronics,746.95,6,5,3,Delivered
+ECOM-000471,Apparel,163.66,2,10,2,Cancelled
+ECOM-000472,Apparel,680.1,5,30,1,Delivered
+ECOM-000473,Electronics,394.95,3,0,1,Delivered
+ECOM-000474,Beauty,287.09,6,30,5,Delivered
+ECOM-000475,Home Goods,144.6,4,5,2,Processing
+ECOM-000476,Home Goods,152.46,5,15,2,Delivered
+ECOM-000477,Electronics,566.66,5,15,5,Delivered
+ECOM-000478,Beauty,473.26,4,5,5,Delivered
+ECOM-000479,Apparel,114.31,5,10,4,Delivered
+ECOM-000480,Electronics,106.44,5,20,4,Delivered
+ECOM-000481,Sports Equipment,72.6,4,5,5,Delivered
+ECOM-000482,Beauty,635.28,1,30,3,Delivered
+ECOM-000483,Sports Equipment,608.56,6,15,4,Delivered
+ECOM-000484,Sports Equipment,60.97,2,0,5,Delivered
+ECOM-000485,Electronics,481.51,3,15,2,Delivered
+ECOM-000486,Beauty,82.96,2,20,4,Delivered
+ECOM-000487,Sports Equipment,769.34,1,15,3,Delivered
+ECOM-000488,Beauty,772.16,7,20,1,Delivered
+ECOM-000489,Home Goods,597.12,1,5,2,Delivered
+ECOM-000490,Sports Equipment,788.15,5,15,3,Delivered
+ECOM-000491,Sports Equipment,692.0,2,10,3,Delivered
+ECOM-000492,Beauty,706.32,1,30,3,Delivered
+ECOM-000493,Home Goods,489.42,2,10,2,Delivered
+ECOM-000494,Sports Equipment,268.48,1,30,3,In Transit
+ECOM-000495,Electronics,194.52,3,15,1,Delivered
+ECOM-000496,Beauty,286.19,1,15,4,In Transit
+ECOM-000497,Beauty,538.68,2,30,2,Delivered
+ECOM-000498,Sports Equipment,156.69,5,0,3,Delivered
+ECOM-000499,Home Goods,228.74,2,15,5,Delivered
+ECOM-000500,Sports Equipment,404.24,4,0,4,Delivered
+ECOM-000501,Apparel,207.3,2,0,2,Delivered
+ECOM-000502,Sports Equipment,505.28,3,30,5,Delivered
+ECOM-000503,Apparel,785.62,6,0,5,Delivered
+ECOM-000504,Electronics,638.9,3,0,3,Delivered
+ECOM-000505,Beauty,570.47,3,5,2,Delivered
+ECOM-000506,Beauty,500.32,1,10,3,Delivered
+ECOM-000507,Home Goods,420.9,3,0,1,Cancelled
+ECOM-000508,Sports Equipment,168.34,2,10,5,Delivered
+ECOM-000509,Electronics,761.77,6,0,1,Delivered
+ECOM-000510,Apparel,220.27,7,10,3,Delivered
+ECOM-000511,Home Goods,88.52,5,15,4,Processing
+ECOM-000512,Electronics,640.51,7,15,5,Delivered
+ECOM-000513,Electronics,159.17,3,10,4,In Transit
+ECOM-000514,Apparel,323.65,2,0,2,Delivered
+ECOM-000515,Apparel,35.7,1,5,5,Delivered
+ECOM-000516,Beauty,126.86,1,10,1,Delivered
+ECOM-000517,Sports Equipment,157.14,5,20,4,Delivered
+ECOM-000518,Home Goods,57.6,5,5,2,Delivered
+ECOM-000519,Sports Equipment,562.28,2,20,5,Delivered
+ECOM-000520,Home Goods,713.41,5,10,2,In Transit
+ECOM-000521,Electronics,324.84,5,0,1,Delivered
+ECOM-000522,Apparel,744.9,1,20,5,Delivered
+ECOM-000523,Apparel,190.78,2,10,2,Cancelled
+ECOM-000524,Electronics,284.68,6,5,3,Delivered
+ECOM-000525,Electronics,138.32,5,0,5,Processing
+ECOM-000526,Home Goods,532.03,2,20,5,Delivered
+ECOM-000527,Electronics,363.85,3,10,5,In Transit
+ECOM-000528,Home Goods,525.93,1,0,5,Delivered
+ECOM-000529,Sports Equipment,650.28,6,0,3,Delivered
+ECOM-000530,Apparel,469.3,1,15,1,Delivered
+ECOM-000531,Apparel,537.95,1,0,3,Delivered
+ECOM-000532,Apparel,795.74,4,10,3,Delivered
+ECOM-000533,Sports Equipment,262.62,2,5,2,Delivered
+ECOM-000534,Sports Equipment,312.98,3,30,4,Cancelled
+ECOM-000535,Beauty,613.44,5,15,4,Cancelled
+ECOM-000536,Home Goods,524.27,3,10,2,Processing
+ECOM-000537,Home Goods,161.61,2,10,3,Cancelled
+ECOM-000538,Beauty,327.21,1,10,2,Delivered
+ECOM-000539,Apparel,404.05,4,20,5,Cancelled
+ECOM-000540,Home Goods,363.45,2,20,2,In Transit
+ECOM-000541,Home Goods,161.39,6,5,2,Delivered
+ECOM-000542,Apparel,786.67,6,10,5,Delivered
+ECOM-000543,Electronics,650.82,2,20,4,In Transit
+ECOM-000544,Electronics,415.38,5,20,5,Delivered
+ECOM-000545,Beauty,581.89,3,20,1,Delivered
+ECOM-000546,Sports Equipment,763.92,3,5,2,Delivered
+ECOM-000547,Home Goods,126.11,5,5,2,Delivered
+ECOM-000548,Home Goods,221.81,4,10,4,Processing
+ECOM-000549,Beauty,466.78,1,15,3,Delivered
+ECOM-000550,Beauty,681.57,7,10,5,Delivered
+ECOM-000551,Home Goods,42.38,7,20,3,Delivered
+ECOM-000552,Apparel,836.61,1,30,1,Delivered
+ECOM-000553,Apparel,393.21,6,20,5,Delivered
+ECOM-000554,Sports Equipment,313.04,4,0,1,Delivered
+ECOM-000555,Home Goods,257.3,5,30,1,Processing
+ECOM-000556,Home Goods,158.11,7,30,1,Delivered
+ECOM-000557,Home Goods,675.34,2,10,5,Delivered
+ECOM-000558,Home Goods,812.64,3,20,5,Processing
+ECOM-000559,Beauty,358.63,2,20,4,Delivered
+ECOM-000560,Electronics,810.13,3,15,2,Delivered
+ECOM-000561,Home Goods,702.34,2,0,3,Delivered
+ECOM-000562,Electronics,415.12,5,10,3,Delivered
+ECOM-000563,Apparel,576.83,5,5,1,In Transit
+ECOM-000564,Sports Equipment,376.52,4,10,5,Processing
+ECOM-000565,Apparel,480.21,2,30,5,Delivered
+ECOM-000566,Home Goods,60.64,2,10,1,Delivered
+ECOM-000567,Apparel,595.47,4,15,2,Delivered
+ECOM-000568,Beauty,56.27,4,10,3,Delivered
+ECOM-000569,Electronics,696.72,5,15,4,Delivered
+ECOM-000570,Home Goods,703.31,5,30,2,Delivered
+ECOM-000571,Beauty,210.67,6,15,5,Delivered
+ECOM-000572,Electronics,283.23,2,20,1,Processing
+ECOM-000573,Beauty,415.34,5,5,3,In Transit
+ECOM-000574,Apparel,512.0,7,30,1,Delivered
+ECOM-000575,Home Goods,252.8,5,15,5,Delivered
+ECOM-000576,Apparel,508.5,2,0,1,Delivered
+ECOM-000577,Sports Equipment,261.55,4,30,3,Delivered
+ECOM-000578,Home Goods,58.5,2,0,1,Delivered
+ECOM-000579,Apparel,14.12,7,5,3,Delivered
+ECOM-000580,Home Goods,96.76,1,15,1,Delivered
+ECOM-000581,Electronics,675.91,2,30,1,Delivered
+ECOM-000582,Home Goods,817.68,1,30,3,Delivered
+ECOM-000583,Home Goods,369.8,2,5,1,Delivered
+ECOM-000584,Electronics,441.63,7,20,2,Delivered
+ECOM-000585,Apparel,135.06,1,0,4,Delivered
+ECOM-000586,Home Goods,473.76,1,30,2,Delivered
+ECOM-000587,Beauty,133.22,7,10,4,Delivered
+ECOM-000588,Home Goods,524.2,2,0,2,Delivered
+ECOM-000589,Apparel,794.07,6,15,4,Cancelled
+ECOM-000590,Electronics,176.0,5,5,1,Delivered
+ECOM-000591,Apparel,652.7,3,0,3,Delivered
+ECOM-000592,Sports Equipment,31.7,5,10,3,Delivered
+ECOM-000593,Home Goods,326.67,1,10,5,In Transit
+ECOM-000594,Home Goods,104.81,2,5,4,In Transit
+ECOM-000595,Electronics,307.37,2,5,5,Delivered
+ECOM-000596,Home Goods,157.42,2,0,5,Delivered
+ECOM-000597,Beauty,324.83,2,15,4,Delivered
+ECOM-000598,Beauty,361.88,6,20,3,Processing
+ECOM-000599,Apparel,263.9,3,10,4,Delivered
+ECOM-000600,Electronics,562.25,4,5,1,In Transit
+ECOM-000601,Sports Equipment,782.0,1,20,5,Delivered
+ECOM-000602,Apparel,347.7,3,20,5,Delivered
+ECOM-000603,Electronics,173.18,5,20,4,Cancelled
+ECOM-000604,Electronics,238.87,4,15,5,In Transit
+ECOM-000605,Apparel,727.65,4,5,3,Delivered
+ECOM-000606,Apparel,491.03,2,10,5,Delivered
+ECOM-000607,Home Goods,393.3,3,5,4,Delivered
+ECOM-000608,Sports Equipment,137.4,5,0,3,Delivered
+ECOM-000609,Beauty,388.87,2,10,3,Delivered
+ECOM-000610,Home Goods,245.38,2,5,5,Delivered
+ECOM-000611,Electronics,802.37,7,10,4,Delivered
+ECOM-000612,Sports Equipment,752.85,7,0,5,Delivered
+ECOM-000613,Sports Equipment,82.31,7,30,1,Delivered
+ECOM-000614,Apparel,444.96,6,10,1,Delivered
+ECOM-000615,Sports Equipment,200.6,1,30,3,Delivered
+ECOM-000616,Sports Equipment,356.23,4,20,5,Delivered
+ECOM-000617,Electronics,746.8,5,15,1,Delivered
+ECOM-000618,Home Goods,454.06,4,0,2,Delivered
+ECOM-000619,Sports Equipment,292.07,3,10,1,Delivered
+ECOM-000620,Apparel,186.21,1,0,5,Delivered
+ECOM-000621,Home Goods,682.67,2,20,5,Delivered
+ECOM-000622,Apparel,535.35,1,30,1,Delivered
+ECOM-000623,Sports Equipment,404.24,2,15,5,Delivered
+ECOM-000624,Home Goods,194.25,7,0,5,In Transit
+ECOM-000625,Sports Equipment,292.1,1,30,2,Cancelled
+ECOM-000626,Electronics,816.35,2,20,3,Delivered
+ECOM-000627,Home Goods,447.84,4,20,5,Delivered
+ECOM-000628,Apparel,347.79,7,20,4,Delivered
+ECOM-000629,Electronics,448.95,7,30,3,Delivered
+ECOM-000630,Beauty,664.79,7,10,3,Delivered
+ECOM-000631,Apparel,297.01,4,5,4,Delivered
+ECOM-000632,Sports Equipment,161.76,4,0,1,Delivered
+ECOM-000633,Apparel,502.18,4,5,2,In Transit
+ECOM-000634,Beauty,569.44,7,20,5,Delivered
+ECOM-000635,Apparel,609.26,1,5,1,Delivered
+ECOM-000636,Electronics,751.11,2,30,4,Delivered
+ECOM-000637,Apparel,323.04,4,20,2,Delivered
+ECOM-000638,Home Goods,75.15,1,20,2,Delivered
+ECOM-000639,Beauty,815.1,2,15,2,Delivered
+ECOM-000640,Apparel,376.54,7,15,4,Delivered
+ECOM-000641,Beauty,534.29,1,30,1,Delivered
+ECOM-000642,Electronics,570.36,7,30,5,Delivered
+ECOM-000643,Home Goods,469.98,6,5,2,Delivered
+ECOM-000644,Sports Equipment,184.01,4,0,2,Delivered
+ECOM-000645,Apparel,644.81,3,5,1,Cancelled
+ECOM-000646,Electronics,685.54,1,30,2,Delivered
+ECOM-000647,Beauty,475.39,4,0,2,Delivered
+ECOM-000648,Beauty,421.41,5,5,4,Cancelled
+ECOM-000649,Electronics,107.48,2,10,3,Delivered
+ECOM-000650,Apparel,82.35,6,10,1,Delivered
+ECOM-000651,Sports Equipment,296.56,4,0,1,Delivered
+ECOM-000652,Apparel,272.49,5,15,1,Delivered
+ECOM-000653,Home Goods,811.16,1,0,4,Delivered
+ECOM-000654,Apparel,668.68,1,5,4,Delivered
+ECOM-000655,Home Goods,565.02,5,20,5,Cancelled
+ECOM-000656,Beauty,445.79,6,10,4,Delivered
+ECOM-000657,Home Goods,152.25,5,20,1,Delivered
+ECOM-000658,Sports Equipment,831.95,2,10,5,Delivered
+ECOM-000659,Electronics,326.28,1,5,3,Delivered
+ECOM-000660,Home Goods,101.6,5,10,2,Delivered
+ECOM-000661,Apparel,425.8,3,0,2,Delivered
+ECOM-000662,Home Goods,744.41,3,20,5,Delivered
+ECOM-000663,Beauty,755.55,5,30,3,Delivered
+ECOM-000664,Home Goods,21.19,2,20,2,Cancelled
+ECOM-000665,Sports Equipment,754.72,1,5,5,In Transit
+ECOM-000666,Home Goods,239.5,3,30,4,Delivered
+ECOM-000667,Sports Equipment,44.66,5,20,1,Delivered
+ECOM-000668,Apparel,722.45,7,5,3,Delivered
+ECOM-000669,Beauty,735.92,5,15,2,Delivered
+ECOM-000670,Electronics,511.64,4,0,1,Delivered
+ECOM-000671,Apparel,493.38,5,10,5,Delivered
+ECOM-000672,Apparel,693.39,2,10,2,Delivered
+ECOM-000673,Electronics,670.93,3,10,1,Delivered
+ECOM-000674,Home Goods,757.91,4,15,4,In Transit
+ECOM-000675,Home Goods,475.2,3,0,3,Delivered
+ECOM-000676,Home Goods,822.89,3,20,5,Delivered
+ECOM-000677,Beauty,846.77,2,20,2,Delivered
+ECOM-000678,Apparel,109.66,5,0,4,Processing
+ECOM-000679,Sports Equipment,723.92,2,30,3,Delivered
+ECOM-000680,Electronics,430.85,5,0,3,Delivered
+ECOM-000681,Apparel,336.78,4,10,4,Delivered
+ECOM-000682,Home Goods,525.75,2,20,2,Processing
+ECOM-000683,Electronics,58.9,2,0,3,Delivered
+ECOM-000684,Sports Equipment,436.41,7,20,5,Delivered
+ECOM-000685,Apparel,741.81,6,0,1,In Transit
+ECOM-000686,Apparel,190.88,1,5,5,In Transit
+ECOM-000687,Beauty,369.31,2,10,3,Delivered
+ECOM-000688,Apparel,799.28,6,0,1,Delivered
+ECOM-000689,Apparel,371.14,1,15,4,Delivered
+ECOM-000690,Sports Equipment,312.31,7,0,1,Delivered
+ECOM-000691,Sports Equipment,381.17,5,5,1,Delivered
+ECOM-000692,Electronics,447.3,5,15,1,Delivered
+ECOM-000693,Home Goods,541.61,5,15,3,Delivered
+ECOM-000694,Sports Equipment,682.98,6,0,2,Delivered
+ECOM-000695,Electronics,390.86,6,5,3,Delivered
+ECOM-000696,Apparel,697.05,1,15,2,Delivered
+ECOM-000697,Electronics,459.26,5,10,4,Delivered
+ECOM-000698,Electronics,295.65,3,30,4,Delivered
+ECOM-000699,Electronics,563.36,2,10,4,Delivered
+ECOM-000700,Electronics,613.45,6,20,4,Delivered
+ECOM-000701,Sports Equipment,479.65,6,20,4,Delivered
+ECOM-000702,Home Goods,59.44,6,5,5,Delivered
+ECOM-000703,Electronics,154.36,1,15,3,Delivered
+ECOM-000704,Beauty,251.08,5,10,2,Delivered
+ECOM-000705,Apparel,248.84,3,10,4,Delivered
+ECOM-000706,Apparel,576.33,2,30,5,Delivered
+ECOM-000707,Apparel,27.38,2,5,5,In Transit
+ECOM-000708,Apparel,645.26,5,15,5,Delivered
+ECOM-000709,Apparel,234.36,3,5,3,Delivered
+ECOM-000710,Electronics,271.8,1,0,4,Delivered
+ECOM-000711,Home Goods,454.39,6,10,5,Delivered
+ECOM-000712,Beauty,192.95,6,5,5,Delivered
+ECOM-000713,Sports Equipment,753.19,7,5,4,Delivered
+ECOM-000714,Beauty,83.54,5,30,3,Delivered
+ECOM-000715,Sports Equipment,384.39,2,0,5,Delivered
+ECOM-000716,Sports Equipment,723.82,6,20,2,Delivered
+ECOM-000717,Beauty,528.08,7,10,1,Delivered
+ECOM-000718,Electronics,256.97,2,30,1,Delivered
+ECOM-000719,Apparel,364.6,2,5,1,Delivered
+ECOM-000720,Electronics,604.21,5,10,3,Delivered
+ECOM-000721,Apparel,827.59,4,20,5,Delivered
+ECOM-000722,Home Goods,760.45,7,5,1,Delivered
+ECOM-000723,Sports Equipment,298.96,4,0,1,Delivered
+ECOM-000724,Beauty,848.49,4,10,4,Delivered
+ECOM-000725,Home Goods,14.94,7,30,5,Delivered
+ECOM-000726,Apparel,35.15,3,0,5,Delivered
+ECOM-000727,Electronics,702.38,5,20,4,Delivered
+ECOM-000728,Beauty,179.15,7,20,5,Delivered
+ECOM-000729,Sports Equipment,62.92,2,10,2,In Transit
+ECOM-000730,Home Goods,210.73,7,20,3,Delivered
+ECOM-000731,Sports Equipment,369.07,6,15,4,Delivered
+ECOM-000732,Apparel,624.21,7,30,1,In Transit
+ECOM-000733,Sports Equipment,535.19,3,10,5,Delivered
+ECOM-000734,Electronics,211.13,4,15,2,In Transit
+ECOM-000735,Home Goods,433.74,1,20,2,Delivered
+ECOM-000736,Home Goods,788.17,3,10,3,Delivered
+ECOM-000737,Electronics,694.98,3,15,2,Delivered
+ECOM-000738,Sports Equipment,282.83,5,20,5,Processing
+ECOM-000739,Electronics,835.14,6,5,5,In Transit
+ECOM-000740,Beauty,605.82,3,5,2,Delivered
+ECOM-000741,Electronics,64.33,7,0,5,Delivered
+ECOM-000742,Sports Equipment,41.46,6,5,5,Delivered
+ECOM-000743,Electronics,153.13,5,15,1,Delivered
+ECOM-000744,Apparel,621.94,7,30,4,In Transit
+ECOM-000745,Electronics,165.97,1,5,5,Delivered
+ECOM-000746,Electronics,440.63,2,10,5,Delivered
+ECOM-000747,Sports Equipment,90.15,2,10,3,Processing
+ECOM-000748,Beauty,783.7,4,10,4,Processing
+ECOM-000749,Beauty,300.24,4,5,4,Delivered
+ECOM-000750,Sports Equipment,773.01,1,5,4,Delivered
+ECOM-000751,Sports Equipment,803.81,2,0,2,Cancelled
+ECOM-000752,Sports Equipment,17.14,4,30,1,Delivered
+ECOM-000753,Apparel,400.95,6,30,1,Delivered
+ECOM-000754,Home Goods,32.66,3,20,3,Delivered
+ECOM-000755,Electronics,773.48,5,0,4,In Transit
+ECOM-000756,Sports Equipment,446.43,7,15,4,Delivered
+ECOM-000757,Sports Equipment,74.8,4,10,5,Delivered
+ECOM-000758,Sports Equipment,104.41,1,5,2,Delivered
+ECOM-000759,Beauty,333.38,7,20,2,In Transit
+ECOM-000760,Sports Equipment,799.92,2,20,3,Delivered
+ECOM-000761,Electronics,592.66,1,5,1,Delivered
+ECOM-000762,Sports Equipment,739.06,5,0,4,Delivered
+ECOM-000763,Electronics,319.09,5,20,3,In Transit
+ECOM-000764,Apparel,48.21,1,30,2,Delivered
+ECOM-000765,Home Goods,828.48,4,0,2,Delivered
+ECOM-000766,Beauty,26.39,4,5,2,Cancelled
+ECOM-000767,Electronics,806.13,2,0,4,Delivered
+ECOM-000768,Apparel,320.95,6,30,4,Delivered
+ECOM-000769,Home Goods,20.46,2,10,4,In Transit
+ECOM-000770,Home Goods,589.51,3,5,5,Delivered
+ECOM-000771,Home Goods,833.69,6,30,1,Delivered
+ECOM-000772,Electronics,821.19,7,5,2,Delivered
+ECOM-000773,Apparel,146.87,3,30,2,Delivered
+ECOM-000774,Sports Equipment,163.89,2,30,5,Delivered
+ECOM-000775,Apparel,485.92,6,20,2,Delivered
+ECOM-000776,Apparel,546.06,6,20,2,In Transit
+ECOM-000777,Apparel,631.63,3,20,4,Delivered
+ECOM-000778,Electronics,163.72,1,10,4,Delivered
+ECOM-000779,Electronics,815.65,4,10,1,Delivered
+ECOM-000780,Electronics,547.26,6,30,2,Delivered
+ECOM-000781,Apparel,721.83,7,15,3,Delivered
+ECOM-000782,Electronics,464.58,7,5,2,Delivered
+ECOM-000783,Home Goods,359.16,6,20,2,Delivered
+ECOM-000784,Electronics,830.88,3,5,1,Delivered
+ECOM-000785,Beauty,499.82,6,30,3,Delivered
+ECOM-000786,Electronics,738.44,3,0,2,Delivered
+ECOM-000787,Electronics,810.86,1,30,3,Delivered
+ECOM-000788,Electronics,577.95,7,10,4,Delivered
+ECOM-000789,Electronics,472.01,6,15,4,In Transit
+ECOM-000790,Beauty,14.94,5,0,3,Delivered
+ECOM-000791,Sports Equipment,45.54,2,5,2,Delivered
+ECOM-000792,Electronics,180.31,7,10,3,Delivered
+ECOM-000793,Home Goods,167.88,1,20,3,Delivered
+ECOM-000794,Beauty,225.49,5,0,4,Delivered
+ECOM-000795,Sports Equipment,267.54,7,10,3,Delivered
+ECOM-000796,Electronics,313.73,1,5,5,Delivered
+ECOM-000797,Sports Equipment,364.41,4,30,5,Delivered
+ECOM-000798,Home Goods,94.85,1,5,4,Delivered
+ECOM-000799,Beauty,47.5,1,0,2,Delivered
+ECOM-000800,Beauty,576.77,4,0,2,In Transit

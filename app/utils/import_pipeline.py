@@ -2,6 +2,12 @@
 app/utils/import_pipeline.py — Upload and import pipeline for CSV/Excel files.
 Imports into MySQL quantai_data schema using the import user.
 150 cols × 10,000 rows must complete in under 30 seconds.
+
+Supports:
+  - CSV with encoding auto-detection
+  - XLS/XLSX with optional sheet selection
+  - Multi-sheet Excel workbook listing
+  - Transformation logging and cleaning summary
 """
 from __future__ import annotations
 
@@ -24,6 +30,7 @@ log = logging.getLogger(__name__)
 
 MYSQL_MAX_COL_LEN = 64
 BATCH_SIZE = 500  # rows per executemany batch
+MAX_FILE_SIZE_BYTES = 200 * 1024 * 1024  # 200 MB
 
 
 def _safe_index_name(column_name: str) -> str:
@@ -98,64 +105,200 @@ def _looks_like_date(samples: list[str]) -> bool:
     return sum(1 for s in samples if date_re.search(s)) >= len(samples) // 2
 
 
+def list_excel_sheets(file_path: Path) -> list[str]:
+    """Return sheet names from an Excel workbook for UI sheet selection."""
+    suffix = file_path.suffix.lower()
+    if suffix not in (".xlsx", ".xls"):
+        return []
+    try:
+        xls = pd.ExcelFile(file_path)
+        return xls.sheet_names
+    except Exception as exc:
+        log.warning("Could not list sheets from %s: %s", file_path.name, exc)
+        return []
+
+
+def _detect_csv_encoding(file_path: Path) -> str:
+    """Try multiple encodings and return the one that works."""
+    for enc in ["utf-8", "utf-8-sig", "latin-1", "cp1252", "iso-8859-1"]:
+        try:
+            with open(file_path, "r", encoding=enc) as f:
+                f.read(8192)
+            return enc
+        except (UnicodeDecodeError, UnicodeError):
+            continue
+    return "utf-8"
+
+
+def _detect_csv_delimiter(file_path: Path, encoding: str) -> str:
+    """Detect the most likely delimiter in a CSV file."""
+    try:
+        with open(file_path, "r", encoding=encoding) as f:
+            sample = f.read(4096)
+        # Count common delimiters in sample
+        candidates = {",": 0, ";": 0, "\t": 0, "|": 0}
+        for char, _ in candidates.items():
+            candidates[char] = sample.count(char)
+        best = max(candidates, key=candidates.get)
+        # Only use non-comma if it clearly dominates
+        if best != "," and candidates[best] > candidates[","] * 2:
+            return best
+    except Exception:
+        pass
+    return ","
+
+
 async def import_file(
     file_path: Path,
     source_name: str,
+    sheet_name: str | int | None = None,
 ) -> dict[str, Any]:
     """
     Import a CSV or Excel file into MySQL quantai_data.
     Returns source metadata including table_name.
+
+    Args:
+        file_path: Path to the uploaded file.
+        source_name: Original filename for display.
+        sheet_name: Optional Excel sheet name or index. Ignored for CSV files.
     """
     t_start = time.perf_counter()
     cfg = get_settings()
     source_id = str(uuid.uuid4())[:8]
     slug = re.sub(r"[^\w]", "_", source_name.lower())[:20]
     table_name = f"upl_{slug}_{source_id}"
+    transformations: list[str] = []
 
     log.info("Importing '%s' as table '%s'...", file_path.name, table_name)
 
+    # ── 0. Validate file ─────────────────────────────────────────────────────
+    if not file_path.exists():
+        raise FileNotFoundError(f"Upload file not found: {file_path}")
+
+    file_size = file_path.stat().st_size
+    if file_size == 0:
+        raise ValueError("The uploaded file is empty.")
+    if file_size > MAX_FILE_SIZE_BYTES:
+        raise ValueError(f"File too large ({file_size / 1024 / 1024:.1f} MB). Maximum is {MAX_FILE_SIZE_BYTES / 1024 / 1024:.0f} MB.")
+
     # ── 1. Read file ─────────────────────────────────────────────────────────
     t_read = time.perf_counter()
-    if str(file_path).lower().endswith((".xlsx", ".xls")):
-        df = pd.read_excel(file_path, dtype=str)  # read as str first for flexibility
+    suffix = file_path.suffix.lower()
+    sheet_names: list[str] = []
+
+    if suffix in (".xlsx", ".xls"):
+        try:
+            xls = pd.ExcelFile(file_path)
+            sheet_names = xls.sheet_names
+        except Exception as exc:
+            raise ValueError(f"Could not read Excel file: {exc}") from exc
+
+        if len(sheet_names) == 0:
+            raise ValueError("The Excel workbook contains no sheets.")
+
+        # Select sheet
+        selected_sheet = sheet_name if sheet_name is not None else 0
+        try:
+            df = pd.read_excel(file_path, sheet_name=selected_sheet, dtype=str)
+        except Exception as exc:
+            raise ValueError(f"Could not read sheet '{selected_sheet}': {exc}") from exc
+
+        if sheet_name is not None:
+            transformations.append(f"Selected sheet: '{selected_sheet}'")
     else:
-        # Try multiple encodings
-        for enc in ["utf-8", "latin-1", "cp1252"]:
-            try:
-                df = pd.read_csv(file_path, dtype=str, encoding=enc)
-                break
-            except UnicodeDecodeError:
-                continue
-        else:
+        # CSV with encoding and delimiter detection
+        encoding = _detect_csv_encoding(file_path)
+        delimiter = _detect_csv_delimiter(file_path, encoding)
+
+        if encoding != "utf-8":
+            transformations.append(f"Detected encoding: {encoding}")
+        if delimiter != ",":
+            transformations.append(f"Detected delimiter: '{delimiter}'")
+
+        try:
+            df = pd.read_csv(file_path, dtype=str, encoding=encoding, sep=delimiter)
+        except Exception:
+            # Final fallback
             df = pd.read_csv(file_path, dtype=str, encoding="utf-8", encoding_errors="replace")
+            transformations.append("Used fallback encoding with character replacement")
 
     t_read_done = time.perf_counter()
     log.info("File read: %.2fs, %d rows × %d cols", t_read_done - t_read, len(df), len(df.columns))
 
+    # Validate content
+    if df.empty or len(df.columns) == 0:
+        raise ValueError("The file contains no data rows or columns.")
+    if len(df.columns) > 500:
+        raise ValueError(f"The file has {len(df.columns)} columns, which exceeds the 500-column limit.")
+
     # ── 2. Normalise column names ────────────────────────────────────────────
     existing_names: set[str] = set()
     original_to_safe: dict[str, str] = {}
+    renamed_count = 0
     for orig in df.columns:
         safe = _safe_col_name(str(orig), existing_names)
         original_to_safe[str(orig)] = safe
+        if safe != str(orig).lower().strip():
+            renamed_count += 1
 
     df.rename(columns=original_to_safe, inplace=True)
+    if renamed_count > 0:
+        transformations.append(f"Normalized {renamed_count} column name(s) to safe identifiers")
 
     # ── 3. Infer types and convert ───────────────────────────────────────────
+    from app.utils.type_inference import safe_parse_numeric_series, profile_column_semantics
     col_types: dict[str, str] = {}
+    col_semantics: dict[str, dict[str, Any]] = {}
+    type_conversions = 0
     for col in df.columns:
-        # Convert numeric where possible
-        try:
-            df[col] = pd.to_numeric(df[col])
-        except (ValueError, TypeError):
+        # Safe numeric parsing first (handles commas, currencies, percentages, suppression codes)
+        numeric_res = safe_parse_numeric_series(df[col])
+        if numeric_res["is_numeric"]:
+            df[col] = numeric_res["parsed_series"]
+            type_conversions += 1
+            if numeric_res["suppression_count"] > 0:
+                transformations.append(
+                    f"Converted `{col}` to numeric ({numeric_res['parsed_count']:,} parsed, {numeric_res['suppression_count']:,} suppression codes stored as null)"
+                )
+            else:
+                transformations.append(f"Converted `{col}` to numeric ({numeric_res['parsed_count']:,} rows)")
+        else:
             samples = df[col].dropna().astype(str).head(10).tolist()
             if _looks_like_date(samples):
                 parsed_dates = pd.to_datetime(df[col], errors="coerce")
                 if parsed_dates.notna().sum() >= max(1, int(df[col].notna().sum() * 0.5)):
                     df[col] = parsed_dates
-        col_types[col] = _infer_mysql_type(df[col])
+                    type_conversions += 1
+                    transformations.append(f"Parsed `{col}` as date/datetime")
 
-    # ── 4. Build CREATE TABLE ────────────────────────────────────────────────
+        col_types[col] = _infer_mysql_type(df[col])
+        col_semantics[col] = profile_column_semantics(
+            col,
+            df[col],
+            parsed_numeric_series=df[col] if pd.api.types.is_numeric_dtype(df[col]) else None,
+            explicit_unit=numeric_res.get("detected_unit"),
+        )
+
+    if type_conversions > 0:
+        transformations.append(f"Inferred data types for {type_conversions} column(s)")
+
+    # ── 4. Detect data quality issues ────────────────────────────────────────
+    quality_notes: list[str] = []
+    dup_count = df.duplicated().sum()
+    if dup_count > 0:
+        quality_notes.append(f"Found {dup_count} duplicate row(s)")
+
+    missing_cols = [(col, df[col].isna().mean() * 100) for col in df.columns if df[col].isna().any()]
+    high_missing = [(col, pct) for col, pct in missing_cols if pct > 50]
+    if high_missing:
+        names = ", ".join(f"{col} ({pct:.0f}%)" for col, pct in high_missing[:5])
+        quality_notes.append(f"High missingness: {names}")
+
+    constant_cols = [col for col in df.columns if df[col].nunique() <= 1]
+    if constant_cols:
+        quality_notes.append(f"Constant column(s): {', '.join(constant_cols[:5])}")
+
+    # ── 5. Build CREATE TABLE ────────────────────────────────────────────────
     col_defs = []
     for col, mysql_type in col_types.items():
         col_defs.append(f"  `{col}` {mysql_type}")
@@ -167,7 +310,7 @@ async def import_file(
         + "\n) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;"
     )
 
-    # ── 5. Create table and bulk insert ─────────────────────────────────────
+    # ── 6. Create table and bulk insert ─────────────────────────────────────
     rows_total = len(df)
     try:
         with import_connection() as conn:
@@ -219,8 +362,8 @@ async def import_file(
     elapsed = t_done - t_start
     log.info("Import complete: %d rows in %.2fs (%.0f rows/s)", rows_total, elapsed, rows_total / elapsed)
 
-    # ── 6. Build catalog metadata ────────────────────────────────────────────
-    catalog_entries = _build_catalog(df, original_to_safe, col_types)
+    # ── 7. Build catalog metadata ────────────────────────────────────────────
+    catalog_entries = _build_catalog(df, original_to_safe, col_types, col_semantics)
 
     return {
         "source_id": None,  # will be set by caller
@@ -232,6 +375,9 @@ async def import_file(
         "col_types": col_types,
         "catalog_entries": catalog_entries,
         "elapsed_sec": round(elapsed, 2),
+        "sheet_names": sheet_names,
+        "transformations": transformations,
+        "quality_notes": quality_notes,
     }
 
 
@@ -239,6 +385,7 @@ def _build_catalog(
     df: pd.DataFrame,
     original_to_safe: dict[str, str],
     col_types: dict[str, str],
+    col_semantics: dict[str, dict[str, Any]] | None = None,
 ) -> list[dict[str, Any]]:
     """Build column catalog entries for the imported table."""
     safe_to_orig = {v: k for k, v in original_to_safe.items()}
@@ -258,8 +405,21 @@ def _build_catalog(
             col_type = "datetime"
         elif "DATE" in mysql_type.upper() and "TIME" not in mysql_type.upper():
             col_type = "date"
+        elif pd.api.types.is_bool_dtype(series):
+            col_type = "bool"
         else:
             col_type = "str"
+
+        # Semantic roles and flags
+        sem = (col_semantics or {}).get(col, {})
+        sem_role = sem.get("role")
+        is_date_col = sem.get("is_temporal", False) or col_type in ("date", "datetime")
+        is_key_col = sem.get("is_identifier", False) or any(kw in col.lower() for kw in ["id", "key", "code", "_num"])
+
+        col_unit = sem.get("unit")
+        if sem_role == "temporal_year":
+            is_date_col = True
+            col_unit = "year"
 
         # Stats
         col_min = col_max = None
@@ -277,9 +437,8 @@ def _build_catalog(
         except Exception:
             pass
 
-        # Detect date / key columns
-        is_date_col = col_type in ("date", "datetime")
-        is_key_col = any(kw in col.lower() for kw in ["id", "key", "code", "_num"])
+        # Auto-detect column semantic type for description
+        description = sem.get("description") or _infer_column_description(col, col_type, distinct, len(df))
 
         entries.append({
             "original_name": safe_to_orig.get(col, col),
@@ -291,9 +450,56 @@ def _build_catalog(
             "col_min": col_min,
             "col_max": col_max,
             "top_values": [str(v) for v in top_values[:5]],
+            "unit": col_unit,
             "is_date_col": is_date_col,
             "is_key_col": is_key_col,
             "ordinal_position": i,
+            "description": description,
         })
 
     return entries
+
+
+def _infer_column_description(col_name: str, col_type: str, distinct: int, row_count: int) -> str:
+    """Generate a basic semantic description based on column name and stats."""
+    name = col_name.lower()
+
+    # Identifiers
+    if any(kw in name for kw in ["_id", "id_", "uuid", "serial"]) or name == "id":
+        return "Identifier / primary key"
+    if name.endswith("_key") or name.endswith("_code"):
+        return "Reference key or code"
+
+    # Dates
+    if any(kw in name for kw in ["date", "time", "created", "updated", "timestamp"]):
+        return "Date or timestamp field"
+
+    # Numeric measures
+    if col_type in ("int", "float"):
+        if any(kw in name for kw in ["price", "cost", "amount", "revenue", "salary", "income", "profit"]):
+            return "Monetary value"
+        if any(kw in name for kw in ["count", "quantity", "qty", "num", "total"]):
+            return "Count or quantity"
+        if any(kw in name for kw in ["score", "rating", "grade", "rank"]):
+            return "Score or rating measure"
+        if any(kw in name for kw in ["percent", "pct", "ratio", "rate"]):
+            return "Percentage or rate"
+        if any(kw in name for kw in ["weight", "height", "length", "width", "size", "area", "volume"]):
+            return "Physical measurement"
+
+    # Categorical
+    if col_type == "str":
+        if distinct == 2:
+            return "Binary category"
+        if distinct <= 20:
+            return "Low-cardinality category"
+        if any(kw in name for kw in ["name", "title", "label"]):
+            return "Name or label"
+        if any(kw in name for kw in ["description", "comment", "note", "text"]):
+            return "Free-text field"
+        if any(kw in name for kw in ["email", "phone", "address"]):
+            return "Contact information (PII)"
+        if any(kw in name for kw in ["url", "link", "website"]):
+            return "URL or link"
+
+    return ""

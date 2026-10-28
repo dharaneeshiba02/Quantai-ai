@@ -1,0 +1,501 @@
+property_id,neighborhood,property_type,square_feet,bedrooms,listing_price,days_on_market
+PROP-0001,Suburbs,Townhouse,1421,4,1345323,58
+PROP-0002,Downtown,Multi-Family,849,3,1720168,20
+PROP-0003,Waterfront,Townhouse,2405,3,1790743,14
+PROP-0004,Downtown,Single Family,829,2,1690249,18
+PROP-0005,North Hills,Townhouse,3055,5,1468597,29
+PROP-0006,Suburbs,Multi-Family,3973,3,1494608,102
+PROP-0007,Downtown,Multi-Family,2951,1,1556433,19
+PROP-0008,Suburbs,Multi-Family,3638,5,1498146,115
+PROP-0009,Waterfront,Condo,2252,2,1298607,87
+PROP-0010,West End,Townhouse,1769,5,409645,103
+PROP-0011,Downtown,Condo,2864,5,976479,33
+PROP-0012,Suburbs,Multi-Family,2561,3,1377687,111
+PROP-0013,Downtown,Multi-Family,3551,1,896456,37
+PROP-0014,Waterfront,Single Family,1735,3,1132805,29
+PROP-0015,Waterfront,Single Family,823,1,1670499,89
+PROP-0016,Suburbs,Multi-Family,4182,1,618330,34
+PROP-0017,North Hills,Condo,1888,4,1747361,19
+PROP-0018,Downtown,Condo,3960,3,987798,13
+PROP-0019,Downtown,Multi-Family,4463,2,593961,3
+PROP-0020,Waterfront,Townhouse,4466,5,1140586,94
+PROP-0021,Downtown,Condo,2623,4,366342,84
+PROP-0022,Suburbs,Multi-Family,4432,2,846713,51
+PROP-0023,West End,Single Family,2894,3,991512,43
+PROP-0024,Waterfront,Multi-Family,2307,1,198788,22
+PROP-0025,West End,Condo,1062,3,1132473,73
+PROP-0026,Downtown,Multi-Family,4060,3,1152675,39
+PROP-0027,North Hills,Townhouse,4742,4,1027065,18
+PROP-0028,Suburbs,Townhouse,2032,2,569605,41
+PROP-0029,Downtown,Condo,1773,4,1524641,111
+PROP-0030,Suburbs,Multi-Family,4662,2,839521,47
+PROP-0031,Downtown,Townhouse,2893,4,1375151,66
+PROP-0032,Downtown,Townhouse,3239,5,689240,49
+PROP-0033,Downtown,Single Family,2428,1,991414,25
+PROP-0034,Waterfront,Condo,1779,1,1035446,34
+PROP-0035,West End,Single Family,1294,1,1736756,51
+PROP-0036,North Hills,Single Family,4172,5,1415558,83
+PROP-0037,West End,Townhouse,2207,5,1805496,21
+PROP-0038,West End,Multi-Family,3423,1,1722457,108
+PROP-0039,Suburbs,Single Family,3435,1,338244,100
+PROP-0040,Waterfront,Condo,2356,2,824344,80
+PROP-0041,Waterfront,Condo,3251,2,517840,69
+PROP-0042,Downtown,Multi-Family,4293,3,368876,41
+PROP-0043,West End,Condo,1024,4,650683,91
+PROP-0044,North Hills,Single Family,2262,2,1194230,62
+PROP-0045,Suburbs,Multi-Family,1104,2,636323,13
+PROP-0046,Waterfront,Condo,2125,2,501070,51
+PROP-0047,Downtown,Condo,1503,2,777425,17
+PROP-0048,North Hills,Single Family,1373,5,676571,85
+PROP-0049,West End,Single Family,2041,3,1821917,63
+PROP-0050,North Hills,Single Family,3037,2,1601414,45
+PROP-0051,Waterfront,Single Family,911,4,1575015,17
+PROP-0052,Suburbs,Multi-Family,1192,2,1170890,81
+PROP-0053,West End,Multi-Family,1200,5,842104,104
+PROP-0054,Suburbs,Multi-Family,4447,1,1841173,81
+PROP-0055,North Hills,Townhouse,1287,1,555865,75
+PROP-0056,North Hills,Single Family,814,3,1693576,7
+PROP-0057,Downtown,Single Family,3455,1,1157587,85
+PROP-0058,West End,Multi-Family,1270,2,1278699,90
+PROP-0059,North Hills,Condo,1873,5,1604452,31
+PROP-0060,Waterfront,Condo,3992,3,1301248,64
+PROP-0061,Waterfront,Single Family,700,2,892856,62
+PROP-0062,Suburbs,Single Family,1138,1,388408,71
+PROP-0063,Waterfront,Multi-Family,1314,4,1485634,24
+PROP-0064,North Hills,Single Family,1896,2,1805102,15
+PROP-0065,Waterfront,Condo,3360,4,1199775,52
+PROP-0066,West End,Condo,4602,4,618345,118
+PROP-0067,Suburbs,Single Family,3241,3,1756866,115
+PROP-0068,West End,Multi-Family,1530,5,992581,49
+PROP-0069,North Hills,Multi-Family,1084,1,537138,112
+PROP-0070,North Hills,Condo,2634,1,1589709,31
+PROP-0071,Waterfront,Multi-Family,4763,2,1838672,82
+PROP-0072,Downtown,Condo,4520,1,1245928,102
+PROP-0073,Downtown,Single Family,3272,3,1813945,19
+PROP-0074,North Hills,Condo,2442,1,636994,22
+PROP-0075,North Hills,Single Family,3448,2,378641,80
+PROP-0076,Suburbs,Multi-Family,4162,1,678595,116
+PROP-0077,North Hills,Townhouse,2143,5,201645,8
+PROP-0078,North Hills,Townhouse,3329,4,729631,24
+PROP-0079,Suburbs,Townhouse,2275,4,1522495,106
+PROP-0080,West End,Condo,3069,4,708409,11
+PROP-0081,West End,Townhouse,3667,5,1695440,34
+PROP-0082,Suburbs,Condo,2497,3,439806,90
+PROP-0083,Suburbs,Multi-Family,3896,2,451415,35
+PROP-0084,West End,Single Family,2188,5,1660996,79
+PROP-0085,West End,Townhouse,1966,2,336284,101
+PROP-0086,West End,Condo,2369,3,552965,72
+PROP-0087,West End,Multi-Family,2600,5,1042260,51
+PROP-0088,Waterfront,Multi-Family,873,1,596697,106
+PROP-0089,Suburbs,Townhouse,2676,3,1728388,32
+PROP-0090,Downtown,Multi-Family,2197,4,1725682,104
+PROP-0091,Waterfront,Multi-Family,4428,5,667245,18
+PROP-0092,Downtown,Multi-Family,4373,3,275011,67
+PROP-0093,Downtown,Condo,2173,3,1163908,108
+PROP-0094,North Hills,Multi-Family,3353,5,1734698,84
+PROP-0095,Suburbs,Multi-Family,2622,4,1791546,88
+PROP-0096,Waterfront,Multi-Family,1266,4,1683233,92
+PROP-0097,Suburbs,Multi-Family,3271,3,253749,16
+PROP-0098,West End,Multi-Family,2743,2,1157473,58
+PROP-0099,Suburbs,Condo,2414,3,181903,39
+PROP-0100,Downtown,Multi-Family,3826,5,346416,51
+PROP-0101,West End,Multi-Family,1782,5,1210531,80
+PROP-0102,Suburbs,Single Family,4220,5,806701,92
+PROP-0103,Suburbs,Multi-Family,1716,4,1577254,52
+PROP-0104,Downtown,Multi-Family,2796,1,826990,38
+PROP-0105,West End,Condo,1355,5,953341,54
+PROP-0106,Downtown,Multi-Family,3008,5,984751,25
+PROP-0107,Suburbs,Condo,4184,2,1589639,68
+PROP-0108,Waterfront,Townhouse,4462,2,856801,105
+PROP-0109,Waterfront,Multi-Family,3120,3,518322,73
+PROP-0110,North Hills,Single Family,4717,3,1384510,105
+PROP-0111,Waterfront,Condo,4110,3,604319,47
+PROP-0112,West End,Townhouse,4418,5,322582,117
+PROP-0113,North Hills,Single Family,2584,2,870051,88
+PROP-0114,West End,Condo,2969,3,1176442,30
+PROP-0115,Waterfront,Townhouse,3522,2,1749593,104
+PROP-0116,Waterfront,Single Family,859,5,248309,22
+PROP-0117,Suburbs,Multi-Family,3457,5,1402698,51
+PROP-0118,West End,Single Family,4612,3,1479529,59
+PROP-0119,Downtown,Single Family,2603,5,731665,84
+PROP-0120,Suburbs,Single Family,3040,5,500480,90
+PROP-0121,West End,Condo,4175,2,517456,99
+PROP-0122,North Hills,Multi-Family,3864,1,1476239,61
+PROP-0123,West End,Multi-Family,3094,4,1155723,111
+PROP-0124,North Hills,Condo,3233,3,1719387,28
+PROP-0125,North Hills,Single Family,790,1,1061373,21
+PROP-0126,Waterfront,Multi-Family,941,3,501373,114
+PROP-0127,Downtown,Single Family,3514,1,1818543,108
+PROP-0128,West End,Multi-Family,3257,5,1154152,15
+PROP-0129,Downtown,Condo,4586,3,1214448,76
+PROP-0130,North Hills,Townhouse,3567,1,992130,64
+PROP-0131,Waterfront,Single Family,2868,4,1638875,16
+PROP-0132,Downtown,Multi-Family,2447,5,749457,75
+PROP-0133,Suburbs,Multi-Family,1626,3,1120206,119
+PROP-0134,North Hills,Multi-Family,1229,3,1065006,13
+PROP-0135,Suburbs,Condo,3223,1,483166,69
+PROP-0136,Downtown,Condo,3239,3,246543,106
+PROP-0137,Downtown,Townhouse,3933,5,1059387,14
+PROP-0138,Downtown,Condo,2449,2,1209523,37
+PROP-0139,West End,Single Family,2111,1,1435358,105
+PROP-0140,North Hills,Condo,4718,4,1628995,112
+PROP-0141,North Hills,Multi-Family,3597,3,1060957,41
+PROP-0142,North Hills,Single Family,1363,5,928227,34
+PROP-0143,West End,Condo,3073,3,814518,105
+PROP-0144,Downtown,Single Family,2540,4,1579239,16
+PROP-0145,Downtown,Single Family,4217,5,1025068,110
+PROP-0146,Suburbs,Condo,2328,4,1284215,67
+PROP-0147,West End,Single Family,2797,5,1793549,29
+PROP-0148,Waterfront,Multi-Family,1567,2,397501,103
+PROP-0149,West End,Multi-Family,2916,5,982171,62
+PROP-0150,Suburbs,Condo,3174,4,603133,45
+PROP-0151,Suburbs,Condo,2456,1,1217592,67
+PROP-0152,Suburbs,Multi-Family,4701,2,200704,57
+PROP-0153,Downtown,Condo,1209,3,631737,111
+PROP-0154,Waterfront,Multi-Family,1278,2,1538103,95
+PROP-0155,Suburbs,Single Family,3716,2,1432390,90
+PROP-0156,North Hills,Condo,2561,3,1252883,83
+PROP-0157,Downtown,Townhouse,4412,5,1153774,37
+PROP-0158,Waterfront,Multi-Family,4201,2,280924,97
+PROP-0159,North Hills,Multi-Family,2458,2,592136,108
+PROP-0160,Waterfront,Single Family,3036,1,222928,34
+PROP-0161,Waterfront,Townhouse,2545,1,662216,21
+PROP-0162,North Hills,Townhouse,4580,4,1725413,97
+PROP-0163,West End,Townhouse,1656,3,567855,41
+PROP-0164,Waterfront,Multi-Family,698,5,1082414,22
+PROP-0165,West End,Multi-Family,2500,5,1772873,30
+PROP-0166,Waterfront,Townhouse,2579,4,286172,5
+PROP-0167,North Hills,Condo,2782,5,1067555,34
+PROP-0168,Waterfront,Townhouse,2175,5,1708471,88
+PROP-0169,Suburbs,Single Family,978,1,440226,110
+PROP-0170,Suburbs,Townhouse,3307,5,1480081,60
+PROP-0171,Waterfront,Townhouse,1237,5,1504416,56
+PROP-0172,North Hills,Townhouse,3855,4,1619453,44
+PROP-0173,North Hills,Condo,2248,4,187564,119
+PROP-0174,Downtown,Townhouse,4501,2,1756501,110
+PROP-0175,North Hills,Townhouse,3122,5,935537,17
+PROP-0176,West End,Multi-Family,3467,5,1160263,104
+PROP-0177,Waterfront,Townhouse,2058,5,853150,85
+PROP-0178,Suburbs,Single Family,1661,1,273695,64
+PROP-0179,North Hills,Multi-Family,4694,5,410953,33
+PROP-0180,Suburbs,Condo,1979,1,398371,63
+PROP-0181,Downtown,Multi-Family,3254,2,1503288,28
+PROP-0182,Waterfront,Condo,2673,3,1846403,71
+PROP-0183,North Hills,Condo,3835,5,1489091,59
+PROP-0184,Suburbs,Single Family,3243,4,512991,22
+PROP-0185,North Hills,Townhouse,3991,4,1794460,68
+PROP-0186,Downtown,Single Family,845,5,721479,23
+PROP-0187,Suburbs,Multi-Family,2440,1,987340,117
+PROP-0188,Suburbs,Condo,1756,4,836775,62
+PROP-0189,Waterfront,Multi-Family,3439,4,1268852,65
+PROP-0190,Waterfront,Condo,2834,2,1276226,53
+PROP-0191,Suburbs,Multi-Family,1188,2,1293003,102
+PROP-0192,Waterfront,Condo,1368,2,788657,94
+PROP-0193,Suburbs,Single Family,4645,4,1126840,86
+PROP-0194,West End,Condo,955,4,274957,103
+PROP-0195,North Hills,Townhouse,1037,5,1461448,41
+PROP-0196,West End,Single Family,1374,5,519460,102
+PROP-0197,West End,Townhouse,3246,1,1792735,13
+PROP-0198,North Hills,Multi-Family,3085,4,1502941,59
+PROP-0199,Suburbs,Multi-Family,2990,5,1773980,5
+PROP-0200,Suburbs,Condo,828,5,1137294,39
+PROP-0201,Waterfront,Condo,2553,2,1465447,86
+PROP-0202,Downtown,Multi-Family,2354,2,1270050,98
+PROP-0203,Suburbs,Single Family,4033,2,398091,113
+PROP-0204,North Hills,Townhouse,745,3,744388,27
+PROP-0205,Downtown,Multi-Family,1933,5,297982,23
+PROP-0206,North Hills,Single Family,897,2,1477244,116
+PROP-0207,North Hills,Townhouse,1631,2,447560,82
+PROP-0208,North Hills,Condo,2215,4,195251,114
+PROP-0209,Downtown,Single Family,2791,2,1648866,44
+PROP-0210,West End,Single Family,1385,4,1221750,3
+PROP-0211,North Hills,Multi-Family,4037,1,1679476,25
+PROP-0212,Waterfront,Townhouse,3309,2,439463,109
+PROP-0213,Suburbs,Multi-Family,1098,4,697656,115
+PROP-0214,Suburbs,Condo,2485,2,496966,26
+PROP-0215,Suburbs,Condo,1263,1,1427652,49
+PROP-0216,Downtown,Townhouse,2083,2,1215880,91
+PROP-0217,Waterfront,Townhouse,1526,4,890660,9
+PROP-0218,Waterfront,Townhouse,3225,1,223655,40
+PROP-0219,Waterfront,Multi-Family,1783,1,1317667,113
+PROP-0220,Waterfront,Townhouse,1321,1,323016,49
+PROP-0221,Waterfront,Townhouse,2280,3,442459,105
+PROP-0222,West End,Multi-Family,3968,4,390741,37
+PROP-0223,Waterfront,Condo,1010,3,1396405,80
+PROP-0224,Waterfront,Condo,3042,1,959341,64
+PROP-0225,Downtown,Single Family,4551,3,278834,75
+PROP-0226,Downtown,Condo,1447,2,597484,5
+PROP-0227,Waterfront,Townhouse,2433,3,1541731,104
+PROP-0228,West End,Condo,716,5,1162048,22
+PROP-0229,Waterfront,Multi-Family,3684,1,1692085,107
+PROP-0230,Waterfront,Condo,2740,1,1793504,99
+PROP-0231,Waterfront,Condo,2926,4,1389615,107
+PROP-0232,North Hills,Single Family,4165,2,795619,46
+PROP-0233,West End,Single Family,883,4,733086,34
+PROP-0234,Suburbs,Townhouse,1872,3,1683580,102
+PROP-0235,Waterfront,Multi-Family,3194,5,1336838,28
+PROP-0236,Suburbs,Townhouse,1705,5,1590091,50
+PROP-0237,West End,Multi-Family,3997,5,1589751,7
+PROP-0238,Waterfront,Multi-Family,1819,5,271897,61
+PROP-0239,Suburbs,Single Family,4751,2,1819111,63
+PROP-0240,Suburbs,Condo,1143,3,1370733,51
+PROP-0241,West End,Condo,3829,5,1846126,32
+PROP-0242,Waterfront,Single Family,4493,1,646676,19
+PROP-0243,North Hills,Townhouse,2013,3,1309661,72
+PROP-0244,West End,Condo,4048,2,1355637,60
+PROP-0245,North Hills,Townhouse,1706,5,1549572,65
+PROP-0246,Waterfront,Condo,792,2,909358,63
+PROP-0247,Suburbs,Townhouse,3965,5,1336869,65
+PROP-0248,West End,Multi-Family,3423,1,1493280,17
+PROP-0249,West End,Multi-Family,2534,3,922419,3
+PROP-0250,West End,Condo,2914,1,1248520,15
+PROP-0251,Downtown,Townhouse,2574,5,1216195,50
+PROP-0252,Waterfront,Townhouse,4695,4,509857,36
+PROP-0253,Downtown,Multi-Family,3131,3,426597,32
+PROP-0254,West End,Townhouse,2540,2,1248674,21
+PROP-0255,West End,Single Family,3775,5,1461030,66
+PROP-0256,North Hills,Townhouse,1591,1,1780339,68
+PROP-0257,Downtown,Multi-Family,2265,4,615952,119
+PROP-0258,Suburbs,Single Family,2618,5,856776,59
+PROP-0259,Waterfront,Single Family,3872,2,915016,46
+PROP-0260,Suburbs,Townhouse,2121,1,558482,14
+PROP-0261,Suburbs,Multi-Family,1708,3,182948,42
+PROP-0262,Waterfront,Multi-Family,1656,4,383877,110
+PROP-0263,West End,Multi-Family,3840,5,1190001,26
+PROP-0264,North Hills,Single Family,1870,5,1618014,13
+PROP-0265,West End,Multi-Family,2447,5,242976,68
+PROP-0266,West End,Single Family,3521,5,324408,3
+PROP-0267,Downtown,Single Family,1163,1,895472,60
+PROP-0268,Suburbs,Condo,2267,3,695501,30
+PROP-0269,Suburbs,Townhouse,4407,2,946094,70
+PROP-0270,Suburbs,Multi-Family,2682,4,1321392,107
+PROP-0271,North Hills,Single Family,3860,5,1221556,96
+PROP-0272,North Hills,Townhouse,1354,5,701908,61
+PROP-0273,North Hills,Single Family,2323,3,1555286,73
+PROP-0274,Waterfront,Townhouse,4349,3,1075446,24
+PROP-0275,North Hills,Single Family,2741,1,1376394,92
+PROP-0276,Downtown,Multi-Family,3498,1,1034224,31
+PROP-0277,Downtown,Condo,2427,1,1596376,91
+PROP-0278,West End,Condo,1542,4,1583968,76
+PROP-0279,West End,Condo,1621,1,1306948,86
+PROP-0280,West End,Single Family,752,5,861071,80
+PROP-0281,West End,Townhouse,1757,1,846699,99
+PROP-0282,Downtown,Multi-Family,3896,4,736327,71
+PROP-0283,West End,Multi-Family,4362,1,833312,47
+PROP-0284,Downtown,Single Family,4067,1,1472435,72
+PROP-0285,North Hills,Condo,4309,5,241086,88
+PROP-0286,North Hills,Single Family,1569,5,366179,19
+PROP-0287,Waterfront,Townhouse,2807,5,1432313,81
+PROP-0288,West End,Condo,1231,1,1412651,41
+PROP-0289,North Hills,Single Family,1445,5,1408437,42
+PROP-0290,North Hills,Townhouse,3847,3,1138077,30
+PROP-0291,Suburbs,Condo,2533,2,629024,119
+PROP-0292,Suburbs,Multi-Family,4017,2,1214114,4
+PROP-0293,Downtown,Townhouse,1459,5,876948,84
+PROP-0294,Waterfront,Multi-Family,3583,4,1043179,29
+PROP-0295,Suburbs,Townhouse,3918,5,406805,23
+PROP-0296,Waterfront,Condo,3634,5,1834028,89
+PROP-0297,North Hills,Single Family,1222,1,1733036,9
+PROP-0298,Downtown,Single Family,1856,4,358164,63
+PROP-0299,Waterfront,Single Family,3730,5,659697,54
+PROP-0300,Suburbs,Single Family,3110,3,1729051,50
+PROP-0301,North Hills,Townhouse,2391,2,1458971,21
+PROP-0302,West End,Single Family,4655,3,700069,75
+PROP-0303,North Hills,Single Family,3263,3,1670200,14
+PROP-0304,Suburbs,Townhouse,2365,3,1088694,112
+PROP-0305,Suburbs,Townhouse,2219,4,921207,96
+PROP-0306,West End,Condo,1326,4,1293700,73
+PROP-0307,North Hills,Townhouse,2483,4,477753,4
+PROP-0308,Waterfront,Multi-Family,3163,2,418242,19
+PROP-0309,Waterfront,Condo,1450,1,623376,77
+PROP-0310,North Hills,Condo,1791,5,340024,116
+PROP-0311,Waterfront,Single Family,3702,5,1817267,78
+PROP-0312,North Hills,Single Family,2681,1,1700896,5
+PROP-0313,North Hills,Multi-Family,2158,5,957309,23
+PROP-0314,Suburbs,Single Family,1760,3,1731126,80
+PROP-0315,Downtown,Townhouse,1562,2,257538,81
+PROP-0316,Suburbs,Townhouse,1705,5,1105033,53
+PROP-0317,Waterfront,Single Family,2400,2,1291101,108
+PROP-0318,Downtown,Single Family,3821,1,1822112,107
+PROP-0319,North Hills,Townhouse,3662,5,309210,12
+PROP-0320,Waterfront,Condo,4078,2,1162595,118
+PROP-0321,West End,Multi-Family,4212,3,481970,57
+PROP-0322,Waterfront,Multi-Family,1006,3,1155389,38
+PROP-0323,Downtown,Condo,2267,1,461472,53
+PROP-0324,Downtown,Multi-Family,2273,4,1311823,76
+PROP-0325,North Hills,Single Family,2315,5,1483166,19
+PROP-0326,West End,Single Family,3849,3,493556,110
+PROP-0327,North Hills,Single Family,2245,3,1836213,91
+PROP-0328,West End,Multi-Family,2639,1,961105,63
+PROP-0329,West End,Condo,3436,3,1106657,93
+PROP-0330,North Hills,Single Family,1178,5,1536933,99
+PROP-0331,Waterfront,Condo,3254,1,1716916,77
+PROP-0332,Suburbs,Townhouse,3845,2,690866,15
+PROP-0333,West End,Townhouse,3057,1,1186810,67
+PROP-0334,Downtown,Townhouse,713,5,264388,97
+PROP-0335,North Hills,Multi-Family,4610,5,555102,99
+PROP-0336,Waterfront,Multi-Family,3462,2,1117116,87
+PROP-0337,West End,Single Family,3471,1,210907,82
+PROP-0338,Waterfront,Townhouse,4677,5,275707,105
+PROP-0339,North Hills,Condo,751,5,571329,89
+PROP-0340,Downtown,Multi-Family,3998,2,1744800,76
+PROP-0341,West End,Condo,3948,4,654200,50
+PROP-0342,West End,Condo,3744,1,839326,99
+PROP-0343,Waterfront,Single Family,3541,5,287412,88
+PROP-0344,North Hills,Single Family,3785,3,1414081,107
+PROP-0345,Suburbs,Condo,1830,2,856761,72
+PROP-0346,West End,Condo,3536,4,332611,49
+PROP-0347,Downtown,Condo,3378,4,1292110,102
+PROP-0348,West End,Condo,3342,2,1445641,113
+PROP-0349,West End,Townhouse,1048,4,216555,12
+PROP-0350,Suburbs,Condo,1054,5,680651,59
+PROP-0351,Suburbs,Multi-Family,3523,4,801203,82
+PROP-0352,North Hills,Single Family,3918,1,1501190,15
+PROP-0353,West End,Multi-Family,3344,3,1004858,117
+PROP-0354,West End,Single Family,2732,5,1434377,63
+PROP-0355,Waterfront,Single Family,3117,2,1543644,60
+PROP-0356,Waterfront,Single Family,2571,3,1460164,86
+PROP-0357,Downtown,Multi-Family,4609,5,1071699,70
+PROP-0358,Downtown,Single Family,2190,3,566651,86
+PROP-0359,Waterfront,Condo,3039,4,1709405,88
+PROP-0360,Downtown,Condo,3113,2,1207137,31
+PROP-0361,West End,Townhouse,4018,2,1396407,18
+PROP-0362,Suburbs,Townhouse,3635,1,1172335,109
+PROP-0363,West End,Townhouse,1329,4,690091,65
+PROP-0364,Waterfront,Condo,1397,1,1505455,49
+PROP-0365,North Hills,Multi-Family,3503,1,751299,45
+PROP-0366,North Hills,Townhouse,1971,4,1077153,25
+PROP-0367,Waterfront,Condo,4398,5,1166072,32
+PROP-0368,West End,Single Family,1183,1,944669,59
+PROP-0369,Downtown,Multi-Family,2468,3,478815,32
+PROP-0370,Downtown,Multi-Family,2991,5,565052,109
+PROP-0371,North Hills,Condo,3072,4,683771,69
+PROP-0372,Waterfront,Condo,2118,2,930793,58
+PROP-0373,Waterfront,Single Family,1885,5,1647628,26
+PROP-0374,Suburbs,Single Family,3364,1,544118,115
+PROP-0375,North Hills,Single Family,2358,3,1356914,103
+PROP-0376,Waterfront,Multi-Family,1795,4,1447086,79
+PROP-0377,Suburbs,Multi-Family,2125,2,1813718,108
+PROP-0378,Downtown,Townhouse,4573,3,1264667,98
+PROP-0379,North Hills,Townhouse,3571,2,318192,103
+PROP-0380,North Hills,Townhouse,2505,4,1236435,78
+PROP-0381,Waterfront,Multi-Family,3874,5,1458051,10
+PROP-0382,Waterfront,Single Family,4614,1,356549,90
+PROP-0383,West End,Townhouse,4029,4,1366434,46
+PROP-0384,Downtown,Single Family,2254,3,1065429,82
+PROP-0385,Downtown,Single Family,3929,5,1204017,98
+PROP-0386,Suburbs,Single Family,1201,2,801014,36
+PROP-0387,Suburbs,Townhouse,2654,5,773533,37
+PROP-0388,West End,Townhouse,2486,5,657906,98
+PROP-0389,Downtown,Single Family,1774,3,820006,52
+PROP-0390,Suburbs,Townhouse,2032,1,1816770,19
+PROP-0391,Downtown,Condo,2420,5,1052827,4
+PROP-0392,Downtown,Townhouse,4513,5,1210651,92
+PROP-0393,Suburbs,Single Family,4050,1,249745,56
+PROP-0394,Waterfront,Single Family,684,1,268915,46
+PROP-0395,Waterfront,Multi-Family,2854,2,1177886,83
+PROP-0396,Suburbs,Multi-Family,3994,2,591219,104
+PROP-0397,West End,Single Family,3664,1,1468040,51
+PROP-0398,North Hills,Condo,2430,4,271087,4
+PROP-0399,Downtown,Multi-Family,2278,1,1751429,74
+PROP-0400,North Hills,Single Family,1979,2,1050868,112
+PROP-0401,Suburbs,Multi-Family,2209,3,1044348,72
+PROP-0402,Downtown,Multi-Family,1454,3,1762571,11
+PROP-0403,North Hills,Single Family,3159,5,859739,3
+PROP-0404,Waterfront,Townhouse,1940,3,1278853,71
+PROP-0405,West End,Condo,3236,2,1057036,105
+PROP-0406,North Hills,Townhouse,3200,3,907802,11
+PROP-0407,West End,Single Family,1605,4,1021188,16
+PROP-0408,Waterfront,Single Family,1229,1,260748,29
+PROP-0409,North Hills,Condo,2587,1,1308435,11
+PROP-0410,Suburbs,Single Family,2647,2,1589190,38
+PROP-0411,Downtown,Multi-Family,2315,5,1552299,95
+PROP-0412,Waterfront,Condo,2780,1,1085309,86
+PROP-0413,West End,Townhouse,4390,3,252884,81
+PROP-0414,West End,Condo,3150,4,901471,102
+PROP-0415,Waterfront,Townhouse,2292,5,875299,5
+PROP-0416,Suburbs,Single Family,2147,5,434557,119
+PROP-0417,Suburbs,Townhouse,3854,5,1113252,25
+PROP-0418,West End,Townhouse,1271,1,1821743,112
+PROP-0419,Waterfront,Townhouse,3794,5,296506,75
+PROP-0420,Waterfront,Condo,2601,2,746403,32
+PROP-0421,Downtown,Multi-Family,2109,3,1552743,21
+PROP-0422,West End,Townhouse,942,4,664143,104
+PROP-0423,Suburbs,Condo,1304,3,1840807,69
+PROP-0424,North Hills,Condo,3634,2,1681776,52
+PROP-0425,Suburbs,Multi-Family,4493,2,551373,50
+PROP-0426,Suburbs,Condo,3454,3,1662539,5
+PROP-0427,North Hills,Single Family,3364,1,1172194,100
+PROP-0428,West End,Single Family,2271,2,1157882,68
+PROP-0429,Downtown,Single Family,4664,5,1648415,29
+PROP-0430,Suburbs,Multi-Family,3903,4,1725505,89
+PROP-0431,Suburbs,Condo,3496,4,872669,108
+PROP-0432,West End,Single Family,4155,2,1480716,98
+PROP-0433,West End,Townhouse,1168,5,1148170,113
+PROP-0434,Waterfront,Condo,3335,3,1453111,101
+PROP-0435,West End,Single Family,677,4,574283,42
+PROP-0436,West End,Condo,915,5,1770129,20
+PROP-0437,Suburbs,Single Family,1956,5,252445,29
+PROP-0438,Downtown,Townhouse,4703,1,1046204,13
+PROP-0439,Suburbs,Condo,4104,2,694406,41
+PROP-0440,West End,Single Family,1460,5,539045,21
+PROP-0441,Waterfront,Single Family,4040,3,363863,91
+PROP-0442,Downtown,Townhouse,1260,4,1385773,9
+PROP-0443,Waterfront,Townhouse,2924,1,911825,97
+PROP-0444,North Hills,Single Family,852,3,483204,59
+PROP-0445,Waterfront,Single Family,1051,4,735699,4
+PROP-0446,Waterfront,Multi-Family,2677,2,1178359,40
+PROP-0447,West End,Multi-Family,4500,3,1281260,7
+PROP-0448,West End,Condo,1539,4,1038379,80
+PROP-0449,West End,Condo,828,1,1736887,84
+PROP-0450,West End,Multi-Family,2629,4,1301316,38
+PROP-0451,West End,Single Family,3160,5,1771763,70
+PROP-0452,Waterfront,Townhouse,3532,1,925413,90
+PROP-0453,North Hills,Condo,4634,3,1721835,79
+PROP-0454,West End,Single Family,2694,2,380660,87
+PROP-0455,North Hills,Townhouse,3633,1,1810716,59
+PROP-0456,North Hills,Townhouse,1000,1,1593744,99
+PROP-0457,Suburbs,Single Family,4068,1,704966,22
+PROP-0458,Suburbs,Single Family,4480,4,1745955,7
+PROP-0459,Downtown,Condo,2617,5,865712,26
+PROP-0460,Suburbs,Multi-Family,2874,2,1012229,101
+PROP-0461,West End,Single Family,3437,2,843819,32
+PROP-0462,North Hills,Multi-Family,1087,5,1529614,30
+PROP-0463,Downtown,Condo,3008,4,666431,55
+PROP-0464,Suburbs,Multi-Family,4504,4,1588922,53
+PROP-0465,Waterfront,Multi-Family,1032,5,1569483,111
+PROP-0466,Downtown,Townhouse,1056,5,250442,9
+PROP-0467,West End,Condo,715,3,187898,44
+PROP-0468,North Hills,Single Family,3639,4,492496,37
+PROP-0469,West End,Multi-Family,877,1,1537927,96
+PROP-0470,West End,Condo,2834,2,693259,36
+PROP-0471,Waterfront,Townhouse,2891,4,514024,105
+PROP-0472,Waterfront,Townhouse,2162,5,562762,75
+PROP-0473,North Hills,Multi-Family,1579,1,1598114,119
+PROP-0474,Suburbs,Multi-Family,4686,3,1387014,78
+PROP-0475,West End,Single Family,3253,3,946876,56
+PROP-0476,Suburbs,Condo,1830,1,1603102,31
+PROP-0477,North Hills,Single Family,1689,1,846196,12
+PROP-0478,West End,Single Family,1751,5,1770306,29
+PROP-0479,Suburbs,Townhouse,2749,5,498580,85
+PROP-0480,West End,Condo,1163,2,426447,15
+PROP-0481,Waterfront,Single Family,3782,2,1742057,44
+PROP-0482,Waterfront,Townhouse,2482,3,1742070,39
+PROP-0483,Downtown,Multi-Family,3107,1,308934,63
+PROP-0484,North Hills,Single Family,2852,3,1662712,98
+PROP-0485,Suburbs,Multi-Family,3330,5,1350327,81
+PROP-0486,West End,Condo,2748,4,680499,23
+PROP-0487,Downtown,Single Family,3816,5,1765550,5
+PROP-0488,North Hills,Multi-Family,2577,4,747892,10
+PROP-0489,North Hills,Multi-Family,3766,1,1269739,72
+PROP-0490,North Hills,Condo,3537,1,1755355,95
+PROP-0491,Suburbs,Townhouse,4180,1,1053174,85
+PROP-0492,Waterfront,Townhouse,1439,2,1287958,19
+PROP-0493,Downtown,Single Family,1950,2,257096,12
+PROP-0494,Suburbs,Multi-Family,2597,4,1235587,99
+PROP-0495,West End,Townhouse,2892,3,660836,15
+PROP-0496,Suburbs,Single Family,1744,3,1650425,93
+PROP-0497,West End,Multi-Family,2008,4,435178,108
+PROP-0498,West End,Single Family,4306,2,1030281,14
+PROP-0499,North Hills,Condo,957,5,1175722,68
+PROP-0500,Suburbs,Single Family,2100,4,356375,76

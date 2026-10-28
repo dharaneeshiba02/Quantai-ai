@@ -1,0 +1,451 @@
+employee_id,department,job_title,salary,tenure_years,performance_rating,attrition_risk
+EMP-0001,Finance,Lead,67455,2.3,5,Low
+EMP-0002,Sales,Manager,136552,9.6,3,Low
+EMP-0003,Sales,Senior Specialist,94116,11.8,4,Medium
+EMP-0004,Marketing,Director,168461,0.7,3,Medium
+EMP-0005,Finance,Senior Specialist,88484,8.5,3,Low
+EMP-0006,HR,Junior Associate,129638,3.4,3,Low
+EMP-0007,Product,Manager,182476,1.0,3,Low
+EMP-0008,Engineering,Senior Specialist,148647,5.1,5,Low
+EMP-0009,Engineering,Director,113642,11.3,2,Medium
+EMP-0010,HR,Manager,94009,0.6,3,Low
+EMP-0011,Sales,Lead,176824,7.3,3,High
+EMP-0012,Sales,Director,77605,6.3,3,Low
+EMP-0013,Sales,Senior Specialist,158879,10.5,4,Low
+EMP-0014,Finance,Manager,168827,1.5,2,Low
+EMP-0015,Sales,Director,53580,8.3,3,Low
+EMP-0016,Sales,Manager,162902,8.3,3,Low
+EMP-0017,Finance,Manager,53400,8.2,5,Medium
+EMP-0018,Finance,Manager,144032,11.3,4,Medium
+EMP-0019,HR,Senior Specialist,175319,10.0,5,Low
+EMP-0020,Marketing,Director,154960,1.0,1,Low
+EMP-0021,Finance,Junior Associate,87015,5.9,3,Low
+EMP-0022,Product,Junior Associate,119713,5.1,3,Low
+EMP-0023,Sales,Senior Specialist,194046,4.1,1,Low
+EMP-0024,Marketing,Senior Specialist,193109,5.7,3,Low
+EMP-0025,Engineering,Manager,136754,4.9,4,Medium
+EMP-0026,HR,Director,91148,5.5,3,Medium
+EMP-0027,Marketing,Director,170790,11.8,3,High
+EMP-0028,Finance,Lead,134078,1.5,4,Low
+EMP-0029,Sales,Lead,104879,11.1,4,High
+EMP-0030,Sales,Junior Associate,167894,6.0,3,Low
+EMP-0031,Sales,Lead,113839,7.7,3,Low
+EMP-0032,Marketing,Lead,77756,10.0,3,High
+EMP-0033,Sales,Junior Associate,191755,4.6,3,Low
+EMP-0034,Finance,Junior Associate,190097,5.4,3,Low
+EMP-0035,Marketing,Lead,140943,5.2,3,Medium
+EMP-0036,Sales,Director,84744,4.8,4,Medium
+EMP-0037,Engineering,Lead,172697,11.1,4,Medium
+EMP-0038,Engineering,Manager,164072,10.0,3,Low
+EMP-0039,Product,Manager,181196,1.8,3,Low
+EMP-0040,Sales,Manager,55176,1.7,3,High
+EMP-0041,Sales,Senior Specialist,139310,5.4,4,Low
+EMP-0042,Marketing,Manager,93177,1.6,3,Low
+EMP-0043,Marketing,Director,158623,7.6,3,Low
+EMP-0044,Sales,Senior Specialist,48997,2.2,3,Low
+EMP-0045,Product,Senior Specialist,168179,6.5,3,Low
+EMP-0046,Sales,Manager,168403,0.6,4,Low
+EMP-0047,Finance,Lead,190303,4.1,3,Low
+EMP-0048,Marketing,Junior Associate,143287,8.3,3,Low
+EMP-0049,Sales,Lead,167574,6.1,3,Low
+EMP-0050,Marketing,Lead,169509,11.8,3,Low
+EMP-0051,Sales,Senior Specialist,133447,10.6,4,Medium
+EMP-0052,HR,Senior Specialist,157522,4.6,4,Low
+EMP-0053,Marketing,Senior Specialist,129144,1.0,3,Low
+EMP-0054,Product,Director,140693,10.2,1,High
+EMP-0055,HR,Director,142315,11.0,3,Low
+EMP-0056,Finance,Junior Associate,75387,9.9,3,Low
+EMP-0057,Sales,Senior Specialist,52090,2.0,3,Low
+EMP-0058,Finance,Manager,168846,12.0,4,Medium
+EMP-0059,Marketing,Senior Specialist,88239,3.5,3,Medium
+EMP-0060,HR,Director,51743,8.8,3,Medium
+EMP-0061,Finance,Senior Specialist,78924,10.9,3,Medium
+EMP-0062,Product,Director,189268,3.2,4,Low
+EMP-0063,Marketing,Senior Specialist,178160,10.9,3,Low
+EMP-0064,HR,Manager,139815,4.1,4,Low
+EMP-0065,Finance,Junior Associate,153312,11.7,1,Low
+EMP-0066,HR,Manager,116860,3.7,3,Medium
+EMP-0067,HR,Director,128399,11.5,4,Low
+EMP-0068,Finance,Lead,96795,1.1,3,Low
+EMP-0069,Engineering,Manager,99553,8.7,4,Medium
+EMP-0070,Sales,Senior Specialist,151976,6.6,3,Low
+EMP-0071,Marketing,Junior Associate,161566,6.0,3,Low
+EMP-0072,Marketing,Senior Specialist,167968,3.1,3,Low
+EMP-0073,Marketing,Senior Specialist,109600,8.6,3,Low
+EMP-0074,HR,Manager,98022,2.7,3,Low
+EMP-0075,Finance,Junior Associate,182271,6.9,3,Low
+EMP-0076,Sales,Lead,98897,3.4,4,Low
+EMP-0077,Product,Senior Specialist,86038,11.5,3,Medium
+EMP-0078,Marketing,Junior Associate,171323,0.8,3,Medium
+EMP-0079,Finance,Lead,168278,2.8,3,Low
+EMP-0080,Sales,Senior Specialist,159054,3.3,1,Low
+EMP-0081,Sales,Junior Associate,55897,5.3,3,Medium
+EMP-0082,Engineering,Manager,112541,3.2,4,High
+EMP-0083,Finance,Senior Specialist,154968,6.2,4,Low
+EMP-0084,Marketing,Senior Specialist,62892,10.5,3,Low
+EMP-0085,HR,Junior Associate,187343,8.7,5,Medium
+EMP-0086,Sales,Senior Specialist,72815,7.2,3,Low
+EMP-0087,Sales,Lead,93612,1.5,5,Low
+EMP-0088,Product,Senior Specialist,64267,8.5,4,Low
+EMP-0089,Engineering,Director,66268,2.4,4,Low
+EMP-0090,Sales,Lead,162463,9.5,2,Low
+EMP-0091,Sales,Junior Associate,193335,3.4,3,Low
+EMP-0092,HR,Lead,143347,5.3,1,Medium
+EMP-0093,HR,Director,142542,4.5,4,Low
+EMP-0094,Product,Director,114612,10.4,3,Low
+EMP-0095,Finance,Senior Specialist,186307,2.0,4,Low
+EMP-0096,Product,Senior Specialist,136757,7.0,3,Medium
+EMP-0097,Product,Manager,146075,2.1,4,Low
+EMP-0098,HR,Lead,82609,8.6,2,Low
+EMP-0099,Finance,Manager,150785,10.9,3,Low
+EMP-0100,HR,Director,71645,5.5,3,Medium
+EMP-0101,Engineering,Senior Specialist,110233,6.1,3,Low
+EMP-0102,Marketing,Senior Specialist,159443,11.2,3,Low
+EMP-0103,Marketing,Senior Specialist,55771,6.5,4,Low
+EMP-0104,Engineering,Junior Associate,150601,6.1,2,Medium
+EMP-0105,Marketing,Director,181014,7.2,3,Low
+EMP-0106,Finance,Senior Specialist,173224,8.4,4,Medium
+EMP-0107,HR,Director,131251,1.7,2,Medium
+EMP-0108,Marketing,Senior Specialist,105042,9.9,5,Medium
+EMP-0109,Finance,Lead,101740,5.5,5,Low
+EMP-0110,HR,Director,95024,1.3,2,High
+EMP-0111,Finance,Manager,104965,9.5,3,Low
+EMP-0112,Engineering,Junior Associate,58057,4.8,3,Low
+EMP-0113,Product,Manager,56983,1.7,4,Medium
+EMP-0114,Engineering,Director,178469,7.8,3,Low
+EMP-0115,Marketing,Senior Specialist,67995,10.6,3,Low
+EMP-0116,HR,Director,162587,10.7,4,Low
+EMP-0117,Finance,Junior Associate,86886,11.5,2,Low
+EMP-0118,Marketing,Director,137025,10.5,4,Low
+EMP-0119,Marketing,Senior Specialist,143149,0.5,4,Medium
+EMP-0120,Product,Manager,142020,4.9,3,Medium
+EMP-0121,Marketing,Lead,50673,9.9,4,Low
+EMP-0122,Product,Manager,125513,4.7,4,Low
+EMP-0123,HR,Senior Specialist,71466,7.4,3,High
+EMP-0124,HR,Senior Specialist,140545,7.5,3,Low
+EMP-0125,Finance,Junior Associate,98406,4.7,3,Low
+EMP-0126,Product,Director,182760,10.9,2,Low
+EMP-0127,Engineering,Director,117284,6.3,5,Low
+EMP-0128,HR,Manager,162579,5.8,2,Low
+EMP-0129,Finance,Lead,61665,12.0,4,Low
+EMP-0130,Engineering,Lead,68641,6.2,3,Low
+EMP-0131,HR,Junior Associate,83797,2.6,1,Low
+EMP-0132,HR,Senior Specialist,93950,6.4,5,Low
+EMP-0133,Finance,Junior Associate,177554,9.9,4,Medium
+EMP-0134,Finance,Director,150339,9.4,3,Medium
+EMP-0135,Sales,Senior Specialist,161431,9.6,3,Low
+EMP-0136,Marketing,Junior Associate,188710,8.6,2,Low
+EMP-0137,Marketing,Manager,69173,3.4,3,High
+EMP-0138,Engineering,Director,192294,10.4,3,Low
+EMP-0139,Marketing,Lead,66095,10.8,3,Medium
+EMP-0140,Engineering,Junior Associate,171554,2.7,5,Low
+EMP-0141,HR,Director,180511,2.0,3,High
+EMP-0142,Sales,Director,173614,11.7,4,Low
+EMP-0143,Sales,Lead,184447,10.5,4,Low
+EMP-0144,HR,Lead,137023,10.8,3,Medium
+EMP-0145,Finance,Lead,155181,10.7,4,Low
+EMP-0146,Product,Junior Associate,68600,6.7,3,Low
+EMP-0147,Product,Lead,50466,7.9,4,Low
+EMP-0148,Marketing,Manager,157934,6.8,3,Medium
+EMP-0149,Finance,Director,101276,1.1,2,Low
+EMP-0150,Engineering,Lead,54928,9.1,4,Low
+EMP-0151,Sales,Director,103309,6.3,3,Low
+EMP-0152,Marketing,Senior Specialist,164196,7.9,4,Low
+EMP-0153,HR,Senior Specialist,57404,6.3,5,Low
+EMP-0154,Finance,Lead,161187,6.2,2,Low
+EMP-0155,Sales,Director,158449,2.5,3,Low
+EMP-0156,Engineering,Senior Specialist,75684,3.7,3,Low
+EMP-0157,Engineering,Lead,116591,2.3,3,Low
+EMP-0158,Product,Director,167821,2.8,4,Low
+EMP-0159,Marketing,Lead,50682,11.7,3,Low
+EMP-0160,HR,Director,159186,2.3,3,Low
+EMP-0161,Sales,Senior Specialist,69832,3.6,4,High
+EMP-0162,Engineering,Lead,64997,7.3,2,Low
+EMP-0163,Sales,Senior Specialist,82640,7.5,4,Medium
+EMP-0164,HR,Lead,88491,2.3,3,Low
+EMP-0165,Sales,Junior Associate,111043,9.6,5,Low
+EMP-0166,Marketing,Senior Specialist,160175,9.5,3,Low
+EMP-0167,Product,Senior Specialist,176568,3.2,2,Low
+EMP-0168,Sales,Manager,162250,3.8,3,High
+EMP-0169,Finance,Senior Specialist,120725,11.3,2,High
+EMP-0170,Product,Director,176131,10.0,5,Medium
+EMP-0171,HR,Lead,93520,8.5,1,Low
+EMP-0172,Product,Junior Associate,110919,1.4,4,Low
+EMP-0173,Sales,Director,157869,5.3,3,Low
+EMP-0174,Sales,Director,112442,6.9,3,High
+EMP-0175,Finance,Director,153246,2.7,2,Low
+EMP-0176,Engineering,Director,157687,5.7,3,Low
+EMP-0177,Finance,Junior Associate,171447,7.4,3,Low
+EMP-0178,Sales,Manager,109477,4.3,3,Low
+EMP-0179,Product,Senior Specialist,48244,9.5,5,High
+EMP-0180,Finance,Director,127453,10.2,3,Low
+EMP-0181,Finance,Senior Specialist,175962,4.2,3,Low
+EMP-0182,Engineering,Senior Specialist,119303,10.1,3,Low
+EMP-0183,Sales,Director,76390,1.7,2,Medium
+EMP-0184,Sales,Manager,58247,10.1,5,Low
+EMP-0185,HR,Senior Specialist,77583,2.3,3,Medium
+EMP-0186,Engineering,Lead,187148,1.5,2,Low
+EMP-0187,HR,Senior Specialist,194123,7.9,3,Medium
+EMP-0188,HR,Director,183386,5.9,3,Medium
+EMP-0189,HR,Junior Associate,76670,10.9,3,Low
+EMP-0190,Marketing,Senior Specialist,172920,4.7,4,Low
+EMP-0191,HR,Manager,58236,3.8,2,Low
+EMP-0192,Finance,Lead,83568,6.3,3,Low
+EMP-0193,Product,Lead,155327,5.7,4,Medium
+EMP-0194,Finance,Junior Associate,158188,4.5,2,Low
+EMP-0195,Finance,Junior Associate,64352,8.5,4,Low
+EMP-0196,Sales,Senior Specialist,173721,9.2,2,Low
+EMP-0197,Marketing,Director,189418,10.3,4,Low
+EMP-0198,HR,Manager,103904,11.7,3,Medium
+EMP-0199,Sales,Lead,193107,3.6,3,Low
+EMP-0200,Engineering,Junior Associate,170141,8.7,3,High
+EMP-0201,Engineering,Manager,64108,5.0,2,High
+EMP-0202,Sales,Director,50853,8.3,3,Low
+EMP-0203,Product,Lead,132156,6.0,2,Low
+EMP-0204,Sales,Lead,52176,11.9,3,Medium
+EMP-0205,Sales,Director,148459,8.9,3,Low
+EMP-0206,Marketing,Lead,185901,11.5,3,Low
+EMP-0207,Engineering,Director,171225,10.1,4,Low
+EMP-0208,Engineering,Lead,166458,10.9,4,Low
+EMP-0209,HR,Senior Specialist,158893,9.9,3,Medium
+EMP-0210,Finance,Director,121927,5.8,3,Low
+EMP-0211,Sales,Manager,166178,3.4,3,Low
+EMP-0212,Sales,Senior Specialist,88667,4.8,3,High
+EMP-0213,Product,Manager,54611,0.7,4,Medium
+EMP-0214,Engineering,Lead,136242,6.5,3,Low
+EMP-0215,Product,Manager,132612,6.3,1,Medium
+EMP-0216,Marketing,Senior Specialist,94902,6.5,4,Low
+EMP-0217,HR,Director,81043,11.7,3,Medium
+EMP-0218,Product,Junior Associate,184343,11.0,4,Low
+EMP-0219,Engineering,Manager,120867,2.4,4,Low
+EMP-0220,Marketing,Junior Associate,125089,4.7,2,Medium
+EMP-0221,Sales,Manager,106745,5.4,2,Low
+EMP-0222,Marketing,Manager,190645,4.6,3,High
+EMP-0223,Finance,Director,133970,9.7,3,Low
+EMP-0224,Product,Lead,72464,6.5,3,High
+EMP-0225,Engineering,Senior Specialist,166523,7.1,4,High
+EMP-0226,Product,Senior Specialist,68662,10.3,3,Low
+EMP-0227,Sales,Senior Specialist,66228,9.8,3,Medium
+EMP-0228,Sales,Lead,108721,2.0,1,Low
+EMP-0229,Engineering,Junior Associate,186458,8.7,4,Medium
+EMP-0230,Finance,Senior Specialist,54862,5.5,3,Low
+EMP-0231,HR,Junior Associate,88108,3.9,4,Medium
+EMP-0232,Marketing,Lead,139788,1.1,3,Low
+EMP-0233,Marketing,Lead,128140,6.1,3,Low
+EMP-0234,Sales,Director,116578,4.6,4,Low
+EMP-0235,Product,Senior Specialist,97966,3.4,4,Low
+EMP-0236,Product,Director,58386,8.5,3,Medium
+EMP-0237,Finance,Senior Specialist,125228,9.3,3,Low
+EMP-0238,HR,Lead,194297,3.3,4,Low
+EMP-0239,Product,Lead,120197,1.1,3,Low
+EMP-0240,Marketing,Manager,91021,10.3,3,Low
+EMP-0241,Product,Manager,166915,0.6,5,Low
+EMP-0242,HR,Lead,165174,11.3,3,Medium
+EMP-0243,Marketing,Lead,134755,7.7,1,High
+EMP-0244,Product,Junior Associate,191009,4.2,1,Low
+EMP-0245,Marketing,Junior Associate,114330,3.3,3,Low
+EMP-0246,Sales,Director,120322,0.6,4,Low
+EMP-0247,Sales,Manager,150318,3.2,3,Low
+EMP-0248,Finance,Manager,93313,2.1,3,Low
+EMP-0249,Sales,Lead,75032,7.5,3,Medium
+EMP-0250,Product,Lead,109710,2.4,4,Low
+EMP-0251,HR,Director,143326,6.6,2,Medium
+EMP-0252,Marketing,Manager,134157,7.3,5,Low
+EMP-0253,Engineering,Junior Associate,76365,3.9,3,Low
+EMP-0254,Sales,Senior Specialist,61189,0.9,5,Low
+EMP-0255,Sales,Director,55248,0.9,3,Low
+EMP-0256,Engineering,Senior Specialist,52369,0.8,4,Low
+EMP-0257,Engineering,Junior Associate,187122,9.0,3,Medium
+EMP-0258,Product,Junior Associate,76605,4.2,2,Low
+EMP-0259,Marketing,Senior Specialist,97616,9.7,4,Medium
+EMP-0260,Sales,Director,151719,5.5,4,Low
+EMP-0261,HR,Senior Specialist,81055,5.7,3,Low
+EMP-0262,Product,Director,164680,6.4,4,Low
+EMP-0263,Product,Director,55450,8.7,3,Low
+EMP-0264,HR,Lead,181997,3.6,4,Low
+EMP-0265,HR,Manager,98272,1.9,3,Low
+EMP-0266,Finance,Manager,53310,6.9,3,Low
+EMP-0267,HR,Junior Associate,79817,4.3,3,Low
+EMP-0268,Engineering,Lead,130641,5.6,3,Low
+EMP-0269,Sales,Manager,63457,7.9,4,Low
+EMP-0270,Finance,Director,90311,6.2,3,Low
+EMP-0271,Engineering,Director,183052,7.6,2,High
+EMP-0272,Finance,Senior Specialist,171573,6.8,3,Low
+EMP-0273,Sales,Senior Specialist,145427,9.0,4,Medium
+EMP-0274,Finance,Director,84181,8.6,3,Low
+EMP-0275,Engineering,Director,180019,6.6,3,Medium
+EMP-0276,Marketing,Senior Specialist,179094,8.3,5,Low
+EMP-0277,Sales,Manager,49128,10.5,3,High
+EMP-0278,Product,Junior Associate,127522,5.5,4,Low
+EMP-0279,Sales,Senior Specialist,96929,5.2,4,Medium
+EMP-0280,Sales,Manager,129696,9.3,3,Low
+EMP-0281,Sales,Manager,163245,7.2,5,Low
+EMP-0282,Marketing,Manager,57808,1.3,4,Low
+EMP-0283,Engineering,Lead,143148,10.8,3,Low
+EMP-0284,Product,Lead,69725,0.9,3,Low
+EMP-0285,Engineering,Manager,120534,9.1,4,Low
+EMP-0286,Finance,Director,87950,9.2,3,Low
+EMP-0287,Finance,Lead,131576,11.5,4,High
+EMP-0288,Finance,Senior Specialist,68557,1.1,3,Low
+EMP-0289,Engineering,Lead,69825,7.4,3,Medium
+EMP-0290,HR,Director,56998,5.4,3,Low
+EMP-0291,Marketing,Junior Associate,84080,4.3,1,Low
+EMP-0292,HR,Lead,194874,1.5,1,High
+EMP-0293,Finance,Manager,190239,7.0,4,Medium
+EMP-0294,Marketing,Manager,90407,6.0,4,Medium
+EMP-0295,Engineering,Manager,168283,1.7,4,Low
+EMP-0296,Finance,Junior Associate,61338,7.5,3,Low
+EMP-0297,Engineering,Director,124289,9.0,4,Low
+EMP-0298,Marketing,Senior Specialist,179029,9.3,3,Low
+EMP-0299,Engineering,Director,157367,10.9,4,Low
+EMP-0300,Engineering,Junior Associate,113898,5.2,3,Medium
+EMP-0301,Product,Manager,182526,11.5,5,Medium
+EMP-0302,HR,Director,165486,10.5,4,Low
+EMP-0303,HR,Senior Specialist,134540,3.9,3,Low
+EMP-0304,HR,Manager,184421,2.3,3,Medium
+EMP-0305,Sales,Senior Specialist,173416,5.5,3,Low
+EMP-0306,Product,Lead,87963,5.1,2,Low
+EMP-0307,Finance,Senior Specialist,186822,7.1,3,Low
+EMP-0308,Finance,Manager,142929,7.2,3,Low
+EMP-0309,Finance,Lead,122935,9.1,2,High
+EMP-0310,HR,Manager,61686,6.4,5,Low
+EMP-0311,HR,Manager,111528,1.7,3,Low
+EMP-0312,Product,Lead,147811,10.4,4,Low
+EMP-0313,Engineering,Senior Specialist,70787,4.1,4,Medium
+EMP-0314,HR,Junior Associate,193848,11.7,3,Medium
+EMP-0315,Finance,Junior Associate,163613,1.9,3,Low
+EMP-0316,Engineering,Junior Associate,152887,11.5,4,Low
+EMP-0317,HR,Junior Associate,109086,1.5,5,Low
+EMP-0318,Marketing,Director,150231,3.2,3,Low
+EMP-0319,Sales,Junior Associate,111308,1.0,4,Low
+EMP-0320,HR,Lead,63797,8.6,5,Low
+EMP-0321,Marketing,Junior Associate,53302,10.3,4,Low
+EMP-0322,Product,Manager,86059,5.5,5,Low
+EMP-0323,Marketing,Junior Associate,179980,11.2,3,Low
+EMP-0324,Product,Senior Specialist,191949,7.3,5,Medium
+EMP-0325,HR,Lead,62239,7.7,4,Low
+EMP-0326,Product,Lead,75313,10.2,1,Low
+EMP-0327,Marketing,Director,90103,3.9,5,High
+EMP-0328,Sales,Manager,136771,4.6,3,Low
+EMP-0329,Engineering,Lead,174228,10.9,3,Medium
+EMP-0330,Engineering,Senior Specialist,139665,10.9,3,Low
+EMP-0331,Sales,Junior Associate,58534,11.7,2,Low
+EMP-0332,Finance,Lead,91060,10.9,3,Medium
+EMP-0333,Engineering,Senior Specialist,65189,2.0,4,Low
+EMP-0334,HR,Junior Associate,176431,10.0,1,Medium
+EMP-0335,Finance,Director,134067,5.2,3,Low
+EMP-0336,HR,Lead,58967,11.9,1,Low
+EMP-0337,Marketing,Lead,113563,5.9,3,Low
+EMP-0338,Marketing,Senior Specialist,56660,6.9,4,Low
+EMP-0339,Finance,Manager,166671,6.6,4,Low
+EMP-0340,Finance,Director,177909,4.2,5,Low
+EMP-0341,Finance,Manager,188688,1.4,3,Low
+EMP-0342,Finance,Lead,123976,10.8,3,Low
+EMP-0343,Product,Manager,61107,9.7,5,Medium
+EMP-0344,Finance,Junior Associate,142182,2.1,4,Low
+EMP-0345,Finance,Director,139787,9.4,3,High
+EMP-0346,Marketing,Manager,63954,7.7,4,Low
+EMP-0347,HR,Junior Associate,64943,5.2,5,Low
+EMP-0348,Marketing,Senior Specialist,88725,3.4,4,Medium
+EMP-0349,Engineering,Manager,93434,10.4,3,Low
+EMP-0350,Product,Director,133751,8.6,4,Low
+EMP-0351,Product,Junior Associate,58110,6.8,1,Low
+EMP-0352,HR,Manager,64462,7.5,3,Low
+EMP-0353,Finance,Senior Specialist,127232,1.5,3,Low
+EMP-0354,Marketing,Manager,114567,6.0,3,High
+EMP-0355,Engineering,Junior Associate,175425,2.7,1,Low
+EMP-0356,Marketing,Manager,104063,2.9,2,Medium
+EMP-0357,Finance,Director,161394,8.1,4,Low
+EMP-0358,Finance,Lead,103240,11.0,4,Low
+EMP-0359,Sales,Junior Associate,129352,5.1,5,Low
+EMP-0360,Marketing,Junior Associate,128989,2.9,3,Medium
+EMP-0361,HR,Junior Associate,70222,8.0,3,Medium
+EMP-0362,Marketing,Junior Associate,127794,10.5,5,Low
+EMP-0363,Product,Manager,111924,9.1,3,Low
+EMP-0364,Engineering,Director,147854,10.5,4,Low
+EMP-0365,HR,Senior Specialist,126513,6.7,4,Low
+EMP-0366,Sales,Director,102649,9.1,2,Low
+EMP-0367,Engineering,Junior Associate,150986,2.1,4,Medium
+EMP-0368,Engineering,Manager,131749,4.5,4,Low
+EMP-0369,Product,Manager,189295,5.0,1,Medium
+EMP-0370,Product,Junior Associate,87369,6.4,2,Low
+EMP-0371,Product,Manager,134379,11.2,1,Low
+EMP-0372,HR,Junior Associate,117392,10.6,3,Low
+EMP-0373,Marketing,Director,60661,2.0,3,Medium
+EMP-0374,Engineering,Lead,194663,2.5,3,Medium
+EMP-0375,Marketing,Manager,119718,4.6,3,Low
+EMP-0376,Marketing,Junior Associate,55970,3.8,5,Low
+EMP-0377,Product,Junior Associate,95922,7.6,3,Low
+EMP-0378,Marketing,Manager,78755,10.9,1,Low
+EMP-0379,Engineering,Senior Specialist,168926,11.6,3,Low
+EMP-0380,Engineering,Junior Associate,67416,8.0,3,Medium
+EMP-0381,Finance,Manager,61672,10.1,3,Low
+EMP-0382,Sales,Junior Associate,176145,6.5,3,Medium
+EMP-0383,HR,Senior Specialist,122095,2.9,2,Low
+EMP-0384,Marketing,Lead,48064,6.5,4,Low
+EMP-0385,HR,Senior Specialist,116835,6.9,5,High
+EMP-0386,HR,Director,184711,9.0,3,Low
+EMP-0387,HR,Manager,190127,3.0,3,Medium
+EMP-0388,Finance,Senior Specialist,135594,4.7,3,Low
+EMP-0389,HR,Lead,164916,4.7,4,Low
+EMP-0390,Finance,Junior Associate,168308,11.5,3,Medium
+EMP-0391,Engineering,Manager,130516,5.6,5,Medium
+EMP-0392,Marketing,Senior Specialist,112666,9.2,3,Low
+EMP-0393,Finance,Lead,166294,9.1,3,Low
+EMP-0394,Sales,Senior Specialist,58866,3.6,3,Medium
+EMP-0395,HR,Director,51889,7.1,5,Medium
+EMP-0396,Sales,Manager,166194,10.8,4,Low
+EMP-0397,Engineering,Junior Associate,172714,6.0,1,Medium
+EMP-0398,Engineering,Lead,79335,11.4,3,Low
+EMP-0399,Product,Senior Specialist,98547,3.0,3,Low
+EMP-0400,HR,Manager,146756,1.4,3,Low
+EMP-0401,Product,Senior Specialist,58995,10.8,4,Low
+EMP-0402,Sales,Manager,50631,10.2,4,High
+EMP-0403,Marketing,Director,185039,11.9,4,Low
+EMP-0404,Product,Senior Specialist,136294,8.3,5,High
+EMP-0405,Engineering,Director,135278,11.3,3,Low
+EMP-0406,HR,Lead,112471,10.0,4,Medium
+EMP-0407,Sales,Director,85116,10.2,4,Medium
+EMP-0408,Finance,Manager,140116,7.0,3,Low
+EMP-0409,Engineering,Lead,181014,4.9,4,Low
+EMP-0410,Finance,Senior Specialist,95664,11.2,2,Low
+EMP-0411,Marketing,Senior Specialist,135342,5.5,4,Medium
+EMP-0412,HR,Manager,62407,6.7,3,Medium
+EMP-0413,Marketing,Junior Associate,161926,5.6,3,Low
+EMP-0414,Marketing,Junior Associate,107201,7.0,4,Medium
+EMP-0415,HR,Senior Specialist,128093,5.9,3,Low
+EMP-0416,HR,Manager,65878,1.1,3,Low
+EMP-0417,Finance,Junior Associate,131100,10.6,1,Medium
+EMP-0418,Marketing,Director,126629,5.6,3,Low
+EMP-0419,Sales,Senior Specialist,91168,7.3,3,Medium
+EMP-0420,Finance,Director,102862,2.1,4,Low
+EMP-0421,HR,Manager,76004,0.5,5,Low
+EMP-0422,Engineering,Director,68471,3.3,3,Low
+EMP-0423,Finance,Junior Associate,139820,8.6,4,Low
+EMP-0424,Product,Junior Associate,150229,1.6,3,Medium
+EMP-0425,Sales,Lead,113308,11.0,4,Low
+EMP-0426,Finance,Senior Specialist,131969,3.0,3,Low
+EMP-0427,HR,Manager,62568,2.9,3,Low
+EMP-0428,HR,Senior Specialist,57466,2.6,3,Low
+EMP-0429,Sales,Director,105324,0.7,1,Medium
+EMP-0430,Product,Manager,150208,9.4,4,Low
+EMP-0431,Finance,Manager,194539,10.6,4,Low
+EMP-0432,Finance,Junior Associate,123955,7.6,3,Medium
+EMP-0433,Marketing,Director,142791,2.7,3,Low
+EMP-0434,Engineering,Junior Associate,156718,3.8,4,Medium
+EMP-0435,HR,Junior Associate,70650,6.0,4,Low
+EMP-0436,Finance,Lead,136290,11.5,3,Low
+EMP-0437,Finance,Junior Associate,125701,3.3,3,Medium
+EMP-0438,Finance,Senior Specialist,58683,8.9,4,Medium
+EMP-0439,Product,Manager,128978,5.6,3,Low
+EMP-0440,Engineering,Junior Associate,52860,3.9,3,Low
+EMP-0441,Finance,Senior Specialist,182801,5.7,3,Low
+EMP-0442,Sales,Director,79351,1.3,4,Low
+EMP-0443,HR,Manager,110744,9.7,4,Medium
+EMP-0444,Marketing,Director,168198,3.3,5,Low
+EMP-0445,Sales,Senior Specialist,122155,8.8,4,Low
+EMP-0446,HR,Director,169449,1.3,5,Medium
+EMP-0447,Product,Director,124700,11.5,3,Low
+EMP-0448,Engineering,Director,54955,2.7,4,Low
+EMP-0449,Engineering,Junior Associate,69662,10.7,1,Medium
+EMP-0450,HR,Junior Associate,54408,9.8,4,Medium

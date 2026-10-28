@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import logging
+from typing import Any, Optional
 import uuid
 from pathlib import Path
 
@@ -65,12 +66,21 @@ async def get_plot(filename: str):
 
 
 @router.post("/chat")
-async def chat(query: str = Form(...)):
+async def chat(
+    query: str = Form(...),
+    session_id: Optional[str] = Form(None),
+    source_id: Optional[str] = Form(None),
+):
     if not query.strip():
         raise HTTPException(status_code=400, detail="Enter a question about your documents")
     chain = get_chatbot_chain()
-    response = await run_in_threadpool(chain.invoke, {"question": query.strip()})
-    return {"response": response["answer"]}
+    payload = {
+        "question": query.strip(),
+        "session_id": session_id or "default",
+        "source_id": source_id,
+    }
+    response = await run_in_threadpool(chain.invoke, payload)
+    return {"response": response["answer"], "session_id": payload["session_id"]}
 
 
 @router.post("/report")

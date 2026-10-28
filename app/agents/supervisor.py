@@ -126,7 +126,7 @@ async def supervisor_node(state: AgentState) -> dict[str, Any]:
     # Call LLM for routing
     history_ctx = ""
     if chat_history:
-        history_ctx = f"\nRecent conversation:\n" + "\n".join(chat_history[-3:])
+        history_ctx = f"\nRecent conversation (last 6 turns):\n" + "\n".join(chat_history[-6:])
 
     user_msg = f"Question: {question}{history_ctx}"
     if state.get("source_id"):

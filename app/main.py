@@ -19,7 +19,7 @@ from typing import Any, AsyncIterator, Optional
 
 import pandas as pd
 import numpy as np
-from fastapi import BackgroundTasks, Depends, FastAPI, File, HTTPException, UploadFile
+from fastapi import BackgroundTasks, Depends, FastAPI, File, Form, HTTPException, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, JSONResponse, StreamingResponse
 from fastapi.staticfiles import StaticFiles
@@ -63,6 +63,11 @@ class DatasetReportRequest(BaseModel):
     title: str = Field(min_length=1, max_length=25)
 
 
+class MLTrainRequest(BaseModel):
+    target_col: str
+    task_type: Optional[str] = None
+
+
 # ─────────────────────────────────────────────────────────────────────────────
 # App factory
 # ─────────────────────────────────────────────────────────────────────────────
@@ -73,7 +78,7 @@ def create_app() -> FastAPI:
     app = FastAPI(
         title="QuantAI AI",
         description="MCP-powered local AI data analyst — your data never leaves this machine",
-        version="1.2",
+        version="V2.122",
     )
 
     # CORS: localhost only
@@ -83,6 +88,7 @@ def create_app() -> FastAPI:
             "http://127.0.0.1:5173",
             "http://localhost:5173",
             f"http://127.0.0.1:{cfg.app_port}",
+            f"http://localhost:{cfg.app_port}",
         ],
         allow_credentials=True,
         allow_methods=["*"],
@@ -309,8 +315,25 @@ def create_app() -> FastAPI:
             raise HTTPException(status_code=500, detail=str(exc))
 
     # ── Upload ────────────────────────────────────────────────────────────────
+    @app.post("/api/upload/inspect-sheets")
+    async def inspect_sheets(file: UploadFile = File(...)):
+        """Inspect sheet names in an uploaded Excel workbook before full import."""
+        suffix = Path(file.filename or "").suffix.lower()
+        if suffix not in (".xlsx", ".xls"):
+            return {"sheet_names": [], "is_excel": False}
+        try:
+            content = await file.read()
+            import io
+            xls = pd.ExcelFile(io.BytesIO(content))
+            return {"sheet_names": list(xls.sheet_names), "is_excel": True}
+        except Exception as exc:
+            raise HTTPException(status_code=400, detail=f"Could not read Excel sheets: {exc}")
+
     @app.post("/api/upload")
-    async def upload_file(file: UploadFile = File(...)):
+    async def upload_file(
+        file: UploadFile = File(...),
+        sheet_name: Optional[str] = Form(None),
+    ):
         """Upload CSV or Excel, import to MySQL, register as source."""
         cfg = get_settings()
         allowed = (".csv", ".xlsx", ".xls")
@@ -337,11 +360,13 @@ def create_app() -> FastAPI:
             log.info("Uploaded %s (%d bytes)", filename, total_bytes)
 
             from app.utils.import_pipeline import import_file
-            result = await import_file(upload_path, filename)
+            result = await import_file(upload_path, filename, sheet_name=sheet_name)
+
+            display_name = f"{filename} [{sheet_name}]" if sheet_name else filename
 
             # Register source in DB
             source_id = await _register_source(
-                name=filename,
+                name=display_name,
                 source_type="csv" if suffix == ".csv" else "excel",
                 table_name=result["table_name"],
                 schema_name=result["schema_name"],
@@ -357,6 +382,10 @@ def create_app() -> FastAPI:
                 "row_count": result["row_count"],
                 "col_count": result["col_count"],
                 "elapsed_sec": result["elapsed_sec"],
+                "sheet_names": result.get("sheet_names", []),
+                "selected_sheet": sheet_name,
+                "transformations": result.get("transformations", []),
+                "quality_notes": result.get("quality_notes", []),
                 "message": f"Imported {result['row_count']:,} rows × {result['col_count']} columns in {result['elapsed_sec']:.1f}s",
             }
         except HTTPException:
@@ -537,7 +566,120 @@ def create_app() -> FastAPI:
             )
         return {"rows": _df_to_preview(df), "page": page, "page_size": page_size}
 
+    @app.get("/api/sources/{source_id}/ml/suitability")
+    async def get_ml_suitability(source_id: str):
+        """Assess dataset suitability for ML tasks."""
+        from app.storage.models import Source
+        from app.storage.database import app_session, readonly_session
+        from sqlalchemy import text as sa_text
+        from app.ml.dataset_intelligence import assess_ml_suitability
+
+        with app_session() as session:
+            src = session.get(Source, source_id)
+            if not src:
+                raise HTTPException(404, "Source not found")
+            table_name = src.table_name
+
+        with readonly_session() as conn:
+            sample_df = pd.read_sql(
+                sa_text(f"SELECT * FROM `quantai_data`.`{table_name}` LIMIT 5000"),
+                conn,
+            )
+        return await run_in_threadpool(assess_ml_suitability, sample_df)
+
+    @app.post("/api/sources/{source_id}/ml/analyze")
+    async def run_ml_analysis(source_id: str, max_features: int = 8, max_clusters: int = 5):
+        """Run transparent anomaly detection & clustering."""
+        from app.storage.models import Source
+        from app.storage.database import app_session, readonly_session
+        from sqlalchemy import text as sa_text
+        from app.ml.dataset_intelligence import analyze_numeric_features, summarize_ml_analysis
+
+        with app_session() as session:
+            src = session.get(Source, source_id)
+            if not src:
+                raise HTTPException(404, "Source not found")
+            table_name = src.table_name
+
+        with readonly_session() as conn:
+            sample_df = pd.read_sql(
+                sa_text(f"SELECT * FROM `quantai_data`.`{table_name}` LIMIT 5000"),
+                conn,
+            )
+        res = await run_in_threadpool(analyze_numeric_features, sample_df, max_features, max_clusters)
+        res["summary_text"] = summarize_ml_analysis(res)
+        return res
+
+    @app.post("/api/sources/{source_id}/ml/train")
+    async def run_ml_train(source_id: str, req: MLTrainRequest):
+        """Train a baseline supervised model with train/test evaluation."""
+        from app.storage.models import Source
+        from app.storage.database import app_session, readonly_session
+        from sqlalchemy import text as sa_text
+        from app.ml.dataset_intelligence import train_baseline_model
+
+        with app_session() as session:
+            src = session.get(Source, source_id)
+            if not src:
+                raise HTTPException(404, "Source not found")
+            table_name = src.table_name
+
+        with readonly_session() as conn:
+            sample_df = pd.read_sql(
+                sa_text(f"SELECT * FROM `quantai_data`.`{table_name}` LIMIT 5000"),
+                conn,
+            )
+        try:
+            return await run_in_threadpool(train_baseline_model, sample_df, req.target_col, req.task_type)
+        except ValueError as err:
+            raise HTTPException(400, str(err))
+
+    @app.get("/api/sources/{source_id}/text/columns")
+    async def get_text_columns(source_id: str):
+        """Identify narrative/text columns suitable for AI summarization."""
+        from app.storage.models import Source
+        from app.storage.database import app_session, readonly_session
+        from sqlalchemy import text as sa_text
+        from app.rag.summary import detect_text_columns
+
+        with app_session() as session:
+            src = session.get(Source, source_id)
+            if not src:
+                raise HTTPException(404, "Source not found")
+            table_name = src.table_name
+
+        with readonly_session() as conn:
+            sample_df = pd.read_sql(
+                sa_text(f"SELECT * FROM `quantai_data`.`{table_name}` LIMIT 500"),
+                conn,
+            )
+        return {"text_columns": detect_text_columns(sample_df)}
+
+    @app.post("/api/sources/{source_id}/text/summarize")
+    async def summarize_source_text(source_id: str, column_name: str, max_records: int = 50):
+        """Summarize narrative text in a column using grounded AI summarization."""
+        from app.storage.models import Source
+        from app.storage.database import app_session, readonly_session
+        from sqlalchemy import text as sa_text
+        from app.rag.summary import summarize_text_records
+
+        with app_session() as session:
+            src = session.get(Source, source_id)
+            if not src:
+                raise HTTPException(404, "Source not found")
+            table_name = src.table_name
+
+        clean_col = column_name.strip("`")
+        with readonly_session() as conn:
+            df = pd.read_sql(
+                sa_text(f"SELECT `{clean_col}` AS text FROM `quantai_data`.`{table_name}` WHERE `{clean_col}` IS NOT NULL LIMIT {max_records}"),
+                conn,
+            )
+        records = [{"row_id": i + 1, "text": str(val)} for i, val in enumerate(df["text"])]
+        return await summarize_text_records(records, context_title=f"{src.name} - {clean_col}")
+
     @app.delete("/api/uploads/{source_id}")
+    @app.delete("/api/sources/{source_id}")
     async def delete_source(source_id: str):
         """Delete source: drops table, catalog, embeddings, examples, exports."""
         try:
@@ -938,24 +1080,69 @@ async def _delete_source_fully(source_id: str) -> None:
 
 
 def _generate_suggestions(cols: list, src: Any) -> list[str]:
-    """Generate starter questions based on actual columns."""
-    numeric_cols = [c.safe_name for c in cols if c.col_type in ("int", "float")]
-    cat_cols = [c.safe_name for c in cols if c.col_type == "str"]
-    date_cols = [c.safe_name for c in cols if c.is_date_col]
+    """Generate smart, domain-aware starter questions based on actual columns and semantics."""
+    numeric_cols = [c for c in cols if c.col_type in ("int", "float") and not getattr(c, "is_key_col", False)]
+    cat_cols = [c for c in cols if c.col_type == "str" and not getattr(c, "is_key_col", False) and (getattr(c, "distinct_count", 0) or 0) <= 50]
+    date_cols = [c for c in cols if getattr(c, "is_date_col", False)]
 
     suggestions = []
-    if numeric_cols and date_cols:
-        suggestions.append(f"What is the trend of {numeric_cols[0]} over time?")
-    if numeric_cols and cat_cols:
-        suggestions.append(f"Which {cat_cols[0]} has the highest {numeric_cols[0]}?")
-    if numeric_cols:
-        suggestions.append(f"What are the top 10 rows by {numeric_cols[0]}?")
-    if date_cols:
-        suggestions.append(f"How did {numeric_cols[0] if numeric_cols else 'count'} change last quarter?")
 
-    suggestions.append("How many rows does this dataset have?")
-    suggestions.append("Which columns have the most missing values?")
-    return suggestions[:6]
+    # Semantic groupings
+    monetary = [c for c in numeric_cols if any(k in c.safe_name.lower() for k in ["revenue", "sales", "price", "cost", "salary", "amount", "profit", "spend", "budget", "income", "fee"])]
+    performance = [c for c in numeric_cols if any(k in c.safe_name.lower() for k in ["score", "grade", "gpa", "rating", "rank", "result", "pct", "percent", "ratio", "accuracy"])]
+    volume = [c for c in numeric_cols if any(k in c.safe_name.lower() for k in ["quantity", "count", "units", "inventory", "stock", "headcount", "hours", "duration"])]
+    clinical = [c for c in numeric_cols if any(k in c.safe_name.lower() for k in ["blood_pressure", "heart_rate", "glucose", "cholesterol", "bmi", "dose", "age", "temp", "stay"])]
+
+    primary_num = monetary or performance or clinical or volume or numeric_cols
+    primary_num_name = (getattr(primary_num[0], "original_name", "") or primary_num[0].safe_name) if primary_num else None
+
+    group_dims = [c for c in cat_cols if 2 <= (getattr(c, "distinct_count", 0) or 0) <= 30] or cat_cols
+    group_name = (getattr(group_dims[0], "original_name", "") or group_dims[0].safe_name) if group_dims else None
+
+    date_name = (getattr(date_cols[0], "original_name", "") or date_cols[0].safe_name) if date_cols else None
+
+    # 1. Aggregation / Comparison
+    if primary_num_name and group_name:
+        suggestions.append(f"What is the average {primary_num_name} by {group_name}?")
+        suggestions.append(f"Which {group_name} has the highest total {primary_num_name}?")
+    elif primary_num_name:
+        suggestions.append(f"What is the overall average, minimum, and maximum of {primary_num_name}?")
+
+    # 2. Time series / Trend
+    if primary_num_name and date_name:
+        suggestions.append(f"How does {primary_num_name} trend over time by {date_name}?")
+    elif date_name:
+        suggestions.append(f"How are records distributed over time by {date_name}?")
+
+    # 3. Correlation / Multi-metric relationship
+    if len(numeric_cols) >= 2:
+        m1 = getattr(numeric_cols[0], "original_name", "") or numeric_cols[0].safe_name
+        m2 = getattr(numeric_cols[1], "original_name", "") or numeric_cols[1].safe_name
+        suggestions.append(f"What is the correlation between {m1} and {m2}?")
+
+    # 4. Top entities / Distribution
+    if primary_num_name:
+        suggestions.append(f"What are the top 10 records by {primary_num_name}?")
+
+    # 5. Categorical breakdown
+    if group_name:
+        suggestions.append(f"What is the breakdown of records by {group_name}?")
+
+    # 6. Data quality & anomalies
+    suggestions.append("Which columns have missing values, and are there any notable outliers?")
+    suggestions.append("How many total records and fields are in this dataset?")
+
+    # Deduplicate while preserving order, cap at 6
+    seen = set()
+    unique_suggestions = []
+    for s in suggestions:
+        if s not in seen:
+            seen.add(s)
+            unique_suggestions.append(s)
+            if len(unique_suggestions) >= 6:
+                break
+
+    return unique_suggestions
 
 
 def _setup_logging() -> None:

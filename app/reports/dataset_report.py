@@ -12,6 +12,7 @@ from pathlib import Path
 from typing import Any
 
 import numpy as np
+import pandas as pd
 from reportlab.lib import colors
 from reportlab.lib.enums import TA_LEFT
 from reportlab.lib.pagesizes import letter
@@ -101,7 +102,7 @@ def build_dataset_profile(source_id: str) -> dict[str, Any]:
     ]
     numeric_columns = [
         column for column in public_catalog
-        if column["type"] in ("int", "float") and not _is_key(column)
+        if _is_analytical_measure(column)
         and column not in money_columns_excluded
     ]
     numeric_columns.sort(key=lambda column: (_metric_priority(column), column["ordinal"]))
@@ -112,7 +113,10 @@ def build_dataset_profile(source_id: str) -> dict[str, Any]:
     ]
     category_columns.sort(key=lambda column: (_category_priority(column), column["ordinal"]))
     selected_categories = category_columns[:4]
-    date_columns = [column for column in public_catalog if column["is_date"] or column["type"] in ("date", "datetime")]
+    date_columns = [
+        column for column in public_catalog
+        if column.get("is_date") or column["type"] in ("date", "datetime") or _is_temporal_column(column)
+    ]
 
     measures: list[dict[str, Any]] = []
     categories: list[dict[str, Any]] = []
@@ -160,23 +164,27 @@ def build_dataset_profile(source_id: str) -> dict[str, Any]:
             if values:
                 categories.append({"name": column["name"], "label": column["label"], "values": values})
 
-        # Time series are aggregated by month using the full source, not the preview sample.
+        # Time series: aggregated by time bucket (year or month) using the full source.
         if date_columns and measures:
             date_col = date_columns[0]
             metric = selected_metrics[0]
             date_name = _quote(date_col["name"])
             metric_name = _quote(metric["name"])
+            is_year_col = "year" in date_col["name"].lower() or date_col.get("type") in ("int", "float")
+            bucket_expr = date_name if is_year_col else f"DATE_FORMAT({date_name}, '%Y-%m')"
+
             rows = connection.execute(text(
-                f"SELECT DATE_FORMAT({date_name}, '%Y-%m') AS bucket, AVG({metric_name}) AS value "
+                f"SELECT {bucket_expr} AS bucket, AVG({metric_name}) AS value "
                 f"FROM {schema}.{table} WHERE {date_name} IS NOT NULL AND {metric_name} IS NOT NULL "
                 "GROUP BY bucket ORDER BY bucket DESC LIMIT 36"
             )).mappings().all()
             rows = list(reversed(rows))
             if len(rows) >= 2:
+                time_unit = "yearly" if is_year_col else "monthly"
                 charts.append({
                     "kind": "line",
                     "title": f"{metric['label']} over time",
-                    "caption": f"Monthly average {metric['label']} across the full dataset, grouped by {date_col['label']}.",
+                    "caption": f"Average {metric['label']} across the dataset, grouped by {date_col['label']} ({time_unit}).",
                     "labels": [_label(row["bucket"]) for row in rows],
                     "values": [_number(row["value"]) or 0 for row in rows],
                 })
@@ -192,16 +200,57 @@ def build_dataset_profile(source_id: str) -> dict[str, Any]:
             metric = selected_metrics[0]
             category_name = _quote(category["name"])
             metric_name = _quote(metric["name"])
+
+            # Check if dataset has a units column — filter to dominant unit to prevent mixing Dollars, %, etc.
+            unit_col = next((c for c in public_catalog if c["name"].lower() in ("units", "unit", "currency")), None)
+            unit_filter = ""
+            unit_params: dict[str, Any] = {}
+            unit_suffix = ""
+            if unit_col:
+                unit_col_name = _quote(unit_col["name"])
+                top_u_row = connection.execute(text(
+                    f"SELECT {unit_col_name} AS u, COUNT(*) AS cnt FROM {schema}.{table} "
+                    f"WHERE {unit_col_name} IS NOT NULL GROUP BY {unit_col_name} ORDER BY cnt DESC LIMIT 1"
+                )).mappings().first()
+                if top_u_row and top_u_row["u"]:
+                    unit_filter = f" AND {unit_col_name} = :unit_val"
+                    unit_params["unit_val"] = top_u_row["u"]
+                    unit_suffix = f" [{top_u_row['u']}]"
+
+            # Check if dataset has hierarchical aggregation levels — filter to top level to avoid double-counting
+            agg_col = next((c for c in public_catalog if any(k in c["name"].lower() for k in ("aggregation", "level_nzsioc", "agg_level"))), None)
+            agg_filter = ""
+            agg_params: dict[str, Any] = {}
+            if agg_col:
+                agg_col_name = _quote(agg_col["name"])
+                top_a_row = connection.execute(text(
+                    f"SELECT {agg_col_name} AS a, COUNT(*) AS cnt FROM {schema}.{table} "
+                    f"WHERE {agg_col_name} IS NOT NULL GROUP BY {agg_col_name} ORDER BY cnt DESC LIMIT 1"
+                )).mappings().first()
+                if top_a_row and top_a_row["a"]:
+                    agg_filter = f" AND {agg_col_name} = :agg_val"
+                    agg_params["agg_val"] = top_a_row["a"]
+
+            where_clause = f"{category_name} IS NOT NULL AND {metric_name} IS NOT NULL{unit_filter}{agg_filter}"
+            sql_params = {**unit_params, **agg_params}
+
             rows = connection.execute(text(
                 f"SELECT {category_name} AS label, AVG({metric_name}) AS value, COUNT(*) AS records "
-                f"FROM {schema}.{table} WHERE {category_name} IS NOT NULL AND {metric_name} IS NOT NULL "
+                f"FROM {schema}.{table} WHERE {where_clause} "
                 f"GROUP BY {category_name} ORDER BY value DESC LIMIT 10"
-            )).mappings().all()
+            ), sql_params).mappings().all()
+
             if len(rows) >= 2:
+                caption_notes = [f"Each bar shows the average {metric['label']} for a {category['label']} group."]
+                if unit_suffix:
+                    caption_notes.append(f"Filtered to unit: {unit_params.get('unit_val')} to ensure valid comparison.")
+                if agg_params:
+                    caption_notes.append(f"Standardized on {agg_params.get('agg_val')} to prevent subcategory double-counting.")
+
                 chart = {
                     "kind": "bar",
-                    "title": f"Average {metric['label']} by {category['label']}",
-                    "caption": f"Each bar shows the full-dataset average {metric['label']} for a {category['label']} group.",
+                    "title": f"Average {metric['label']}{unit_suffix} by {category['label']}",
+                    "caption": " ".join(caption_notes),
                     "labels": [_label(row["label"]) for row in rows],
                     "values": [_number(row["value"]) or 0 for row in rows],
                     "overall_average": measures[0].get("average"),
@@ -209,7 +258,7 @@ def build_dataset_profile(source_id: str) -> dict[str, Any]:
                         {"label": _label(row["label"]), "count": int(row["records"] or 0)}
                         for row in rows
                     ],
-                    "metric": metric["label"],
+                    "metric": f"{metric['label']}{unit_suffix}",
                     "dimension": category["label"],
                     "top_group": _label(rows[0]["label"]),
                     "top_value": _number(rows[0]["value"]),
@@ -218,9 +267,9 @@ def build_dataset_profile(source_id: str) -> dict[str, Any]:
                 if not any(existing["title"] == chart["title"] for existing in charts):
                     charts.append(chart)
 
-        # A bounded sample keeps distributions responsive even for large uploads.
+        # A representative sample for continuous numeric distributions (never temporal years or degenerate samples)
         distribution_metric = next(
-            (item for item in selected_metrics if item["distinct_count"] > 10),
+            (item for item in selected_metrics if item["distinct_count"] > 10 and not _is_temporal_column(item)),
             None,
         )
         if distribution_metric:
@@ -230,7 +279,7 @@ def build_dataset_profile(source_id: str) -> dict[str, Any]:
                 f"WHERE {metric_name} IS NOT NULL LIMIT {_CHART_SAMPLE_LIMIT}"
             )).scalars().all()
             numeric_sample = np.asarray([float(value) for value in samples if _is_number(value)], dtype=float)
-            if numeric_sample.size >= 2:
+            if numeric_sample.size >= 10 and float(np.std(numeric_sample)) > 1e-6 and float(numeric_sample.max() - numeric_sample.min()) > 1e-6:
                 q1, median, q3 = np.percentile(numeric_sample, [25, 50, 75]).tolist()
                 distribution_summary = {
                     "metric": distribution_metric["label"],
@@ -240,12 +289,12 @@ def build_dataset_profile(source_id: str) -> dict[str, Any]:
                     "q3": _number(q3),
                     "iqr": _number(q3 - q1),
                 }
-                counts, edges = np.histogram(numeric_sample, bins=min(12, max(5, int(np.sqrt(numeric_sample.size)))))
-                labels = [f"{edges[i]:.3g}–{edges[i + 1]:.3g}" for i in range(len(counts))]
+                counts, edges = np.histogram(numeric_sample, bins=min(10, max(4, int(np.sqrt(numeric_sample.size)))))
+                labels = [_format_bin_range(edges[i], edges[i + 1]) for i in range(len(counts))]
                 charts.append({
                     "kind": "histogram",
                     "title": f"Distribution of {distribution_metric['label']}",
-                    "caption": f"The histogram shows {distribution_metric['label']} values in a bounded sample of {numeric_sample.size:,} rows.",
+                    "caption": f"The histogram shows {distribution_metric['label']} values across a sample of {numeric_sample.size:,} rows.",
                     "labels": labels,
                     "values": [int(value) for value in counts],
                     "sample_count": int(numeric_sample.size),
@@ -277,6 +326,42 @@ def build_dataset_profile(source_id: str) -> dict[str, Any]:
                 "caption": f"The bars compare record counts for the most common {category['label']} values.",
                 "labels": [item["value"] for item in category["values"]],
                 "values": [item["count"] for item in category["values"]],
+            })
+
+        # Add correlation heatmap when >= 2 numeric measures exist
+        if len(selected_metrics) >= 2 and len(charts) < 4:
+            corr_metrics = selected_metrics[:6]
+            metric_cols_str = ", ".join(_quote(m["name"]) for m in corr_metrics)
+            try:
+                corr_rows = connection.execute(text(
+                    f"SELECT {metric_cols_str} FROM {schema}.{table} "
+                    f"LIMIT {_CHART_SAMPLE_LIMIT}"
+                )).mappings().all()
+                if len(corr_rows) >= 5:
+                    corr_df = pd.DataFrame([dict(r) for r in corr_rows]).apply(pd.to_numeric, errors="coerce")
+                    corr_mat = corr_df.corr().fillna(0).round(2).values.tolist()
+                    charts.append({
+                        "kind": "heatmap",
+                        "title": "Correlation Matrix",
+                        "caption": "Pearson correlation coefficients across numeric variables.",
+                        "labels": [m["label"] for m in corr_metrics],
+                        "values": [1.0] * len(corr_metrics),
+                        "matrix": corr_mat,
+                    })
+            except Exception:
+                pass
+
+        # Missing values breakdown when there are fields with unrecorded data
+        missing_catalog = [c for c in catalog if c.get("null_pct", 0) > 0 and not _is_sensitive(c)]
+        if missing_catalog and len(charts) < 4:
+            missing_sorted = sorted(missing_catalog, key=lambda c: c["null_pct"], reverse=True)[:8]
+            charts.append({
+                "kind": "missing_bar",
+                "title": "Missing Values Overview",
+                "caption": "Percentage of unrecorded values across dataset fields.",
+                "labels": [c["label"] for c in missing_sorted],
+                "values": [c["null_pct"] for c in missing_sorted],
+                "y_label": "Missing %",
             })
 
     row_count = source_meta["row_count"]
@@ -452,10 +537,17 @@ def _build_executive_summary(row_count, col_count, measures, distribution, chart
 
 def _chart_interpretation(chart: dict[str, Any]) -> str:
     """Describe the observed pattern in a chart using only its computed values."""
+    if chart.get("kind") == "heatmap":
+        return "The matrix displays pairwise Pearson correlation coefficients; values close to +1.0 or -1.0 indicate strong association."
+
     labels = chart.get("labels", [])
     values = [value for value in chart.get("values", []) if _is_number(value)]
     if not labels or not values:
         return "The plot does not contain enough numeric observations for a data-specific finding."
+
+    if chart.get("kind") == "missing_bar":
+        max_idx = max(range(len(values)), key=lambda index: values[index])
+        return f"{labels[max_idx]} has the highest missing proportion at {values[max_idx]:.1f}%."
 
     if chart.get("kind") == "histogram":
         peak_index = max(range(len(values)), key=lambda index: values[index])
@@ -476,12 +568,28 @@ def _chart_interpretation(chart: dict[str, Any]) -> str:
         )
 
     if chart.get("group_counts"):
+        if not values:
+            return "No group records are available for comparison."
+        max_val = max(values)
+        min_val = min(values)
+        diff = abs(max_val - min_val)
+
+        # Detect equal or statistically indistinguishable group averages (Defect C fix)
+        if diff < 1e-5 or (max_val != 0 and diff / abs(max_val) < 0.0001):
+            return (
+                f"All {len(labels)} plotted groups have virtually uniform averages at {_display(values[0])}."
+            )
+
         peak_index = max(range(len(values)), key=lambda index: values[index])
-        low_index = min(range(len(values)), key=lambda index: values[index])
+        low_candidates = [i for i in range(len(values)) if i != peak_index]
+        if not low_candidates:
+            return f"{labels[peak_index]} is the only plotted group with an average of {_display(values[peak_index])}."
+        low_index = min(low_candidates, key=lambda index: values[index])
+
         return (
             f"{labels[peak_index]} has the highest plotted average at {_display(values[peak_index])}, while "
             f"{labels[low_index]} is lowest at {_display(values[low_index])}; the difference is "
-            f"{_display(abs(values[peak_index] - values[low_index]))}."
+            f"{_display(diff)}."
         )
 
     peak_index = max(range(len(values)), key=lambda index: values[index])
@@ -696,7 +804,7 @@ def _append_large_visual_pages(story, profile, section_style, chart_heading_styl
 
     for chart in charts[:3]:
         story.append(PageBreak())
-        image_height = 3.25 if chart.get("kind") == "histogram" else 4.7
+        image_height = 3.25 if chart.get("kind") in ("histogram", "missing_bar") else 4.5
         story.extend(_plot_report_flowables(
             chart, chart_heading_style, plot_title_style, body_style, regular_font, small_style,
             image_height=image_height, include_detail_table=True,
@@ -786,6 +894,16 @@ def _chart_context(chart: dict[str, Any]) -> tuple[str, str]:
             f"Show how {metric} is distributed across value ranges in the plotted sample.",
             "Assess concentration, spread, unusual ranges, and whether an average represents a typical record.",
         )
+    if kind == "heatmap":
+        return (
+            "Display pairwise correlation coefficients between numeric fields.",
+            "Identify strong positive or negative relationships to explore colinearity and associations.",
+        )
+    if kind == "missing_bar":
+        return (
+            "Display the proportion of missing data across affected fields.",
+            "Determine data quality risks, imputation needs, or features needing review.",
+        )
     if chart.get("group_counts"):
         return (
             f"Compare the average {chart.get('metric', 'measure')} across {chart.get('dimension', 'groups')}.",
@@ -829,6 +947,12 @@ def _chart_detail_table(chart, regular_font: str, body_style):
             ])
         return _styled_table(rows, [2.2, 1.3, 1.4, 1.95])
 
+    if chart.get("kind") == "missing_bar":
+        rows = [["Field", "Missing percentage"]]
+        for label, value in zip(labels, values):
+            rows.append([_cell(label, regular_font), _cell(f"{float(value):.1f}%", regular_font)])
+        return _styled_table(rows, [4.8, 2.05])
+
     if chart.get("kind") == "bar":
         rows = [["Category", "Records"]]
         for label, value in zip(labels[:12], values[:12]):
@@ -852,20 +976,78 @@ def _chart_flowables(chart: dict[str, Any], body_style, regular_font: str, inclu
 
 
 def _draw_chart(chart: dict[str, Any]) -> io.BytesIO | None:
-    labels = chart.get("labels") or []
-    values = chart.get("values") or []
-    if not labels or len(labels) != len(values):
-        return None
+    kind = chart.get("kind", "bar")
     try:
         from matplotlib.backends.backend_agg import FigureCanvasAgg
         from matplotlib.figure import Figure
 
-        figure_size = (8.5, 5.3) if chart.get("kind") in ("bar", "line") else (9, 4.7)
+        if kind == "heatmap":
+            matrix = chart.get("matrix")
+            labels = chart.get("labels") or []
+            if not matrix or not labels:
+                return None
+            mat = np.array(matrix, dtype=float)
+            n = len(labels)
+            fig_size = (max(7.5, n * 1.1), max(4.8, n * 0.85))
+            figure = Figure(figsize=fig_size, dpi=130, facecolor="white")
+            axis = figure.add_subplot(111)
+            cax = axis.imshow(mat, cmap="coolwarm", vmin=-1.0, vmax=1.0)
+            figure.colorbar(cax, ax=axis, fraction=0.046, pad=0.04)
+            axis.set_xticks(np.arange(n))
+            axis.set_yticks(np.arange(n))
+            axis.set_xticklabels([str(l)[:16] for l in labels], rotation=25, ha="right", fontsize=8)
+            axis.set_yticklabels([str(l)[:16] for l in labels], fontsize=8)
+            for i in range(n):
+                for j in range(n):
+                    val = mat[i, j]
+                    text_color = "white" if abs(val) > 0.55 else "black"
+                    axis.text(j, i, f"{val:.2f}", ha="center", va="center", color=text_color, fontsize=8, weight="bold")
+            figure.tight_layout(pad=1.5)
+            output = io.BytesIO()
+            FigureCanvasAgg(figure).print_png(output)
+            output.seek(0)
+            return output
+
+        if kind == "missing_bar":
+            labels = chart.get("labels") or []
+            values = chart.get("values") or []
+            if not labels or len(labels) != len(values):
+                return None
+            figure = Figure(figsize=(8.5, 4.5), dpi=130, facecolor="white")
+            axis = figure.add_subplot(111)
+            indices = np.arange(len(labels))
+            bars = axis.barh(indices, values, color="#ef4444", edgecolor="#ffffff", height=0.6)
+            axis.set_yticks(indices)
+            axis.set_yticklabels([str(l)[:24] for l in labels], fontsize=8, color="#334155")
+            axis.tick_params(axis="x", labelsize=8, colors="#475569")
+            axis.grid(axis="x", color="#e2e8f0", linewidth=0.7)
+            axis.set_axisbelow(True)
+            axis.spines["top"].set_visible(False)
+            axis.spines["right"].set_visible(False)
+            axis.spines["left"].set_color("#cbd5e1")
+            axis.spines["bottom"].set_color("#cbd5e1")
+            axis.set_xlabel("Missing Percentage (%)", fontsize=9, color="#475569")
+            for bar, val in zip(bars, values):
+                axis.text(bar.get_width() + 0.4, bar.get_y() + bar.get_height() / 2, f"{val:.1f}%",
+                          va="center", ha="left", fontsize=8, color="#334155", weight="bold")
+            axis.set_xlim(0, max(max(values) * 1.15, 10))
+            figure.tight_layout(pad=1.5)
+            output = io.BytesIO()
+            FigureCanvasAgg(figure).print_png(output)
+            output.seek(0)
+            return output
+
+        labels = chart.get("labels") or []
+        values = chart.get("values") or []
+        if not labels or len(labels) != len(values):
+            return None
+
+        figure_size = (8.5, 5.3) if kind in ("bar", "line") else (9, 4.7)
         figure = Figure(figsize=figure_size, dpi=130, facecolor="white")
         axis = figure.add_subplot(111)
         color = "#4f46e5"
         indices = np.arange(len(labels))
-        if chart.get("kind") == "line":
+        if kind == "line":
             axis.plot(indices, values, color=color, linewidth=2.5, marker="o", markersize=4)
             axis.fill_between(indices, values, color=color, alpha=0.12)
         else:
@@ -880,7 +1062,7 @@ def _draw_chart(chart: dict[str, Any]) -> io.BytesIO | None:
         axis.spines["right"].set_visible(False)
         axis.spines["left"].set_color("#cbd5e1")
         axis.spines["bottom"].set_color("#cbd5e1")
-        default_y_label = "Average value" if chart.get("kind") in ("line", "bar") else "Record count"
+        default_y_label = "Average value" if kind in ("line", "bar") else "Record count"
         axis.set_ylabel(chart.get("y_label", default_y_label), fontsize=9, color="#475569")
         figure.tight_layout(pad=1.5)
         output = io.BytesIO()
@@ -1053,17 +1235,17 @@ def _measure_insights(profile: dict[str, Any]) -> list[str]:
         maximum = _display(measure.get("maximum"))
         average = measure.get("average")
         deviation = measure.get("stddev")
-        if "rating" in name and average is not None:
-            notes.append(
-                f"{measure['label']} averages {_display(average)} across observed values from {minimum} to {maximum}."
-            )
-        elif "range" in name:
+        if "range" in name or "level" in name or "tier" in name:
             notes.append(
                 f"{measure['label']} is an ordered level from {minimum} to {maximum}; treat its mean as a rough indicator rather than a continuous measurement."
             )
         elif average is not None and deviation is not None and abs(average) > 0 and deviation / abs(average) >= 2:
             notes.append(
                 f"{measure['label']} varies widely (standard deviation {_display(deviation)} around an average of {_display(average)}); the average may not represent a typical record."
+            )
+        elif average is not None:
+            notes.append(
+                f"{measure['label']} averages {_display(average)} across observed values from {minimum} to {maximum}."
             )
     return notes[:4] or ["Review each measure's range and missingness before comparing groups or setting targets."]
 
@@ -1098,15 +1280,20 @@ def _is_sensitive(column: dict[str, Any]) -> bool:
 
 
 def _metric_priority(column: dict[str, Any]) -> int:
+    """Rank numeric columns by analytical usefulness — domain-agnostic."""
     name = column["name"].lower()
-    if "rating" in name or "score" in name:
+    # High-value business metrics (common across domains)
+    if any(token in name for token in ("revenue", "sales", "profit", "income", "amount", "total")):
         return 0
-    if any(token in name for token in ("revenue", "sales", "profit", "amount")):
+    # Scores and ratings (present in many domains)
+    if any(token in name for token in ("score", "rating", "grade", "rank")):
         return 1
-    if any(token in name for token in ("votes", "quantity", "count", "total")):
+    # Counts and quantities
+    if any(token in name for token in ("votes", "quantity", "count", "volume", "weight")):
         return 2
     if _is_money_metric(name):
         return 3
+    # Low-cardinality numerics are often encoded categories
     if column.get("distinct_count", 0) <= 10:
         return 5
     return 4
@@ -1120,12 +1307,18 @@ def _is_money_metric(name: str) -> bool:
 
 
 def _category_priority(column: dict[str, Any]) -> int:
+    """Rank categorical columns by analytical usefulness — domain-agnostic."""
     name = column["name"].lower()
-    if name.startswith(("has_", "is_", "can_")) or any(word in name for word in ("booking", "delivery")):
+    # Boolean-like flags are always useful dimensions
+    if name.startswith(("has_", "is_", "can_")):
         return 0
-    if "rating_text" in name or "rating_color" in name:
+    # General categorical dimensions common across domains
+    if any(word in name for word in ("category", "type", "status", "segment", "group",
+                                      "department", "class", "level", "tier", "channel",
+                                      "gender", "grade", "brand")):
         return 1
-    if "currency" in name or "country" in name or "_code" in name:
+    # Geographic and code dimensions — useful but often high-cardinality
+    if any(word in name for word in ("currency", "country", "_code")):
         return 8
     if column.get("distinct_count", 0) > 30:
         return 6
@@ -1133,13 +1326,71 @@ def _category_priority(column: dict[str, Any]) -> int:
 
 
 def _usable_group_dimension(name: str) -> bool:
+    """Decide if a categorical column is suitable as a group-by dimension."""
     lowered = name.lower()
-    return not any(token in lowered for token in ("currency", "country", "rating", "_code", "_id"))
+    return not any(token in lowered for token in ("currency", "country", "_code", "_id"))
 
 
 def _is_key(column: dict[str, Any]) -> bool:
     name = column["name"].lower()
     return bool(column.get("is_key")) or bool(re.search(r"(^id$|_id$|^id_|(^|_)key($|_)|(^|_)code($|_)|uuid|serial)", name))
+
+
+def _is_temporal_column(column: dict[str, Any]) -> bool:
+    """Determine whether a column represents a time dimension (date, year, period)."""
+    if column.get("is_date") or column.get("is_date_col"):
+        return True
+    col_type = column.get("type") or column.get("col_type", "")
+    if col_type in ("date", "datetime"):
+        return True
+    if column.get("unit") == "year":
+        return True
+    name = column.get("name", "").lower()
+    if name in ("year", "yr", "date", "datetime", "timestamp", "period", "quarter", "month", "day", "week"):
+        return True
+    if "year" in name:
+        return True
+    col_min = column.get("minimum")
+    col_max = column.get("maximum")
+    if col_min is not None and col_max is not None:
+        try:
+            min_f = float(col_min)
+            max_f = float(col_max)
+            if 1800 <= min_f <= 2090 and 1800 <= max_f <= 2100 and min_f.is_integer() and max_f.is_integer() and column.get("distinct_count", 0) <= 250:
+                return True
+        except (ValueError, TypeError):
+            pass
+    return False
+
+
+def _is_analytical_measure(column: dict[str, Any]) -> bool:
+    """Determine whether a column is a genuine quantitative analytical measure."""
+    col_type = column.get("type") or column.get("col_type", "")
+    if col_type not in ("int", "float"):
+        return False
+    if _is_key(column):
+        return False
+    if _is_temporal_column(column):
+        return False
+    if "distinct_count" in column and column["distinct_count"] <= 1:
+        return False
+    return True
+
+
+def _format_bin_range(edge_start: float, edge_end: float) -> str:
+    """Format histogram bin edges cleanly without scientific notation."""
+    def _fmt(val: float) -> str:
+        abs_v = abs(val)
+        if abs_v >= 1_000_000_000:
+            return f"{val / 1_000_000_000:.2f}B"
+        if abs_v >= 1_000_000:
+            return f"{val / 1_000_000:.2f}M"
+        if abs_v >= 1_000:
+            return f"{val:,.0f}" if val.is_integer() else f"{val:,.1f}"
+        if val.is_integer():
+            return f"{int(val):,}"
+        return f"{val:.2f}"
+    return f"{_fmt(edge_start)}–{_fmt(edge_end)}"
 
 
 def _quote(identifier: str) -> str:

@@ -36,8 +36,8 @@ async def insight_node(state: AgentState) -> dict[str, Any]:
                 "trace": state.get("trace", []) + [{"step": step, "status": "skipped_empty", "duration_ms": elapsed}],
             }
 
-        # Build result preview (small, for context — NOT the full table)
-        preview_rows = df.head(5).to_dict("records")
+        # Build result preview (more rows for richer analytical context)
+        preview_rows = df.head(10).to_dict("records")
         preview_str = _format_preview(preview_rows)
 
         from app.llm.client import call_llm
@@ -47,6 +47,7 @@ async def insight_node(state: AgentState) -> dict[str, Any]:
             question=question,
             computed_facts=computed_facts,
             result_preview=preview_str,
+            result_shape=(len(df), len(df.columns)),
         )
 
         # Generate insight
