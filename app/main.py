@@ -12,6 +12,7 @@ import os
 import re
 import time
 import uuid
+from contextlib import asynccontextmanager
 from datetime import date, datetime
 from decimal import Decimal
 from pathlib import Path
@@ -75,10 +76,26 @@ class MLTrainRequest(BaseModel):
 def create_app() -> FastAPI:
     cfg = get_settings()
 
+    @asynccontextmanager
+    async def lifespan(_app: FastAPI):
+        _setup_logging()
+        log.info("QuantAI AI starting up...")
+        await _init_database()
+        health = await _check_ollama_health()
+        if not health["provider_reachable"]:
+            log.warning("LLM provider not reachable - LLM features will not work")
+            log.warning("Fix: %s", health.get("fix", ""))
+        elif not health["model_available"]:
+            log.warning("Model %s not found - %s", health["model"], health.get("fix", ""))
+        else:
+            log.info("LLM provider ready: %s", health["model"])
+        yield
+
     app = FastAPI(
         title="QuantAI AI",
         description="MCP-powered local AI data analyst — your data never leaves this machine",
-        version="v1.48",
+        version="v1.50",
+        lifespan=lifespan,
     )
 
     # CORS: localhost only
@@ -94,21 +111,6 @@ def create_app() -> FastAPI:
         allow_methods=["*"],
         allow_headers=["*"],
     )
-
-    # ── Startup ──────────────────────────────────────────────────────────────
-    @app.on_event("startup")
-    async def startup():
-        _setup_logging()
-        log.info("QuantAI AI starting up...")
-        await _init_database()
-        health = await _check_ollama_health()
-        if not health["provider_reachable"]:
-            log.warning("⚠️  LLM provider not reachable — LLM features will not work")
-            log.warning("   Fix: %s", health.get("fix", ""))
-        elif not health["model_available"]:
-            log.warning("⚠️  Model %s not found — %s", health["model"], health.get("fix", ""))
-        else:
-            log.info("✅ LLM provider ready: %s", health["model"])
 
     # ── Health ───────────────────────────────────────────────────────────────
     @app.get("/api/health")
