@@ -78,7 +78,7 @@ def create_app() -> FastAPI:
     app = FastAPI(
         title="QuantAI AI",
         description="MCP-powered local AI data analyst — your data never leaves this machine",
-        version="V2.122",
+        version="v1.48",
     )
 
     # CORS: localhost only

@@ -1,7 +1,7 @@
 {
   "name": "quantai-frontend",
   "private": true,
-  "version": "V2.122205",
+  "version": "1.48.0",
   "type": "module",
   "scripts": {
     "dev": "vite",

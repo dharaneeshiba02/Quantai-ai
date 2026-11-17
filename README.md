@@ -7,7 +7,7 @@
 
 ## 🌟 Key Features
 
-- 🔒 **100% Private & Local**: Powered by local LLMs via Ollama (`qwen2.5-coder:7b` / `llama3.1:8b`). Zero data leaves your machine.
+- 🔒 **100% Private & Local**: Powered by local Qwen models via Ollama (`qwen3.5`, with `qwen2.5-coder:7b` as local recovery). Zero data leaves your machine.
 - 🤖 **LangGraph Multi-Agent Architecture**: Robust query planning, deterministic SQL compilation, and execution verification.
 - 🛡️ **SQL Guard & Sandboxing**: AST-level SQL validation with `sqlglot` and dedicated read-only database execution.
 - 📊 **Pandas Verification & Statistics**: Automated cross-checking of SQL aggregate metrics against source data with automatic Plotly chart generation.
@@ -55,7 +55,7 @@ User Query ──> React UI ──> FastAPI (/api/query)
 ### 1. Prerequisites
 - Python 3.10+
 - Node.js 18+
-- [Ollama](https://ollama.ai/) with `qwen2.5-coder:7b` (or `llama3.1:8b`)
+- [Ollama](https://ollama.ai/) with `qwen3.5` (or the local recovery model `qwen2.5-coder:7b`)
 - MySQL 8.0+
 
 ### 2. Backend Setup

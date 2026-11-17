@@ -35,9 +35,9 @@ def get_llm():
         settings = get_settings()
         from langchain_openai import ChatOpenAI
         _llm = ChatOpenAI(
-            model=settings.groq_model,
-            api_key=settings.groq_api_key,
-            base_url=settings.groq_base_url,
+            model=settings.llm_model,
+            api_key="ollama",
+            base_url=f"{settings.ollama_base_url.rstrip('/')}/v1",
             temperature=settings.llm_temperature_insight,
             timeout=settings.llm_timeout_sec,
         )

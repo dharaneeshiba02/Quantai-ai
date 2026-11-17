@@ -19,8 +19,8 @@ export const SettingsPanel: React.FC = () => {
   }, [demoMode, backendReachable]);
 
   const DEMO_SETTINGS = {
-    llm_model: 'qwen2.5-coder:7b',
-    llm_fallback_model: 'qwen2.5-coder:3b',
+    llm_model: 'qwen3.5',
+    llm_fallback_model: 'qwen2.5-coder:7b',
     accuracy_mode: 'balanced',
     schema_only_mode: false,
     pii_masking_enabled: true,

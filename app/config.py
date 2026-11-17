@@ -31,12 +31,10 @@ class Settings(BaseSettings):
 
     # ── LLM ─────────────────────────────────────────────────────────────────
     ollama_base_url: str = "http://127.0.0.1:11434"
-    llm_model: str = "qwen2.5-coder:7b"
-    llm_fallback_model: str = "openai/gpt-oss-20b"      # Groq fallback if primary unavailable
-    llm_provider: str = "auto"
-    groq_base_url: str = "https://api.groq.com/openai/v1"
-    groq_api_key: str = ""
-    groq_model: str = "openai/gpt-oss-120b"              # Primary Groq reasoning model
+    # Local-only Ollama configuration. No hosted provider or API key is used.
+    llm_model: str = "qwen3.5"
+    llm_fallback_model: str = "qwen2.5-coder:7b"
+    llm_provider: str = "ollama"
     llm_embed_model: str = "nomic-embed-text"
     llm_num_ctx: int = 8192
     llm_temperature_sql: float = 0.0

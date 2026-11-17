@@ -1,12 +1,12 @@
 """
-app/llm/client.py — Dual-provider LLM client (Groq API + Local Ollama/Qwen) with resilience and fallbacks.
+app/llm/client.py — Local Ollama/Qwen LLM client with local resilience.
 
 Rules:
   - Only one LLM call runs at a time (enforced via _LLM_SEMAPHORE)
   - temperature=0 for SQL, 0.2 for insight
-  - Respects cfg.llm_provider ("auto", "groq", "ollama")
-  - Seamlessly falls back to Local Qwen if Groq is unavailable, unauthenticated, or rate-limited
-  - Health check verifies reachability of active and fallback providers
+  - Uses only the local Ollama endpoint
+  - Falls back only between local Ollama models
+  - Health check verifies the local endpoint and active model
   - Never logs API keys, user data, or full prompts at INFO level
 """
 from __future__ import annotations
@@ -44,19 +44,9 @@ def _resolve_provider(model: Optional[str] = None) -> Tuple[str, str, str, str]:
         api_key: secret key or dummy token for local server
     """
     cfg = get_settings()
-    pref = (cfg.llm_provider or "auto").strip().lower()
-
-    # If explicitly ollama, or auto with no Groq API key provided
-    if pref == "ollama" or (pref == "auto" and not cfg.groq_api_key):
-        model_name = model or cfg.llm_model
-        base_url = f"{cfg.ollama_base_url.rstrip('/')}/v1"
-        return "ollama", model_name, base_url, "ollama"
-
-    # Default to Groq
-    model_name = model or cfg.groq_model
-    base_url = cfg.groq_base_url
-    api_key = cfg.groq_api_key
-    return "groq", model_name, base_url, api_key
+    model_name = model or cfg.llm_model
+    base_url = f"{cfg.ollama_base_url.rstrip('/')}/v1"
+    return "ollama", model_name, base_url, "ollama"
 
 
 async def health_check() -> dict:
@@ -80,46 +70,25 @@ async def health_check() -> dict:
 
     try:
         async with httpx.AsyncClient(timeout=5.0) as client:
-            if provider == "groq":
-                resp = await client.get(
-                    f"{cfg.groq_base_url.rstrip('/')}/models",
-                    headers={"Authorization": f"Bearer {cfg.groq_api_key}"},
-                )
-                resp.raise_for_status()
-                data = resp.json()
-                models = [m["id"] for m in data.get("data", [])]
-                result["provider_reachable"] = True
-                result["available_models"] = models
-                result["model_available"] = active_model in models
+            resp = await client.get(f"{cfg.ollama_base_url.rstrip('/')}/api/tags")
+            resp.raise_for_status()
+            data = resp.json()
+            models = [m["name"] for m in data.get("models", [])]
+            result["provider_reachable"] = True
+            result["available_models"] = models
+            model_base = active_model.split(":")[0]
+            result["model_available"] = any(active_model == m or m.startswith(model_base) for m in models)
 
-                if not result["model_available"]:
-                    result["error"] = f"Model '{active_model}' is not available on Groq."
-                    result["fix"] = "Check the configured model name or set LLM_PROVIDER=ollama."
-
-            else:  # Ollama local
-                resp = await client.get(f"{cfg.ollama_base_url.rstrip('/')}/api/tags")
-                resp.raise_for_status()
-                data = resp.json()
-                models = [m["name"] for m in data.get("models", [])]
-                result["provider_reachable"] = True
-                result["available_models"] = models
-                # Match full or prefix (e.g. qwen2.5-coder:7b or qwen2.5-coder:latest)
-                model_base = active_model.split(":")[0]
-                result["model_available"] = any(active_model == m or m.startswith(model_base) for m in models)
-
-                if not result["model_available"]:
-                    result["error"] = f"Model '{active_model}' not found in local Ollama."
-                    result["fix"] = f"Run: ollama pull {active_model}"
+            if not result["model_available"]:
+                result["error"] = f"Model '{active_model}' not found in local Ollama."
+                result["fix"] = f"Run: ollama pull {active_model}"
 
     except httpx.HTTPStatusError as exc:
         result["error"] = f"LLM provider returned HTTP {exc.response.status_code}."
-        result["fix"] = "Check provider API key and configuration."
+        result["fix"] = "Check the local Ollama configuration."
     except (httpx.ConnectError, httpx.TimeoutException):
         result["error"] = f"LLM provider ({provider}) is unreachable."
-        result["fix"] = (
-            "Start Ollama with `ollama serve` or check network connection to Groq."
-            if provider == "ollama" else "Check internet access to api.groq.com."
-        )
+        result["fix"] = "Start Ollama with `ollama serve` and pull the configured local model."
     except Exception as exc:
         result["error"] = f"Health check failed: {type(exc).__name__}"
 
@@ -174,31 +143,14 @@ async def call_llm(
             is_timeout = isinstance(exc, (TimeoutError, httpx.TimeoutException)) or any(
                 marker in err_str for marker in ("timeout", "timed out")
             )
-            is_auth_or_rate = any(marker in err_str for marker in ("401", "unauthorized", "429", "rate limit", "quota"))
-
-            # Automatic fallback to local Ollama if Groq failed or local OOM/timeout
-            if cfg.llm_auto_fallback:
-                if provider == "groq":
-                    fallback_model = cfg.llm_fallback_model or cfg.llm_model
-                    log.warning(
-                        "Groq call failed (%s); falling back to local Ollama model %s",
-                        type(exc).__name__,
-                        fallback_model,
-                    )
+            # Recovery remains local-only: use the configured local fallback model.
+            if cfg.llm_auto_fallback and (is_oom or is_timeout):
+                fallback_model = cfg.llm_fallback_model
+                if model_name != fallback_model:
+                    log.warning("Local model failed (%s); trying local model %s", type(exc).__name__, fallback_model)
                     return await _do_call(
                         system_prompt, user_message, temp, fallback_model, format, provider_override="ollama"
                     )
-                elif is_oom or is_timeout:
-                    fallback_model = cfg.llm_fallback_model
-                    if model_name != fallback_model:
-                        log.warning(
-                            "Ollama call failed (%s); falling back to smaller local model %s",
-                            "OOM" if is_oom else "timeout",
-                            fallback_model,
-                        )
-                        return await _do_call(
-                            system_prompt, user_message, temp, fallback_model, format, provider_override="ollama"
-                        )
             raise
 
 
