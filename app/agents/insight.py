@@ -55,6 +55,8 @@ async def insight_node(state: AgentState) -> dict[str, Any]:
             system_prompt=system_prompt,
             user_message=user_message,
             temperature=0.2,  # slight creativity for natural language
+            interactive=True,
+            model=state.get("selected_model"),
         )
         insight_text = str(insight_text or "").strip()
 
@@ -71,6 +73,8 @@ async def insight_node(state: AgentState) -> dict[str, Any]:
                 system_prompt=system_prompt,
                 user_message=user_message + "\n\nIMPORTANT: Use ONLY the exact numbers from the computed facts provided.",
                 temperature=0.0,
+                interactive=True,
+                model=state.get("selected_model"),
             )
             insight_text = str(insight_text or "").strip()
             check_result = check_insight_numbers(insight_text, computed_facts)

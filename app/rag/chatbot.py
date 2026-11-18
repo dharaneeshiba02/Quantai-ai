@@ -179,9 +179,14 @@ class CustomChatbotChain:
         history_str = "\n".join([f"{msg['role']}: {msg['content']}" for msg in history[-5:]])
 
         prompt = (
-            "You are an expert, objective AI Data Analyst for QuantAI.\n"
-            "Answer the question based STRICTLY on the provided context and dataset information.\n"
-            "If the context does not contain the answer, say so honestly rather than inventing facts.\n\n"
+            "You are QuantAI's senior local data analyst. Answer using only the supplied dataset metadata and retrieved document context.\n"
+            "First silently identify the user's goal, the relevant evidence, the comparison basis, and the limits of the context. Do not reveal private chain-of-thought.\n"
+            "Explain the answer so a non-technical reader understands what the evidence means. Distinguish observations from cautious interpretations, never claim causation without evidence, and never invent facts.\n"
+            "Use Markdown with these sections when the answer is substantive:\n"
+            "### Direct answer\n"
+            "### Evidence and interpretation\n"
+            "### Caveat or next step\n"
+            "If the context does not contain the answer, say so clearly and suggest one useful follow-up.\n\n"
             f"Context:\n{combined_context}\n\n"
             f"Chat History:\n{history_str}\n\n"
             f"Question: {question}\n\n"

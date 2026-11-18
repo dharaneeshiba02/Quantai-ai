@@ -4,7 +4,7 @@
  */
 import { create } from 'zustand';
 import { v4 as uuidv4 } from 'uuid';
-import { api, type Source, type SourceOverview } from '../api/client';
+import { api, type ChatModel, type Source, type SourceOverview } from '../api/client';
 
 export type AppTheme = 'dark' | 'light';
 
@@ -26,6 +26,17 @@ const savedDocuments = (() => {
   }
 })();
 const savedDocumentMode = window.sessionStorage.getItem('quantai.documentMode') === 'true';
+const defaultChatModel = 'qwen2.5-coder:7b';
+const savedChatModel = (() => {
+  try {
+    const value = window.localStorage.getItem('quantai.chatModel');
+    return value && ['qwen3.5:latest', 'qwen2.5:7b', defaultChatModel].includes(value)
+      ? value
+      : defaultChatModel;
+  } catch {
+    return defaultChatModel;
+  }
+})();
 
 export interface ChatMessage {
   id: string;
@@ -110,6 +121,11 @@ interface AppStore {
   setDocumentMode: (v: boolean) => void;
 
   // Settings
+  chatModels: ChatModel[];
+  chatModelsError: string | null;
+  selectedChatModel: string;
+  setChatModels: (models: ChatModel[], error?: string | null) => void;
+  setSelectedChatModel: (model: string) => void;
   demoMode: boolean;
   backendReachable: boolean;
   theme: AppTheme;
@@ -303,8 +319,8 @@ export const useAppStore = create<AppStore>((set, get) => ({
       }
     }
 
-    const targetSourceId = sourceId !== undefined ? sourceId : s.selectedSourceId;
-    const targetKey = getConversationKey(targetSourceId, s.documentMode);
+    const targetSourceId = sourceId ?? null;
+    const targetKey = getConversationKey(targetSourceId, false);
     const newSessionId = uuidv4();
 
     const updatedConversations = {
@@ -320,6 +336,8 @@ export const useAppStore = create<AppStore>((set, get) => ({
     set({
       conversations: updatedConversations,
       selectedSourceId: targetSourceId,
+      sourceOverview: null,
+      documentMode: false,
       sessionId: newSessionId,
       messages: [],
       activePanel: 'chat',
@@ -420,6 +438,18 @@ export const useAppStore = create<AppStore>((set, get) => ({
   },
 
   // Settings
+  chatModels: [],
+  chatModelsError: null,
+  selectedChatModel: savedChatModel,
+  setChatModels: (models, error = null) => set({ chatModels: models, chatModelsError: error }),
+  setSelectedChatModel: (model) => {
+    try {
+      window.localStorage.setItem('quantai.chatModel', model);
+    } catch {
+      // Keep the selection for this session even if browser storage is disabled.
+    }
+    set({ selectedChatModel: model });
+  },
   demoMode: false,
   backendReachable: true,
   theme: initialTheme,

@@ -54,6 +54,49 @@
 }
 
 @layer components {
+  .upload-empty-card {
+    border-color: rgba(99, 102, 241, 0.32);
+    background: rgba(238, 242, 255, 0.68);
+  }
+
+  .upload-empty-card:hover {
+    border-color: rgba(79, 70, 229, 0.68);
+    background: #eef2ff;
+  }
+
+  .upload-empty-card-icon { background: #e0e7ff; color: #4338ca; }
+  .upload-empty-card-title { color: #111827; }
+  .upload-empty-card-copy { color: #475569; }
+
+  html[data-theme="dark"] .data-panel-error { color: #fde68a; }
+
+  html[data-theme="dark"] .upload-empty-card {
+    border-color: rgba(129, 140, 248, 0.35);
+    background: rgba(49, 46, 129, 0.14);
+  }
+  html[data-theme="dark"] .upload-empty-card:hover {
+    border-color: rgba(165, 180, 252, 0.65);
+    background: rgba(49, 46, 129, 0.24);
+  }
+  html[data-theme="dark"] .upload-empty-card-icon { background: rgba(99, 102, 241, 0.2); color: #c7d2fe; }
+  html[data-theme="dark"] .upload-empty-card-title { color: #f8fafc; }
+  html[data-theme="dark"] .upload-empty-card-copy { color: #94a3b8; }
+
+  .chat-model-select {
+    color-scheme: light;
+    color: #111827;
+    background-color: #ffffff;
+  }
+
+  .chat-model-select option {
+    color: #111827;
+    background-color: #ffffff;
+  }
+
+  .chat-model-select option:disabled {
+    color: #64748b;
+  }
+
   .glass {
     background: rgba(16, 20, 30, 0.76);
     backdrop-filter: blur(20px);

@@ -34,13 +34,24 @@ class Settings(BaseSettings):
     # Local-only Ollama configuration. No hosted provider or API key is used.
     llm_model: str = "qwen3.5"
     llm_fallback_model: str = "qwen2.5-coder:7b"
+    # Interactive chat uses the smaller local model so a laptop is not forced
+    # to wait through several slow Qwen3.5 reasoning calls in one request.
+    llm_chat_model: str = "qwen2.5-coder:7b"
     llm_provider: str = "ollama"
     llm_embed_model: str = "nomic-embed-text"
-    llm_num_ctx: int = 8192
+    llm_num_ctx: int = 4096
+    llm_num_predict: int = 2048
+    llm_chat_num_ctx: int = 4096
+    llm_chat_num_predict: int = 1024
+    llm_reasoning_enabled: bool = False
+    llm_chat_keep_alive: str = "15m"
     llm_temperature_sql: float = 0.0
     llm_temperature_insight: float = 0.15   # Lower = more factual, fewer hallucinations
     llm_timeout_sec: int = 180
+    llm_chat_timeout_sec: int = 120
     llm_auto_fallback: bool = True
+    llm_report_ai_enabled: bool = True
+    llm_report_timeout_sec: int = 180
 
     # ── MySQL ────────────────────────────────────────────────────────────────
     mysql_host: str = "127.0.0.1"

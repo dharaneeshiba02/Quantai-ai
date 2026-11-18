@@ -2,7 +2,7 @@
  * pages/ChatPage.tsx — Main chat interface with sidebar and message stream.
  */
 import React, { useEffect, useRef, useState } from 'react';
-import { MessageSquare, Database, Plus, Sparkles, BarChart3, Download, Loader2, AlertTriangle } from 'lucide-react';
+import { MessageSquare, Database, Plus, Sparkles, BarChart3, Download, Loader2, AlertTriangle, Upload } from 'lucide-react';
 import { Sidebar } from '../components/layout/Sidebar';
 import { ChatInput } from '../components/chat/ChatInput';
 import { MessageBubble } from '../components/chat/MessageBubble';
@@ -29,16 +29,36 @@ export const ChatPage: React.FC<Props> = ({ onNavigate }) => {
   const [reportDialogOpen, setReportDialogOpen] = useState(false);
 
   const {
-    messages, clearMessages,
+    messages, clearMessages, startNewChat,
     selectedSourceId, setSelectedSourceId, setSourceOverview, sourceOverview,
     uploadDialogOpen, setUploadDialogOpen,
     activePanel, setActivePanel,
     activeStream,
     sources, demoMode, backendReachable, documents, documentMode, setDocumentMode,
-    setMessages, setSessionId,
+    setMessages, setSessionId, setDemoMode,
+    chatModels, chatModelsError, selectedChatModel, setChatModels, setSelectedChatModel,
   } = useAppStore();
 
   const { runQuery, cancelQuery, isStreaming } = useQuery();
+
+  useEffect(() => {
+    if (demoMode || !backendReachable || documentMode) return;
+    let cancelled = false;
+    api.chatModels()
+      .then(({ models, provider_reachable, error }) => {
+        if (cancelled) return;
+        setChatModels(models, provider_reachable ? null : error || 'Ollama is unavailable.');
+        const current = useAppStore.getState().selectedChatModel;
+        if (!models.some((model) => model.id === current && model.available)) {
+          const firstAvailable = models.find((model) => model.available);
+          if (firstAvailable) setSelectedChatModel(firstAvailable.id);
+        }
+      })
+      .catch((error: unknown) => {
+        if (!cancelled) setChatModels([], error instanceof Error ? error.message : 'Could not load models from Ollama.');
+      });
+    return () => { cancelled = true; };
+  }, [demoMode, backendReachable, documentMode, setChatModels, setSelectedChatModel]);
 
   const selectedSource = sources.find((s) => s.id === selectedSourceId);
   const suggestions = selectedSource
@@ -181,10 +201,10 @@ export const ChatPage: React.FC<Props> = ({ onNavigate }) => {
             )}
             {messages.length > 0 && (
               <button
-                onClick={clearMessages}
+                onClick={() => { setDemoMode(false); startNewChat(null); }}
                 className="btn-ghost text-xs rounded-lg border border-white/[0.06]"
               >
-                New Session
+                New Chat
               </button>
             )}
             <button
@@ -317,10 +337,17 @@ export const ChatPage: React.FC<Props> = ({ onNavigate }) => {
                     {!selectedSource && (
                       <button
                         onClick={() => setUploadDialogOpen(true)}
-                        className="btn-primary px-8 py-3.5"
+                        className="upload-empty-card group w-full max-w-lg rounded-2xl border-2 border-dashed px-6 py-7 text-left transition"
                       >
-                        <Plus className="w-5 h-5" />
-                        Upload your dataset
+                        <span className="flex items-center gap-4">
+                          <span className="upload-empty-card-icon flex h-12 w-12 shrink-0 items-center justify-center rounded-xl transition group-hover:scale-105">
+                            <Upload className="h-5 w-5" />
+                          </span>
+                          <span>
+                            <span className="upload-empty-card-title block text-sm font-semibold">Upload a dataset to start</span>
+                            <span className="upload-empty-card-copy mt-1 block text-xs leading-5">Choose a CSV or Excel file. Your data stays on this computer.</span>
+                          </span>
+                        </span>
                       </button>
                     )}
                   </div>
@@ -348,6 +375,10 @@ export const ChatPage: React.FC<Props> = ({ onNavigate }) => {
                     onCancel={cancelQuery}
                     suggestions={messages.length === 0 ? suggestions : []}
                     disabled={!selectedSourceId && !demoMode && !documentMode}
+                    models={chatModels}
+                    selectedModel={selectedChatModel}
+                    onModelChange={!documentMode && !demoMode ? setSelectedChatModel : undefined}
+                    modelError={!documentMode && !demoMode ? chatModelsError : null}
                   />
                 </div>
               </div>

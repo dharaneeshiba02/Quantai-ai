@@ -2,7 +2,7 @@
  * pages/panels/DataPreviewPanel.tsx — Shows source schema, stats, and preview rows.
  */
 import React, { useEffect, useState } from 'react';
-import { Database, BarChart3, Calendar, Eye } from 'lucide-react';
+import { Database, BarChart3, Calendar, Eye, AlertTriangle } from 'lucide-react';
 import { DataTable } from '../../components/tables/DataTable';
 import { api } from '../../api/client';
 import { useAppStore } from '../../store/useAppStore';
@@ -30,25 +30,44 @@ export const DataPreviewPanel: React.FC<Props> = ({ sourceId }) => {
   const [previewRows, setPreviewRows] = useState<Record<string, any>[]>([]);
   const [activeTab, setActiveTab] = useState<'schema' | 'preview'>('schema');
   const [loading, setLoading] = useState(false);
+  const [catalogError, setCatalogError] = useState<string | null>(null);
+  const [previewError, setPreviewError] = useState<string | null>(null);
   const { sourceOverview, demoMode, backendReachable } = useAppStore();
 
   useEffect(() => {
-    if (!sourceId) return;
+    let active = true;
+    setCatalog([]);
+    setPreviewRows([]);
+    setCatalogError(null);
+    setPreviewError(null);
+    if (!sourceId) {
+      setLoading(false);
+      return () => { active = false; };
+    }
     setLoading(true);
-    if (demoMode || !backendReachable) {
+    if (demoMode) {
       setPreviewRows(DEMO_PREVIEW_ROWS);
       setLoading(false);
-      return;
+      return () => { active = false; };
     }
-    Promise.all([
+    if (!backendReachable) {
+      setCatalogError('Backend is disconnected. Reconnect to load this dataset schema.');
+      setPreviewError('Backend is disconnected. Reconnect to load this dataset preview.');
+      setLoading(false);
+      return () => { active = false; };
+    }
+
+    Promise.allSettled([
       api.sources.catalog(sourceId),
       api.sources.preview(sourceId),
-    ]).then(([cat, prev]) => {
-      setCatalog(cat);
-      setPreviewRows(prev.rows);
-    }).catch(() => {
-      setPreviewRows(DEMO_PREVIEW_ROWS);
-    }).finally(() => setLoading(false));
+    ]).then(([catalogResult, previewResult]) => {
+      if (!active) return;
+      if (catalogResult.status === 'fulfilled') setCatalog(catalogResult.value);
+      else setCatalogError(catalogResult.reason instanceof Error ? catalogResult.reason.message : 'Could not load this dataset schema.');
+      if (previewResult.status === 'fulfilled') setPreviewRows(previewResult.value.rows);
+      else setPreviewError(previewResult.reason instanceof Error ? previewResult.reason.message : 'Could not load this dataset preview.');
+    }).finally(() => { if (active) setLoading(false); });
+    return () => { active = false; };
   }, [sourceId, demoMode, backendReachable]);
 
   if (!sourceId) {
@@ -135,7 +154,10 @@ export const DataPreviewPanel: React.FC<Props> = ({ sourceId }) => {
               </div>
             ))
           ) : (
-            <p className="text-slate-500 text-sm text-center py-8">Schema not available in demo mode</p>
+            <div role={catalogError ? 'alert' : 'status'} className="data-panel-error mx-auto flex max-w-xl items-start gap-3 rounded-xl border border-amber-500/20 bg-amber-500/5 px-4 py-3 text-sm text-amber-700">
+              <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0" />
+              <span>{catalogError || (demoMode ? 'Schema details are not included in demo data.' : 'No schema details are available for this dataset.')}</span>
+            </div>
           )}
         </div>
       )}
@@ -143,6 +165,11 @@ export const DataPreviewPanel: React.FC<Props> = ({ sourceId }) => {
       {activeTab === 'preview' && (
         loading ? (
           <div className="h-80 shimmer rounded-xl" />
+        ) : previewError ? (
+          <div role="alert" className="data-panel-error mx-auto flex max-w-xl items-start gap-3 rounded-xl border border-amber-500/20 bg-amber-500/5 px-4 py-3 text-sm text-amber-700">
+            <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0" />
+            <span>{previewError}</span>
+          </div>
         ) : (
           <DataTable rows={previewRows} columns={previewColumns} />
         )

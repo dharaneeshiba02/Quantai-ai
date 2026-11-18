@@ -39,6 +39,7 @@ class AgentState(TypedDict):
     question: str
     session_id: Optional[str]
     source_id: Optional[str]
+    selected_model: Optional[str]
     chat_history: list[str]          # recent Q&A strings for context
 
     # ── Routing ─────────────────────────────────────────────────────────────
@@ -106,6 +107,7 @@ def new_state(
     question: str,
     session_id: Optional[str] = None,
     source_id: Optional[str] = None,
+    selected_model: Optional[str] = None,
     chat_history: Optional[list[str]] = None,
     previous_plan: Optional[dict[str, Any]] = None,
 ) -> AgentState:
@@ -115,6 +117,7 @@ def new_state(
         question=question,
         session_id=session_id,
         source_id=source_id,
+        selected_model=selected_model,
         chat_history=chat_history or [],
         intent=None,
         requires_sql=True,

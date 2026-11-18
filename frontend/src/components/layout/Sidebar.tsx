@@ -27,7 +27,7 @@ export const Sidebar: React.FC<Props> = ({ onNavigate }) => {
     sources, setSources, sourcesLoaded, setSourcesLoaded,
     selectedSourceId,
     setUploadDialogOpen,
-    demoMode, backendReachable, setBackendReachable,
+    demoMode, backendReachable, setBackendReachable, setDemoMode,
     documentMode,
     switchChat, startNewChat, openHistoryRun,
     messages,
@@ -48,9 +48,6 @@ export const Sidebar: React.FC<Props> = ({ onNavigate }) => {
       .then((loadedSources) => {
         setSources(loadedSources);
         setBackendReachable(true);
-        if (loadedSources.length > 0 && !selectedSourceId) {
-          switchChat(loadedSources[0].id, false);
-        }
       })
       .catch(() => {
         setSources([]);
@@ -134,7 +131,8 @@ export const Sidebar: React.FC<Props> = ({ onNavigate }) => {
         {sidebarOpen ? (
           <button
             onClick={() => {
-              startNewChat();
+              setDemoMode(false);
+              startNewChat(null);
               onNavigate('chat');
             }}
             className="w-full flex items-center justify-center gap-2 py-2 px-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-medium text-xs shadow-md shadow-indigo-600/25 transition-all active:scale-[0.98]"
@@ -146,7 +144,8 @@ export const Sidebar: React.FC<Props> = ({ onNavigate }) => {
         ) : (
           <button
             onClick={() => {
-              startNewChat();
+              setDemoMode(false);
+              startNewChat(null);
               onNavigate('chat');
             }}
             className="w-10 h-10 mx-auto flex items-center justify-center rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white shadow-md shadow-indigo-600/25 transition-all active:scale-[0.98]"

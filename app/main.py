@@ -47,6 +47,7 @@ class QueryRequest(BaseModel):
     source_id: Optional[str] = None
     session_id: Optional[str] = None
     previous_run_id: Optional[str] = None
+    model: Optional[str] = None
 
 
 class FeedbackRequest(BaseModel):
@@ -117,6 +118,7 @@ def create_app() -> FastAPI:
     async def health_check():
         health = await _check_ollama_health()
         db_ok = await _check_db_health()
+        health["components"] = _system_component_health(cfg, health, db_ok)
         return {
             **health,
             "database": db_ok,
@@ -125,10 +127,37 @@ def create_app() -> FastAPI:
             "pii_masking": cfg.pii_masking_enabled,
         }
 
+    @app.get("/api/chat-models")
+    async def list_chat_models():
+        from app.llm.client import CHAT_MODEL_OPTIONS, health_check
+
+        health = await health_check()
+        return {
+            "provider_reachable": health["provider_reachable"],
+            "error": health.get("error"),
+            "models": health.get("chat_models") or [
+                {**option, "available": False} for option in CHAT_MODEL_OPTIONS
+            ],
+        }
+
     # ── Query (SSE streaming) ─────────────────────────────────────────────────
     @app.post("/api/query")
     async def run_query(request: QueryRequest):
         """Stream agent progress and final result as SSE events."""
+        from app.llm.client import CHAT_MODEL_IDS, health_check
+
+        if request.model and request.model not in CHAT_MODEL_IDS:
+            raise HTTPException(status_code=422, detail="Choose one of the supported Qwen chat models.")
+        if request.model:
+            model_health = await health_check()
+            if not model_health["provider_reachable"]:
+                raise HTTPException(status_code=503, detail=model_health["error"] or "Ollama is unavailable.")
+            if request.model not in model_health["available_models"]:
+                raise HTTPException(
+                    status_code=503,
+                    detail=f"Model '{request.model}' is not installed. Run: ollama pull {request.model}",
+                )
+
         async def event_generator() -> AsyncIterator[dict]:
             run_id = str(uuid.uuid4())
             session_id = request.session_id or str(uuid.uuid4())
@@ -154,6 +183,7 @@ def create_app() -> FastAPI:
                     source_id=request.source_id,
                     chat_history=chat_history,
                     previous_plan=previous_plan,
+                    selected_model=request.model,
                 )
                 state["run_id"] = run_id
 
@@ -530,9 +560,11 @@ def create_app() -> FastAPI:
         title = request.title.strip()
         if not title:
             raise HTTPException(status_code=422, detail="Enter a report title")
+        from app.reports.ai_report import enrich_dataset_profile
         from app.reports.dataset_report import build_dataset_profile, write_dataset_report_pdf
         try:
             profile = await run_in_threadpool(build_dataset_profile, source_id)
+            profile = await enrich_dataset_profile(profile)
             report_path = cfg.exports_dir / f"dataset_report_{uuid.uuid4().hex}.pdf"
             await run_in_threadpool(write_dataset_report_pdf, profile, title, report_path)
         except KeyError:
@@ -789,7 +821,16 @@ def create_app() -> FastAPI:
         return {
             "llm_model": cfg.llm_model,
             "llm_fallback_model": cfg.llm_fallback_model,
+            "llm_chat_model": cfg.llm_chat_model,
             "llm_num_ctx": cfg.llm_num_ctx,
+            "llm_report_ai_enabled": cfg.llm_report_ai_enabled,
+            "llm_report_timeout_sec": cfg.llm_report_timeout_sec,
+            "llm_chat_timeout_sec": cfg.llm_chat_timeout_sec,
+            "llm_num_predict": cfg.llm_num_predict,
+            "llm_chat_num_ctx": cfg.llm_chat_num_ctx,
+            "llm_chat_num_predict": cfg.llm_chat_num_predict,
+            "llm_reasoning_enabled": cfg.llm_reasoning_enabled,
+            "llm_chat_keep_alive": cfg.llm_chat_keep_alive,
             "schema_only_mode": cfg.schema_only_mode,
             "pii_masking_enabled": cfg.pii_masking_enabled,
             "accuracy_mode": cfg.accuracy_mode,
@@ -836,6 +877,76 @@ async def _check_db_health() -> dict:
         return {"status": "error", "message": str(exc)}
 
 
+def _system_component_health(cfg, llm_health: dict, db_health: dict) -> list[dict[str, Any]]:
+    """Summarize app, model, storage, and analysis dependencies for Settings."""
+    import importlib.util
+
+    def item(name: str, ok: bool, detail: str, fix: str | None = None) -> dict[str, Any]:
+        return {"name": name, "ok": ok, "detail": detail, "fix": fix}
+
+    components = [
+        item("Backend API", True, "FastAPI is responding"),
+        item(
+            "Ollama provider",
+            bool(llm_health.get("provider_reachable")),
+            "Local model service connected" if llm_health.get("provider_reachable") else "Ollama is unreachable",
+            None if llm_health.get("provider_reachable") else "Start Ollama with `ollama serve`.",
+        ),
+    ]
+    chat_models = llm_health.get("chat_models", [])
+    if not chat_models:
+        from app.llm.client import CHAT_MODEL_OPTIONS
+        chat_models = [{**option, "available": False} for option in CHAT_MODEL_OPTIONS]
+    for model in chat_models:
+        components.append(item(
+            model.get("label", model.get("id", "Chat model")),
+            bool(model.get("available")),
+            model.get("id", ""),
+            None if model.get("available") else f"Install with `ollama pull {model.get('id', '')}`.",
+        ))
+
+    components.extend([
+        item(
+            "Embedding model",
+            bool(llm_health.get("embed_model_available")),
+            llm_health.get("embed_model", ""),
+            None if llm_health.get("embed_model_available") else f"Install with `ollama pull {llm_health.get('embed_model', '')}`.",
+        ),
+        item(
+            "Database",
+            db_health.get("status") == "ok",
+            db_health.get("status", "unknown"),
+            db_health.get("message") if db_health.get("status") != "ok" else None,
+        ),
+        item(
+            "Upload storage",
+            cfg.uploads_dir.is_dir() and os.access(cfg.uploads_dir, os.W_OK),
+            str(cfg.uploads_dir),
+        ),
+        item(
+            "Export storage",
+            cfg.exports_dir.is_dir() and os.access(cfg.exports_dir, os.W_OK),
+            str(cfg.exports_dir),
+        ),
+        item(
+            "SQL validation",
+            importlib.util.find_spec("sqlglot") is not None,
+            "sqlglot installed" if importlib.util.find_spec("sqlglot") else "sqlglot is missing",
+        ),
+        item(
+            "Chart rendering",
+            importlib.util.find_spec("plotly") is not None and (cfg.frontend_dist / "index.html").is_file(),
+            "Plotly and frontend bundle ready" if importlib.util.find_spec("plotly") is not None and (cfg.frontend_dist / "index.html").is_file() else "Plotly or frontend bundle is missing",
+        ),
+        item(
+            "Document search",
+            importlib.util.find_spec("chromadb") is not None,
+            "ChromaDB installed" if importlib.util.find_spec("chromadb") is not None else "ChromaDB is missing",
+        ),
+    ])
+    return components
+
+
 async def _init_database() -> None:
     """Create quantai_app tables if they don't exist."""
     try:
@@ -848,8 +959,25 @@ async def _init_database() -> None:
 
 
 def _df_to_preview(df: "pd.DataFrame", limit: int = 200) -> list[dict]:
-    """Convert DataFrame to JSON-serializable list of dicts."""
-    return df.head(limit).where(pd.notna(df.head(limit)), None).to_dict("records")
+    """Convert DataFrame values, including NaN/Inf, to strict JSON-safe values."""
+    def clean(value: Any) -> Any:
+        if value is pd.NA or value is pd.NaT:
+            return None
+        if isinstance(value, np.generic):
+            value = value.item()
+        if isinstance(value, Decimal):
+            number = float(value)
+            return number if math.isfinite(number) else None
+        if isinstance(value, float) and not math.isfinite(value):
+            return None
+        if isinstance(value, (datetime, date, pd.Timestamp)):
+            return value.isoformat()
+        return value
+
+    return [
+        {str(key): clean(value) for key, value in row.items()}
+        for row in df.head(limit).astype(object).to_dict("records")
+    ]
 
 
 def _json_default(value: Any) -> Any:

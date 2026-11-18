@@ -3,12 +3,14 @@ from docx import Document
 from docx.shared import Pt, Inches
 from docx.enum.text import WD_ALIGN_PARAGRAPH
 from reportlab.lib.pagesizes import letter
+from reportlab.lib import colors
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib.units import inch
-from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Image as RLImage
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, Image as RLImage
 from pathlib import Path
 from datetime import datetime
 import io
+import re
 from html import escape
 
 def generate_report(content: str, format_type: str, output_path: str) -> str:
@@ -73,10 +75,23 @@ def generate_report(content: str, format_type: str, output_path: str) -> str:
         styles.add(ParagraphStyle(
             name='QuantaiReportBody',
             parent=styles['Normal'],
-            alignment=4,  # TA_JUSTIFY
+            alignment=0,
             spaceAfter=12,
             fontSize=11,
             leading=16
+        ))
+        styles.add(ParagraphStyle(
+            name='QuantaiReportSection', parent=styles['Heading2'],
+            fontSize=15, leading=19, textColor=colors.HexColor('#312e81'),
+            spaceBefore=12, spaceAfter=6,
+        ))
+        styles.add(ParagraphStyle(
+            name='QuantaiReportBullet', parent=styles['QuantaiReportBody'],
+            leftIndent=14, firstLineIndent=-8, spaceAfter=6,
+        ))
+        styles.add(ParagraphStyle(
+            name='QuantaiReportCell', parent=styles['Normal'],
+            fontSize=8.5, leading=11, spaceAfter=0,
         ))
         
         title_style = styles['Heading1']
@@ -94,15 +109,85 @@ def generate_report(content: str, format_type: str, output_path: str) -> str:
         story.append(Paragraph(f"Generated on: {date_str}", meta_style))
         story.append(Spacer(1, 0.5 * inch))
         
-        # Content
-        paragraphs = content.split('\n\n')
-        for para in paragraphs:
-            if para.strip():
-                # ReportLab Paragraph treats input as markup. Escape document
-                # text so symbols such as &, <, and > cannot break PDF output.
-                clean_para = escape(para.strip().replace('\n', ' '))
-                story.append(Paragraph(clean_para, styles['QuantaiReportBody']))
+        # Content: preserve headings, bullets, tables, and paragraph spacing.
+        story.extend(_rich_pdf_flowables(content, styles))
                 
         doc.build(story)
         
     return output_path
+
+
+def _rich_pdf_flowables(content: str, styles) -> list:
+    """Convert common Markdown report formatting into compact ReportLab flowables."""
+    flowables = []
+    paragraph_lines: list[str] = []
+    table_lines: list[str] = []
+
+    def flush_paragraph() -> None:
+        if paragraph_lines:
+            text = ' '.join(line.strip() for line in paragraph_lines)
+            flowables.append(Paragraph(_inline_markup(text), styles['QuantaiReportBody']))
+            paragraph_lines.clear()
+
+    def flush_table() -> None:
+        if not table_lines:
+            return
+        rows = []
+        for line in table_lines:
+            cells = [cell.strip() for cell in line.strip().strip('|').split('|')]
+            if cells and not all(re.fullmatch(r':?-{2,}:?', cell.replace(' ', '')) for cell in cells):
+                rows.append([Paragraph(_inline_markup(cell), styles['QuantaiReportCell']) for cell in cells])
+        if rows:
+            column_count = max(len(row) for row in rows)
+            for row in rows:
+                row.extend([''] * (column_count - len(row)))
+            widths = [6.5 * inch / column_count] * column_count
+            table = Table(rows, colWidths=widths, repeatRows=1, hAlign='LEFT')
+            table.setStyle(TableStyle([
+                ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#e0e7ff')),
+                ('TEXTCOLOR', (0, 0), (-1, 0), colors.HexColor('#312e81')),
+                ('ROWBACKGROUNDS', (0, 1), (-1, -1), [colors.white, colors.HexColor('#f8fafc')]),
+                ('GRID', (0, 0), (-1, -1), 0.35, colors.HexColor('#cbd5e1')),
+                ('VALIGN', (0, 0), (-1, -1), 'TOP'),
+                ('LEFTPADDING', (0, 0), (-1, -1), 6),
+                ('RIGHTPADDING', (0, 0), (-1, -1), 6),
+                ('TOPPADDING', (0, 0), (-1, -1), 5),
+                ('BOTTOMPADDING', (0, 0), (-1, -1), 5),
+            ]))
+            flowables.extend((Spacer(1, 4), table, Spacer(1, 8)))
+        table_lines.clear()
+
+    for raw_line in content.splitlines():
+        line = raw_line.strip()
+        if line.startswith('|') and line.count('|') >= 2:
+            flush_paragraph()
+            table_lines.append(line)
+            continue
+        flush_table()
+        if not line:
+            flush_paragraph()
+        elif line.startswith('### '):
+            flush_paragraph()
+            flowables.append(Paragraph(_inline_markup(line[4:]), styles['QuantaiReportSection']))
+        elif line.startswith('## '):
+            flush_paragraph()
+            flowables.append(Paragraph(_inline_markup(line[3:]), styles['QuantaiReportSection']))
+        elif line.startswith('# '):
+            flush_paragraph()
+            flowables.append(Paragraph(_inline_markup(line[2:]), styles['QuantaiReportSection']))
+        elif line.startswith(('- ', '* ', '• ')):
+            flush_paragraph()
+            flowables.append(Paragraph(f'• {_inline_markup(line[2:])}', styles['QuantaiReportBullet']))
+        else:
+            paragraph_lines.append(line)
+    flush_table()
+    flush_paragraph()
+    return flowables
+
+
+def _inline_markup(value: str) -> str:
+    """Escape text safely, then support the small Markdown subset used in reports."""
+    text = escape(str(value))
+    text = re.sub(r'\*\*(.+?)\*\*', r'<b>\1</b>', text)
+    text = re.sub(r'`([^`]+)`', r'<font name="Courier">\1</font>', text)
+    return text

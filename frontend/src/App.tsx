@@ -11,6 +11,7 @@ function App() {
   );
   const setBackendReachable = useAppStore((state) => state.setBackendReachable);
   const setDemoMode = useAppStore((state) => state.setDemoMode);
+  const startNewChat = useAppStore((state) => state.startNewChat);
 
   const navigate = useCallback((page: 'welcome' | 'chat', demo = false) => {
     const nextHash = page === 'chat' ? (demo ? '#demo' : '#chat') : '';
@@ -51,7 +52,7 @@ function App() {
   if (currentPage === 'welcome') {
     return (
       <WelcomePage
-        onLaunch={() => { setDemoMode(false); navigate('chat'); }}
+        onLaunch={() => { setDemoMode(false); startNewChat(null); navigate('chat'); }}
         onDemo={() => {
           setDemoMode(true);
           navigate('chat', true);

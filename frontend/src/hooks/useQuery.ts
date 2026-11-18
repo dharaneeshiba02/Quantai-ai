@@ -8,10 +8,25 @@ import { streamDemoQuery } from '../api/demo';
 import { useAppStore, type ChatMessage, type ActiveStream } from '../store/useAppStore';
 import type { SSEEvent } from '../api/client';
 
+const NEXT_PIPELINE_STEP: Record<string, string> = {
+  supervisor: 'source_resolver',
+  source_resolver: 'column_selector',
+  column_selector: 'query_planner',
+  query_planner: 'sql_compile',
+  sql_compile: 'validate_execute',
+  validate_execute: 'cross_check',
+  cross_check: 'cleaner',
+  cleaner: 'stats_analyzer',
+  stats_analyzer: 'visualizer',
+  visualizer: 'insight',
+  insight: 'confidence',
+};
+
 export function useQuery() {
   const {
     sessionId, setSessionId,
     selectedSourceId,
+    selectedChatModel,
     messages,
     addMessage, updateMessage,
     setActiveStream, activeStream,
@@ -56,7 +71,9 @@ export function useQuery() {
       if (event.type === 'step_completed' || event.type === 'step_started') {
         setActiveStream((prev: ActiveStream | null) => prev ? {
           ...prev,
-          current_step: event.step || prev.current_step,
+          current_step: event.type === 'step_completed'
+            ? NEXT_PIPELINE_STEP[event.step || ''] || event.step || prev.current_step
+            : event.step || prev.current_step,
           completed_steps: event.type === 'step_completed'
             ? [...(prev.completed_steps || []), event.step || '']
             : prev.completed_steps,
@@ -154,6 +171,7 @@ export function useQuery() {
         selectedSourceId,
         currentSession,
         priorRunId || null,
+        selectedChatModel,
         handleEvent,
         handleDone,
         handleError,
@@ -166,7 +184,7 @@ export function useQuery() {
       completed_steps: [],
       cancel,
     });
-  }, [activeStream, sessionId, selectedSourceId, messages, demoMode, documentMode, setActiveStream, setSessionId, addMessage, updateMessage]);
+  }, [activeStream, sessionId, selectedSourceId, selectedChatModel, messages, demoMode, documentMode, setActiveStream, setSessionId, addMessage, updateMessage]);
 
   const cancelQuery = useCallback(() => {
     if (activeStream) {

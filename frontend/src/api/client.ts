@@ -105,9 +105,16 @@ export interface HealthStatus {
   fix: string | null;
   available_models: string[];
   database: { status: string };
+  components?: { name: string; ok: boolean; detail: string; fix?: string | null }[];
   privacy_mode: string;
   schema_only_mode: boolean;
   pii_masking: boolean;
+}
+
+export interface ChatModel {
+  id: string;
+  label: string;
+  available: boolean;
 }
 
 // ─── SSE Event Types ─────────────────────────────────────────────────────────
@@ -251,6 +258,7 @@ async function downloadResponse(response: Response, fallbackFilename: string): P
 
 export const api = {
   health: () => request<HealthStatus>('GET', '/api/health'),
+  chatModels: () => request<{ provider_reachable: boolean; error: string | null; models: ChatModel[] }>('GET', '/api/chat-models'),
 
   sources: {
     list: () => request<Source[]>('GET', '/api/sources'),
@@ -322,6 +330,7 @@ export const api = {
     source_id: string | null,
     session_id: string | null,
     previous_run_id: string | null,
+    model: string,
     onEvent: (event: SSEEvent) => void,
     onDone: () => void,
     onError: (err: Error) => void,
@@ -334,7 +343,7 @@ export const api = {
         const res = await fetch(`${BASE_URL}/api/query`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ question, source_id, session_id, previous_run_id }),
+          body: JSON.stringify({ question, source_id, session_id, previous_run_id, model }),
           signal: controller?.signal,
         });
 

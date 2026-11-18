@@ -20,7 +20,7 @@ from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
 from reportlab.lib.units import inch
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
-from reportlab.platypus import Image, KeepTogether, PageBreak, Paragraph, SimpleDocTemplate, Spacer, Table, TableStyle
+from reportlab.platypus import Image, KeepTogether, Paragraph, SimpleDocTemplate, Spacer, Table, TableStyle
 from sqlalchemy import select, text
 
 from app.config import get_settings
@@ -672,12 +672,18 @@ def write_dataset_report_pdf(profile: dict[str, Any], title: str, path: Path) ->
         "Sample-based plots state their row count; likely sensitive fields are omitted.",
         body_style,
     ))
+    report_ai_status = str(profile.get("ai_report_status", "deterministic"))
+    if report_ai_status == "qwen3.5":
+        story.append(Paragraph("Report reasoning: reviewed by the local Qwen3.5 model.", small_style))
+    elif report_ai_status.startswith("deterministic_fallback"):
+        story.append(Paragraph("Report reasoning: deterministic fallback used because the local model was unavailable or timed out.", small_style))
+
     if not large:
         for note in profile.get("metric_notes", []):
             story.append(Paragraph(f"Interpretation note: {_xml(note)}", small_style))
 
     if large:
-        story.extend((PageBreak(), _section("Dataset structure and quality", section_style)))
+        story.append(_section("Dataset structure and quality", section_style))
         story.append(Paragraph(
             f"The source has {profile.get('row_count', 0):,} records and {profile.get('col_count', 0):,} fields. "
             "The field guide below focuses on non-sensitive columns.", body_style,
@@ -688,7 +694,7 @@ def write_dataset_report_pdf(profile: dict[str, Any], title: str, path: Path) ->
             story.append(Paragraph(f"• &nbsp; {_xml(note)}", body_style))
         for note in profile.get("metric_notes", []):
             story.append(Paragraph(f"- {_xml(note)}", body_style))
-        story.extend((PageBreak(), _section("Numeric measures", section_style)))
+        story.append(_section("Numeric measures", section_style))
         story.append(Paragraph(
             "Averages summarize typical values, minimum and maximum show the observed range, and standard deviation describes spread. "
             "Missing percentages show how much data is unavailable for each measure.", body_style,
@@ -737,7 +743,7 @@ def write_dataset_report_pdf(profile: dict[str, Any], title: str, path: Path) ->
         # forced a mostly empty page on otherwise compact reports.
         _append_large_visual_pages(story, profile, section_style, chart_heading_style, plot_title_style, body_style, regular_font, small_style)
         if len(profile.get("charts", [])) >= 2 or len(profile.get("measures", [])) >= 3:
-            story.extend((PageBreak(), _section("Analytical interpretation", section_style)))
+            story.append(_section("Analytical interpretation", section_style))
             story.append(Paragraph(
                 "This section translates the visuals into observations and decision questions. "
                 "The findings describe patterns in the data; they do not establish causation.", body_style,
@@ -749,7 +755,7 @@ def write_dataset_report_pdf(profile: dict[str, Any], title: str, path: Path) ->
                 story.append(Paragraph(f"<b>Useful for:</b> {_xml(use)}", body_style))
                 story.append(Paragraph(f"<b>Observed finding:</b> {_xml(chart.get('interpretation', 'No data-specific finding was available.'))}", body_style))
         if profile.get("col_count", 0) * profile.get("row_count", 0) >= 5_000_000 or profile.get("col_count", 0) >= 60:
-            story.extend((PageBreak(), _section("Reading this report", section_style)))
+            story.append(_section("Reading this report", section_style))
             story.append(Paragraph(
                 "This report is a structured profile of the uploaded dataset. It describes distributions and group comparisons, "
                 "not causal effects. Confirm business context and investigate data-quality flags before making decisions.", body_style,
@@ -758,26 +764,38 @@ def write_dataset_report_pdf(profile: dict[str, Any], title: str, path: Path) ->
             for item in _next_steps(profile):
                 story.append(Paragraph(f"• &nbsp; {_xml(item)}", body_style))
     else:
-        story.extend((PageBreak(), _section("Fields and data quality", section_style)))
+        story.append(_section("Fields and data quality", section_style))
         story.append(_catalog_table(profile, regular_font, bold_font))
         for note in profile.get("quality_notes", []):
             story.append(Paragraph(f"• &nbsp; {_xml(note)}", body_style))
         story.append(Paragraph("Measures and common groups", subhead_style))
         story.append(_measure_table(profile, regular_font, bold_font))
-        story.append(_category_table(profile, regular_font, bold_font))
+        story.append(Paragraph("What the measures and groups suggest", subhead_style))
+        for note in _measure_insights(profile)[:3] + _category_insights(profile)[:3]:
+            story.append(Paragraph(f"- {_xml(note)}", body_style))
         if profile.get("charts"):
-            story.extend((PageBreak(), _section("Plots and visual findings", section_style)))
-            for chart in profile["charts"][:2]:
-                story.extend(_plot_report_flowables(
+            for chart_index, chart in enumerate(profile["charts"][:2]):
+                chart_flowables = _plot_report_flowables(
                     chart, chart_heading_style, plot_title_style, body_style, regular_font, small_style,
-                    image_height=3.1,
-                ))
+                    # The chart now starts at the top of its page, so keep it
+                    # large enough to use the available space and remain readable.
+                    image_height=3.2,
+                    include_detail_table=True,
+                )
+                if chart_index == 0:
+                    story.append(KeepTogether([_section("Plots and visual findings", section_style), *chart_flowables]))
+                    follow_up = [Paragraph("Recommended follow-up", subhead_style)]
+                    follow_up.extend(
+                        Paragraph(f"- {_xml(item)}", body_style)
+                        for item in _next_steps(profile)
+                    )
+                    story.append(KeepTogether(follow_up))
+                else:
+                    story.extend(chart_flowables)
         else:
             story.append(Paragraph("No suitable non-sensitive fields were available for a reliable chart.", body_style))
-        story.append(Paragraph("Recommended follow-up", subhead_style))
-        for item in _next_steps(profile):
-            story.append(Paragraph(f"• &nbsp; {_xml(item)}", body_style))
-
+        story.append(Paragraph("Category frequency", subhead_style))
+        story.append(_category_table(profile, regular_font, bold_font))
     def footer(canvas, document):
         canvas.saveState()
         canvas.setStrokeColor(colors.HexColor("#e2e8f0"))
@@ -795,23 +813,26 @@ def write_dataset_report_pdf(profile: dict[str, Any], title: str, path: Path) ->
 def _append_large_visual_pages(story, profile, section_style, chart_heading_style, plot_title_style, body_style, regular_font, small_style) -> None:
     charts = profile.get("charts", [])
     if not charts:
-        story.extend((PageBreak(), _section("Plots and visual findings", section_style)))
+        story.append(_section("Plots and visual findings", section_style))
         story.append(Paragraph("No plot was added because the dataset has no suitable non-sensitive fields to compare.", body_style))
-        story.extend((PageBreak(), _section("Recommended follow-up", section_style)))
+        story.append(_section("Recommended follow-up", section_style))
         for item in _next_steps(profile):
             story.append(Paragraph(f"\u2022 &nbsp; {_xml(item)}", body_style))
         return
 
     for chart in charts[:3]:
-        story.append(PageBreak())
         image_height = 3.25 if chart.get("kind") in ("histogram", "missing_bar") else 4.5
-        story.extend(_plot_report_flowables(
+        chart_flowables = _plot_report_flowables(
             chart, chart_heading_style, plot_title_style, body_style, regular_font, small_style,
             image_height=image_height, include_detail_table=True,
-        ))
+        )
+        if chart is charts[0]:
+            story.append(KeepTogether([_section("Plots and visual findings", section_style), *chart_flowables]))
+        else:
+            story.extend(chart_flowables)
 
     if len(charts) < 2:
-        story.extend((PageBreak(), _section("Recommended follow-up", section_style)))
+        story.append(_section("Recommended follow-up", section_style))
         for item in _next_steps(profile):
             story.append(Paragraph(f"\u2022 &nbsp; {_xml(item)}", body_style))
 
@@ -831,6 +852,12 @@ def _plot_report_flowables(
     items.append(Paragraph(f"<b>Useful for:</b> {_xml(use)}", small_style))
     if chart.get("interpretation"):
         items.append(Paragraph(f"<b>What the data shows:</b> {_xml(chart['interpretation'])}", body_style))
+        description = _chart_description(chart)
+        if description:
+            items.append(Paragraph(f"<b>What this chart explains:</b> {_xml(description)}", body_style))
+    takeaway = _chart_takeaway(chart)
+    if takeaway:
+        items.append(Paragraph(f"<b>Analyst takeaway:</b> {_xml(takeaway)}", body_style))
 
     image_data = _draw_chart(chart)
     if image_data:
@@ -973,6 +1000,51 @@ def _chart_flowables(chart: dict[str, Any], body_style, regular_font: str, inclu
     else:
         items.append(Paragraph("Chart unavailable for this profile.", body_style))
     return items
+
+
+def _chart_takeaway(chart: dict[str, Any]) -> str:
+    """Add a decision-oriented interpretation beside the visual evidence."""
+    labels = chart.get("labels", [])
+    values = chart.get("values", [])
+    if not labels or not values or len(labels) != len(values):
+        return ""
+    if chart.get("group_counts"):
+        pairs = sorted(zip(labels, values), key=lambda pair: float(pair[1] or 0), reverse=True)
+        top_label, top_value = pairs[0]
+        low_label, low_value = pairs[-1]
+        return (
+            f"{top_label} leads on the plotted average at {_display(top_value)}, while {low_label} is lowest at "
+            f"{_display(low_value)}. Compare this gap with group sizes and operational context before treating it as a performance difference."
+        )
+    if chart.get("kind") == "histogram":
+        counts = [int(value or 0) for value in values]
+        index = max(range(len(counts)), key=counts.__getitem__)
+        total = max(sum(counts), 1)
+        return f"The largest range is {labels[index]} with {counts[index]:,} records ({counts[index] / total * 100:.1f}% of the plotted sample)."
+    if chart.get("kind") == "missing_bar":
+        index = max(range(len(values)), key=lambda i: float(values[i] or 0))
+        return f"The highest missingness is {labels[index]} at {float(values[index] or 0):.1f}%, making this field the first candidate for data-quality review."
+    return ""
+
+
+def _chart_description(chart: dict[str, Any]) -> str:
+    """Explain the analytical question answered by a chart."""
+    kind = chart.get("kind")
+    if chart.get("ai_description"):
+        return str(chart["ai_description"])
+    if kind == "line":
+        return "This chart explains how a measure changes across an ordered time period or sequence, making rises, falls, peaks, and turning points easier to compare."
+    if kind == "histogram":
+        return "This chart explains how records are distributed across value ranges, showing concentration, spread, skew, and whether a mean represents a typical record."
+    if kind == "heatmap":
+        return "This chart explains the strength and direction of pairwise relationships between numeric measures; it shows association, not causation."
+    if kind == "missing_bar":
+        return "This chart explains where information is incomplete, so the fields with the highest missing percentages can be reviewed first."
+    if chart.get("group_counts"):
+        return "This chart explains how the selected measure differs across groups and pairs each average with the number of records supporting it."
+    if kind == "bar":
+        return "This chart explains which categories are most common by comparing their record counts."
+    return "This chart provides a visual comparison of the selected values across the displayed categories."
 
 
 def _draw_chart(chart: dict[str, Any]) -> io.BytesIO | None:

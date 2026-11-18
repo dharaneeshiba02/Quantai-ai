@@ -19,14 +19,24 @@ from typing import AsyncIterator, Optional, Tuple
 
 import httpx
 from langchain_core.messages import BaseMessage, HumanMessage, SystemMessage
-from langchain_openai import ChatOpenAI
+from langchain_ollama import ChatOllama
 
 from app.config import get_settings
 
 log = logging.getLogger(__name__)
 
-# Global semaphore: allow 2 concurrent LLM calls for parallel sub-agents
-_LLM_SEMAPHORE = asyncio.Semaphore(2)
+# Local models share system memory; serialize inference to avoid simultaneous
+# model loads competing for RAM/VRAM on a desktop workstation.
+_LLM_SEMAPHORE = asyncio.Semaphore(1)
+
+# Keep the chat picker intentionally small and aligned with the Ollama tags
+# installed for this workspace. IDs are passed through to Ollama unchanged.
+CHAT_MODEL_OPTIONS = [
+    {"id": "qwen3.5:latest", "label": "Qwen 3.5"},
+    {"id": "qwen2.5:7b", "label": "Qwen 2.5"},
+    {"id": "qwen2.5-coder:7b", "label": "Qwen Code"},
+]
+CHAT_MODEL_IDS = {option["id"] for option in CHAT_MODEL_OPTIONS}
 
 
 class LLMHealthError(RuntimeError):
@@ -38,7 +48,7 @@ def _resolve_provider(model: Optional[str] = None) -> Tuple[str, str, str, str]:
     """
     Resolve (provider_name, model_name, base_url, api_key) based on settings and parameters.
     Returns:
-        provider: 'groq' | 'ollama'
+        provider: 'ollama'
         model_name: specific model id
         base_url: OpenAI-compatible API endpoint
         api_key: secret key or dummy token for local server
@@ -52,7 +62,7 @@ def _resolve_provider(model: Optional[str] = None) -> Tuple[str, str, str, str]:
 async def health_check() -> dict:
     """
     Verify the configured language model endpoint and model availability.
-    Supports both Groq and Local Ollama providers.
+    Verifies the configured local Ollama endpoint and active model.
     """
     cfg = get_settings()
     provider, active_model, base_url, api_key = _resolve_provider()
@@ -61,6 +71,8 @@ async def health_check() -> dict:
         "provider": provider,
         "provider_reachable": False,
         "model_available": False,
+        "embed_model_available": False,
+        "chat_models": [],
         "model": active_model,
         "embed_model": cfg.llm_embed_model,
         "error": None,
@@ -78,10 +90,29 @@ async def health_check() -> dict:
             result["available_models"] = models
             model_base = active_model.split(":")[0]
             result["model_available"] = any(active_model == m or m.startswith(model_base) for m in models)
+            embed_base = cfg.llm_embed_model.split(":")[0]
+            result["embed_model_available"] = any(
+                cfg.llm_embed_model == installed or installed.startswith(embed_base)
+                for installed in models
+            )
+            result["chat_models"] = [
+                {
+                    **option,
+                    "available": any(
+                        option["id"] == installed
+                        or option["id"].removesuffix(":latest") == installed
+                        for installed in models
+                    ),
+                }
+                for option in CHAT_MODEL_OPTIONS
+            ]
 
             if not result["model_available"]:
                 result["error"] = f"Model '{active_model}' not found in local Ollama."
                 result["fix"] = f"Run: ollama pull {active_model}"
+            elif not result["embed_model_available"]:
+                result["error"] = f"Embedding model '{cfg.llm_embed_model}' not found in local Ollama."
+                result["fix"] = f"Run: ollama pull {cfg.llm_embed_model}"
 
     except httpx.HTTPStatusError as exc:
         result["error"] = f"LLM provider returned HTTP {exc.response.status_code}."
@@ -100,22 +131,25 @@ def _build_client(
     temperature: float,
     model_kwargs: dict | None = None,
     provider_override: Optional[str] = None,
-) -> ChatOpenAI:
+    timeout_sec: int | None = None,
+    interactive: bool = False,
+) -> ChatOllama:
     cfg = get_settings()
-    provider, resolved_model, base_url, api_key = _resolve_provider(model)
+    _, resolved_model, _, _ = _resolve_provider(model)
 
     if provider_override == "ollama":
         resolved_model = model or cfg.llm_fallback_model or cfg.llm_model
-        base_url = f"{cfg.ollama_base_url.rstrip('/')}/v1"
-        api_key = "ollama"
 
-    return ChatOpenAI(
+    return ChatOllama(
         model=resolved_model,
-        api_key=api_key or "local",
-        base_url=base_url,
+        base_url=cfg.ollama_base_url.rstrip("/"),
         temperature=temperature,
-        timeout=cfg.llm_timeout_sec,
-        model_kwargs=model_kwargs or {},
+        format="json" if model_kwargs else None,
+        num_ctx=cfg.llm_chat_num_ctx if interactive else cfg.llm_num_ctx,
+        num_predict=cfg.llm_chat_num_predict if interactive else cfg.llm_num_predict,
+        reasoning=cfg.llm_reasoning_enabled,
+        keep_alive=cfg.llm_chat_keep_alive,
+        async_client_kwargs={"timeout": timeout_sec or cfg.llm_timeout_sec},
     )
 
 
@@ -125,18 +159,31 @@ async def call_llm(
     temperature: Optional[float] = None,
     model: Optional[str] = None,
     format: Optional[dict] = None,
+    interactive: bool = False,
 ) -> str:
     """
-    Call the LLM with a system + user message.
-    Enforces single-call semaphore. Automatically falls back to local Qwen on error.
+    Call the local LLM with a system + user message.
+    Enforces the semaphore and retries with the configured local fallback model
+    only for timeout or resource failures.
     """
     cfg = get_settings()
     temp = temperature if temperature is not None else cfg.llm_temperature_sql
-    provider, model_name, _, _ = _resolve_provider(model)
+    requested_chat_model = model
+    chosen_model = model or (cfg.llm_chat_model if interactive else cfg.llm_model)
+    provider, model_name, _, _ = _resolve_provider(chosen_model)
+    timeout_sec = cfg.llm_chat_timeout_sec if interactive else cfg.llm_timeout_sec
 
     async with _LLM_SEMAPHORE:
         try:
-            return await _do_call(system_prompt, user_message, temp, model_name, format)
+            return await _do_call(
+                system_prompt,
+                user_message,
+                temp,
+                model_name,
+                format,
+                timeout_sec=timeout_sec,
+                interactive=interactive,
+            )
         except Exception as exc:
             err_str = str(exc).lower()
             is_oom = any(k in err_str for k in ["out of memory", "oom", "cuda", "killed"])
@@ -144,12 +191,19 @@ async def call_llm(
                 marker in err_str for marker in ("timeout", "timed out")
             )
             # Recovery remains local-only: use the configured local fallback model.
-            if cfg.llm_auto_fallback and (is_oom or is_timeout):
+            if cfg.llm_auto_fallback and not requested_chat_model and (is_oom or is_timeout):
                 fallback_model = cfg.llm_fallback_model
                 if model_name != fallback_model:
                     log.warning("Local model failed (%s); trying local model %s", type(exc).__name__, fallback_model)
                     return await _do_call(
-                        system_prompt, user_message, temp, fallback_model, format, provider_override="ollama"
+                        system_prompt,
+                        user_message,
+                        temp,
+                        fallback_model,
+                        format,
+                        provider_override="ollama",
+                        timeout_sec=timeout_sec,
+                        interactive=interactive,
                     )
             raise
 
@@ -161,6 +215,8 @@ async def _do_call(
     model_name: str,
     format: Optional[dict],
     provider_override: Optional[str] = None,
+    timeout_sec: int | None = None,
+    interactive: bool = False,
 ) -> str:
     client_kwargs: dict = {}
     if format:
@@ -168,7 +224,14 @@ async def _do_call(
             "response_format": {"type": "json_object"},
         }
 
-    client = _build_client(model_name, temperature, model_kwargs=client_kwargs.get("model_kwargs"), provider_override=provider_override)
+    client = _build_client(
+        model_name,
+        temperature,
+        model_kwargs=client_kwargs.get("model_kwargs"),
+        provider_override=provider_override,
+        timeout_sec=timeout_sec,
+        interactive=interactive,
+    )
     messages: list[BaseMessage] = [
         SystemMessage(content=system_prompt),
         HumanMessage(content=user_message),

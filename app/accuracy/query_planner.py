@@ -149,6 +149,7 @@ async def generate_plan(
     resolved_dates: str | None = None,
     chat_history: list[str] | None = None,
     temperature: float = 0.0,
+    model: str | None = None,
 ) -> tuple[Optional[QueryPlan], str | None]:
     """
     Generate a structured query plan for the given question.
@@ -180,6 +181,8 @@ async def generate_plan(
             user_message=user_message,
             temperature=temperature,
             format=PLAN_JSON_SCHEMA,
+            interactive=True,
+            model=model,
         )
         plan = _parse_plan(raw)
         if plan:
@@ -194,6 +197,8 @@ async def generate_plan(
                 system_prompt=system_prompt,
                 user_message=user_message + "\n\nReturn ONLY the JSON object, no other text:",
                 temperature=temperature + (attempt * 0.1),
+                interactive=True,
+                model=model,
             )
             plan = _parse_plan(raw)
             if plan:

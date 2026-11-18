@@ -2,7 +2,8 @@
  * components/chat/ChatInput.tsx — Query input with suggested questions.
  */
 import React, { useState, useRef, useEffect } from 'react';
-import { Send, Square, Sparkles } from 'lucide-react';
+import { Cpu, Send, Square, Sparkles } from 'lucide-react';
+import type { ChatModel } from '../../api/client';
 
 interface Props {
   onSubmit: (question: string) => void;
@@ -10,10 +11,15 @@ interface Props {
   onCancel: () => void;
   suggestions?: string[];
   disabled?: boolean;
+  models?: ChatModel[];
+  selectedModel?: string;
+  onModelChange?: (model: string) => void;
+  modelError?: string | null;
 }
 
 export const ChatInput: React.FC<Props> = ({
-  onSubmit, isLoading, onCancel, suggestions = [], disabled
+  onSubmit, isLoading, onCancel, suggestions = [], disabled,
+  models = [], selectedModel, onModelChange, modelError,
 }) => {
   const [value, setValue] = useState('');
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -48,6 +54,28 @@ export const ChatInput: React.FC<Props> = ({
 
   return (
     <div className="flex flex-col gap-3">
+      {onModelChange && (
+        <div className="flex items-center gap-2 self-start text-xs text-slate-400">
+          <Cpu className="h-3.5 w-3.5 text-indigo-300" />
+          <label htmlFor="chat-model">Model</label>
+          <select
+            id="chat-model"
+            value={selectedModel || ''}
+            onChange={(event) => onModelChange(event.target.value)}
+            disabled={isLoading || models.length === 0}
+            className="chat-model-select rounded-lg border border-slate-200 px-2.5 py-1.5 text-xs outline-none focus:border-indigo-300 disabled:opacity-50"
+            title={modelError || 'Choose the local Ollama model for this chat'}
+          >
+            {models.map((model) => (
+              <option key={model.id} value={model.id} disabled={!model.available}>
+                {model.label}{model.available ? '' : ' (not installed)'}
+              </option>
+            ))}
+            {models.length === 0 && <option value="">No Ollama models available</option>}
+          </select>
+          {modelError && <span role="status" className="text-amber-300">{modelError}</span>}
+        </div>
+      )}
       {/* Suggested questions */}
       {suggestions.length > 0 && !isLoading && (
         <div className="flex flex-wrap gap-2">

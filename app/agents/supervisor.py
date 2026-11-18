@@ -3,18 +3,11 @@ app/agents/supervisor.py — Supervisor agent: routes questions and handles ambi
 """
 from __future__ import annotations
 
-import json
-import logging
 import re
 import time
 from typing import Any
 
 from app.graph.state import AgentState
-from app.llm.client import call_llm
-from app.llm.prompts import SUPERVISOR_SYSTEM
-
-log = logging.getLogger(__name__)
-
 
 async def supervisor_node(state: AgentState) -> dict[str, Any]:
     """
@@ -25,8 +18,6 @@ async def supervisor_node(state: AgentState) -> dict[str, Any]:
     step = "supervisor"
 
     question = state["question"]
-    chat_history = state.get("chat_history", [])
-
     # A broad "what does this dataset tell us?" request needs data analysis,
     # not a schema dump. Route it to a compact factual profile.
     q_lower = re.sub(r"\s+", " ", question.lower()).strip()
@@ -46,6 +37,11 @@ async def supervisor_node(state: AgentState) -> dict[str, Any]:
         "tell me what is in this dataset",
         "give me a summary",
         "give me insights",
+        "provide insight",
+        "provide random insight",
+        "random insight",
+        "give me an insight",
+        "give me a random insight",
         "overall insights",
         "analyze this dataset",
         "analyse this dataset",
@@ -123,59 +119,20 @@ async def supervisor_node(state: AgentState) -> dict[str, Any]:
             }],
         }
 
-    # Call LLM for routing
-    history_ctx = ""
-    if chat_history:
-        history_ctx = f"\nRecent conversation (last 6 turns):\n" + "\n".join(chat_history[-6:])
-
-    user_msg = f"Question: {question}{history_ctx}"
-    if state.get("source_id"):
-        user_msg += f"\nActive source_id: {state['source_id']}"
-
-    try:
-        raw = await call_llm(
-            system_prompt=SUPERVISOR_SYSTEM,
-            user_message=user_msg,
-            temperature=0.0,
-        )
-
-        # Parse JSON response
-        raw = raw.strip()
-        start = raw.find("{")
-        end = raw.rfind("}") + 1
-        if start != -1 and end > start:
-            data = json.loads(raw[start:end])
-        else:
-            data = {"intent": "data_query", "requires_sql": True, "clarification_question": None}
-
-        elapsed = int((time.perf_counter() - t0) * 1000)
-        return {
-            "intent": data.get("intent", "data_query"),
-            "requires_sql": data.get("requires_sql", True),
-            "clarification_question": data.get("clarification_question"),
-            "current_step": step,
-            "trace": state.get("trace", []) + [{
-                "step": step,
-                "status": "completed",
-                "duration_ms": elapsed,
-                "intent": data.get("intent"),
-                "reason": data.get("reason"),
-            }],
-        }
-
-    except Exception as exc:
-        log.warning("Supervisor LLM call failed: %s — defaulting to data_query", exc)
-        elapsed = int((time.perf_counter() - t0) * 1000)
-        return {
+    # Dataset questions are the default intent. The planner already understands
+    # the question and decides how to query it, so a separate model call here
+    # only adds latency without changing the route.
+    elapsed = int((time.perf_counter() - t0) * 1000)
+    return {
+        "intent": "data_query",
+        "requires_sql": True,
+        "clarification_question": None,
+        "current_step": step,
+        "trace": state.get("trace", []) + [{
+            "step": step,
+            "status": "completed",
+            "duration_ms": elapsed,
             "intent": "data_query",
-            "requires_sql": True,
-            "clarification_question": None,
-            "current_step": step,
-            "warnings": state.get("warnings", []) + [f"Supervisor warning: {exc}"],
-            "trace": state.get("trace", []) + [{
-                "step": step,
-                "status": "warning",
-                "duration_ms": elapsed,
-                "error": str(exc),
-            }],
-        }
+            "note": "Default dataset intent; planner handles question interpretation",
+        }],
+    }

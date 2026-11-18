@@ -82,15 +82,15 @@ export const DatasetReportDialog: React.FC<Props> = ({ sourceId, sourceName, onC
             {title.length}/25
           </span>
         </div>
-        <p className="mt-2 text-[11px] text-slate-500">Large datasets receive a deeper 6–8 page report.</p>
+        <p className="mt-2 text-[11px] text-slate-500">Large datasets receive a deeper 6-8 page report. On slower laptops, local Qwen3.5 may take a few minutes before the PDF downloads.</p>
 
         {error && <p role="alert" className="mt-4 rounded-xl border border-red-400/20 bg-red-400/10 px-3 py-2 text-xs text-red-300">{error}</p>}
 
         <div className="mt-6 flex items-center justify-between border-t border-white/[0.07] pt-5">
-          <span className="text-[11px] text-slate-600">Prepared locally · Quantai AI</span>
+          <span className="text-[11px] text-slate-600">Prepared locally - Quantai AI</span>
           <button type="submit" disabled={loading || !title.trim()} className="btn-primary rounded-xl px-4 py-2.5 text-sm disabled:cursor-not-allowed disabled:opacity-50">
             {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Download className="h-4 w-4" />}
-            {loading ? 'Building PDF…' : 'Download PDF'}
+            {loading ? 'Running Qwen3.5 + building PDF...' : 'Download PDF'}
           </button>
         </div>
       </form>

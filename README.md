@@ -19,6 +19,7 @@ The application still needs Ollama and MySQL running on the same computer. Local
 - Read-only SQL execution with `sqlglot` validation
 - Pandas verification for numeric results
 - Plotly charts and dataset summaries
+- PDF reports with local Qwen3.5 chart selection, chart explanations, tables, and data-driven takeaways
 - CSV, Excel, PDF, DOCX, and spreadsheet exports
 - Local document search with Chroma and Ollama embeddings
 - Privacy controls for schema-only mode, PII masking, and sample-row limits
@@ -76,8 +77,20 @@ LLM_PROVIDER=ollama
 OLLAMA_BASE_URL=http://127.0.0.1:11434
 LLM_MODEL=qwen3.5
 LLM_FALLBACK_MODEL=qwen2.5-coder:7b
+LLM_CHAT_MODEL=qwen2.5-coder:7b
 LLM_EMBED_MODEL=nomic-embed-text
+LLM_CHAT_NUM_CTX=4096
+LLM_CHAT_NUM_PREDICT=1024
+LLM_REASONING_ENABLED=false
+LLM_CHAT_KEEP_ALIVE=15m
+LLM_REPORT_AI_ENABLED=true
+LLM_REPORT_TIMEOUT_SEC=180
+LLM_CHAT_TIMEOUT_SEC=120
 ```
+
+Dataset reports ask local Qwen3.5 to review the deterministic profile, select the most useful charts, and explain what each chart answers. If Qwen3.5 times out on a slower laptop, the report still completes with the deterministic chart selection and labels that fallback in the PDF.
+
+Interactive chat uses the selected local Qwen model. Extended reasoning is disabled by default, chat context and response sizes are bounded, and Ollama keeps the chosen model loaded for 15 minutes to reduce repeat-load delays. The model picker offers Qwen 3.5, Qwen 2.5, and Qwen Code when those models are installed.
 
 Do not commit `.env`. It contains local database credentials and is intentionally ignored by Git.
 

@@ -112,6 +112,7 @@ async def query_planner_node(state: AgentState) -> dict[str, Any]:
             schema_columns=selected_columns,
             resolved_dates=resolved_dates,
             chat_history=chat_history,
+            model=state.get("selected_model"),
         )
 
         elapsed = int((time.perf_counter() - t0) * 1000)
@@ -289,6 +290,8 @@ async def sql_compile_node(state: AgentState) -> dict[str, Any]:
                 system_prompt=system_prompt,
                 user_message=user_message,
                 temperature=0.0,
+                interactive=True,
+                model=state.get("selected_model"),
             )
 
             # Clean markdown fences

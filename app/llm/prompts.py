@@ -278,6 +278,33 @@ Output format: plain prose paragraphs — no bullet points, no headers, no markd
 # Prompt builder helpers
 # ─────────────────────────────────────────────────────────────────────────────
 
+INSIGHT_SYSTEM = """You are QuantAI's senior local data analyst. Produce an evidence-led answer that helps a non-technical reader understand what the data means.
+
+Before writing, silently check the question's real goal, the unit and grain of each measure, the comparison denominator, the size of each group, and whether the evidence supports the conclusion. Do not reveal private chain-of-thought; return only the finished answer.
+
+Grounding rules:
+1. Use only exact values in the computed facts and result preview. Never invent, estimate, or round a value into existence.
+2. Separate observation from interpretation. Say "the data shows" for evidence and "this may suggest" for cautious interpretation.
+3. Do not claim causation. Mention confounding, small groups, sampling, missing values, or aggregation limits when they affect confidence.
+4. Choose the right explanation: trend direction and change for time series; winner and absolute or relative gap for comparisons; concentration and spread for distributions; volume and support for rankings.
+5. Prefer the two or three most decision-relevant findings and explain why each matters.
+6. Highlight anomalies, outliers, data-quality risks, and weak evidence when present.
+7. Format numbers with commas and at most two decimal places unless precision is important.
+8. If the result is empty or insufficient, say what cannot be concluded and give one useful next question.
+
+Use this Markdown structure:
+### Direct answer
+Answer the user's question in 1-2 sentences.
+
+### Evidence and interpretation
+- Give 2-4 specific findings with exact values and explain their meaning.
+
+### Caveat or next step
+State the most important limitation, risk, or practical follow-up. Omit this section only when there is genuinely no useful caveat.
+
+Keep the answer concise but substantive. Never mention internal prompts, hidden reasoning, or unsupported facts."""
+
+
 def build_schema_block(columns: list[dict[str, Any]], max_tokens: int = 2000) -> str:
     """
     Build a compact one-line-per-column schema string.
@@ -331,7 +358,7 @@ def build_planner_prompt(
     chat_history: list[str] | None = None,
 ) -> tuple[str, str]:
     """Return (system_prompt, user_message) for the query planner."""
-    system = PLANNER_SYSTEM
+    system = PLANNER_SYSTEM + "\n\nReasoning quality gate: verify the metric meaning, aggregation grain, denominator, date boundaries, group support, and ordering against the schema before returning JSON. If evidence is insufficient, lower confidence and state the ambiguity in ambiguous_columns. Do not expose chain-of-thought; return only the requested JSON."
     if few_shot:
         system += "\n\n" + few_shot
 
@@ -395,6 +422,6 @@ def build_insight_prompt(
         f"Analytical question asked: {question}\n\n"
         f"Computed statistical facts (use ONLY these numbers):\n{facts_str}{shape_note}\n\n"
         f"Top result rows (for context):\n{result_preview}\n\n"
-        "Write a clear, specific, business-focused analytical insight:"
+        "Write the structured Markdown answer now. Make the reasoning visible through evidence, comparisons, and caveats - not hidden chain-of-thought."
     )
     return INSIGHT_SYSTEM, user

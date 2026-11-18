@@ -12,7 +12,7 @@ from reportlab.lib.enums import TA_LEFT
 from reportlab.lib.pagesizes import landscape, letter
 from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
 from reportlab.lib.units import inch
-from reportlab.platypus import LongTable, Paragraph, SimpleDocTemplate, Spacer, TableStyle
+from reportlab.platypus import LongTable, Paragraph, SimpleDocTemplate, Spacer, Table, TableStyle
 
 
 PDF_MAX_ROWS = 500
@@ -79,6 +79,31 @@ async def export_pdf(df: pd.DataFrame, run_meta: dict[str, Any], path: Path) -> 
         quality.append(f"Confidence: {_paragraph_text(run_meta['confidence'])}")
     quality.append("Verified" if run_meta.get("verified") else "Not independently verified")
     story.extend((Paragraph("Analysis details", label_style), Paragraph(" &nbsp; | &nbsp; ".join(quality), body_style)))
+
+    snapshot_rows = [[Paragraph("Data snapshot", header_style), Paragraph("Value", header_style)]]
+    snapshot_rows.extend([
+        [Paragraph("Rows returned", cell_style), Paragraph(f"{len(df):,}", cell_style)],
+        [Paragraph("Columns returned", cell_style), Paragraph(f"{len(df.columns):,}", cell_style)],
+        [Paragraph("Numeric measures", cell_style), Paragraph(f"{len(df.select_dtypes(include='number').columns):,}", cell_style)],
+    ])
+    snapshot = Table(snapshot_rows, colWidths=[2.2 * inch, 2.2 * inch], hAlign="LEFT")
+    snapshot.setStyle(TableStyle([
+        ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#4f46e5")),
+        ("ROWBACKGROUNDS", (0, 1), (-1, -1), [colors.white, colors.HexColor("#f1f5f9")]),
+        ("GRID", (0, 0), (-1, -1), 0.35, colors.HexColor("#cbd5e1")),
+        ("VALIGN", (0, 0), (-1, -1), "TOP"),
+        ("LEFTPADDING", (0, 0), (-1, -1), 6),
+        ("RIGHTPADDING", (0, 0), (-1, -1), 6),
+        ("TOPPADDING", (0, 0), (-1, -1), 5),
+        ("BOTTOMPADDING", (0, 0), (-1, -1), 5),
+    ]))
+    story.extend((Paragraph("Data snapshot", label_style), snapshot))
+
+    observations = _result_observations(df)
+    if observations:
+        story.append(Paragraph("Data observations", label_style))
+        for observation in observations:
+            story.append(Paragraph(f"- {_paragraph_text(observation)}", body_style))
 
     story.append(Paragraph("Query results", label_style))
     if visible_df.empty:
@@ -147,3 +172,34 @@ def _cell_text(value: Any) -> str:
     except (TypeError, ValueError):
         pass
     return str(value)
+
+
+def _result_observations(df: pd.DataFrame) -> list[str]:
+    """Create compact, deterministic observations for exported query results."""
+    observations: list[str] = []
+    for column in list(df.select_dtypes(include="number").columns)[:3]:
+        series = df[column].dropna()
+        if series.empty:
+            continue
+        observations.append(
+            f"{column}: average {_format_number(series.mean())}, ranging from "
+            f"{_format_number(series.min())} to {_format_number(series.max())}."
+        )
+    for column in list(df.select_dtypes(include=["object", "category", "bool"]).columns)[:3]:
+        counts = df[column].dropna().value_counts()
+        if counts.empty:
+            continue
+        top_value = counts.index[0]
+        observations.append(
+            f"{column}: the most common value is {_cell_text(top_value)} "
+            f"({int(counts.iloc[0]):,} of {len(df):,} rows)."
+        )
+    return observations[:5]
+
+
+def _format_number(value: Any) -> str:
+    try:
+        number = float(value)
+        return f"{number:,.2f}" if number % 1 else f"{number:,.0f}"
+    except (TypeError, ValueError):
+        return _cell_text(value)
